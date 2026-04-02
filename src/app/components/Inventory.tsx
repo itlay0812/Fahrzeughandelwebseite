@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Search, Calendar, Fuel, Settings2, Gauge, ChevronRight } from "lucide-react";
 import { motion } from "motion/react";
-import vwUpImage from "figma:asset/a73f31ab97428181cb471f206b6a5d44e6e6087a.png";
+import vwUpImage from "../../assets/a73f31ab97428181cb471f206b6a5d44e6e6087a.png";
 import { SEO } from "./SEO";
 import { CarInquiryModal } from "./CarInquiryModal";
 

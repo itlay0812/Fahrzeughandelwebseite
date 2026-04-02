@@ -3,7 +3,7 @@ import { projectId, publicAnonKey } from "/utils/supabase/info";
 import { toast } from "sonner";
 import { Lock, User } from "lucide-react";
 import { motion } from "motion/react";
-import logoImg from "figma:asset/87104b765c1a1399e8e4b2a45f3225515652a099.png";
+import logoImg from "../../assets/87104b765c1a1399e8e4b2a45f3225515652a099.png";
 
 export function SetupAdmin() {
   const [email, setEmail] = useState("");

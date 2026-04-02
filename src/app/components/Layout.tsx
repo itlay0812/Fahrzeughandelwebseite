@@ -1,5 +1,5 @@
 import { Outlet, Link, useLocation } from "react-router";
-import logoImg from "figma:asset/87104b765c1a1399e8e4b2a45f3225515652a099.png";
+import logoImg from "../../assets/87104b765c1a1399e8e4b2a45f3225515652a099.png";
 import { Mail, Phone, Instagram, Menu, X, MapPin } from "lucide-react";
 import { useState } from "react";
 

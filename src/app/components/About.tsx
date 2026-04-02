@@ -1,8 +1,8 @@
 import { Users, ShieldCheck, Handshake, BadgeCheck } from "lucide-react";
 import { motion } from "motion/react";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
-import carPassion1 from "figma:asset/4ac31d9b72adda06dd32f483a379f070be76398f.png";
-import carPassion2 from "figma:asset/a786cbfb8d2e28889a626c9df9c05677c5df86ee.png";
+import carPassion1 from "../../assets/4ac31d9b72adda06dd32f483a379f070be76398f.png";
+import carPassion2 from "../../assets/a786cbfb8d2e28889a626c9df9c05677c5df86ee.png";
 import { SEO } from "./SEO";
 
 const VALUES = [

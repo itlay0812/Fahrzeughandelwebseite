@@ -18,8 +18,8 @@ import {
   Settings2,
   Handshake,
 } from "lucide-react";
-import heroBg from "figma:asset/6ca19209d42aea8c15819f803e558f77243107be.png";
-import vwUpImage from "figma:asset/a73f31ab97428181cb471f206b6a5d44e6e6087a.png";
+import heroBg from "../../assets/6ca19209d42aea8c15819f803e558f77243107be.png";
+import vwUpImage from "../../assets/a73f31ab97428181cb471f206b6a5d44e6e6087a.png";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { SEO } from "./SEO";
 
