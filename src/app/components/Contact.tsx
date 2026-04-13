@@ -1,11 +1,11 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { Send, Car, Search, Phone, Mail, CheckCircle, AlertCircle } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
+import { useLocation } from "react-router";
 import { projectId, publicAnonKey } from "/utils/supabase/info";
 import { SEO } from "./SEO";
-import { useState } from "react";
 
 // ─── TYPES ─────────────────────────────────────────────────────────────────────
 
@@ -212,8 +212,16 @@ const fadeUp = {
   transition: { duration: 0.35, ease: "easeOut" },
 };
 
+function getRequestTypeFromQuery(search: string): "search" | "sell" {
+  const type = new URLSearchParams(search).get("type");
+  return type === "sell" ? "sell" : "search";
+}
+
 export function Contact() {
-  const [requestType, setRequestType] = useState<"search" | "sell">("search");
+  const location = useLocation();
+  const [requestType, setRequestType] = useState<"search" | "sell">(() =>
+    getRequestTypeFromQuery(location.search)
+  );
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
@@ -227,6 +235,10 @@ export function Contact() {
     mode: "onTouched",       // validate on blur first, then on every keystroke after
     shouldUnregister: true,  // unregister fields that unmount (when switching modes)
   });
+
+  useEffect(() => {
+    setRequestType(getRequestTypeFromQuery(location.search));
+  }, [location.search]);
 
   // Reset vehicle fields when switching modes
   useEffect(() => {

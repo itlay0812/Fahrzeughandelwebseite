@@ -32,7 +32,7 @@ const SERVICES = [
     title: "Wir finden Ihr Wunschfahrzeug.",
     description:
       "Sie nennen uns Ihre Wünsche – Marke, Modell, Budget, Ausstattung. Wir übernehmen die vollständige Suche über unser Händlernetzwerk sowie private Quellen. Keine Telefonate mit Fremden, keine unnötigen Besichtigungen. Wir prüfen jedes Fahrzeug vorab und präsentieren Ihnen nur vorqualifizierte Angebote.",
-    cta: { label: "Suchauftrag erstellen", path: "/kontakt" },
+    cta: { label: "Suchauftrag erstellen", path: "/kontakt?type=search" },
     image:
       "https://images.unsplash.com/photo-1768760819947-f6772ae3f433?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxsdXh1cnklMjBjYXIlMjBkYXJrJTIwY2luZW1hdGljJTIwYXV0b21vdGl2ZXxlbnwxfHx8fDE3NzUxNjIzOTZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
   },
@@ -42,7 +42,7 @@ const SERVICES = [
     title: "Wir verkaufen Ihr Fahrzeug zum Bestwert.",
     description:
       "Übergeben Sie uns die Abwicklung Ihres Fahrzeugverkaufs. Wir erstellen professionelle Inserate, führen Verhandlungen in Ihrem Namen und schützen Sie vor unseriösen Interessenten. Von der Bewertung bis zur Schlüsselübergabe – alles aus einer Hand.",
-    cta: { label: "Verkaufsauftrag starten", path: "/kontakt" },
+    cta: { label: "Verkaufsauftrag starten", path: "/kontakt?type=sell" },
     image:
       "https://images.unsplash.com/photo-1761264889465-67be9fc1b77e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxsdXh1cnklMjBjYXIlMjBrZXlzJTIwaGFuZG92ZXIlMjBwZXJzb25hbCUyMHNlcnZpY2V8ZW58MXx8fHwxNzc1MTYyNDgzfDA&ixlib=rb-4.1.0&q=80&w=1080",
   },
@@ -346,7 +346,7 @@ export function Home() {
           >
             {/* PRIMARY — most important action */}
             <Link
-              to="/kontakt"
+              to="/kontakt?type=search"
               className="inline-flex items-center justify-center gap-2.5 bg-white text-black px-8 py-4 rounded-2xl text-sm tracking-wide hover:bg-gray-100 transition-colors active:scale-[0.98] shadow-lg"
             >
               <Search className="w-4 h-4 shrink-0" />
