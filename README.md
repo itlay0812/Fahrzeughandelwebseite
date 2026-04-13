@@ -7,7 +7,35 @@
 
   Run `npm i` to install the dependencies.
 
+  Create a `.env` file based on `.env.example` and set your EmailJS values.
+
   Run `npm run dev` to start the development server.
+
+  ## EmailJS setup for inquiry notifications
+
+  The app sends an email notification for each new inquiry from:
+  - car detail inquiry modal
+  - contact page (search request and sell request)
+
+  Required environment variables:
+  - `VITE_EMAILJS_SERVICE_ID`
+  - `VITE_EMAILJS_TEMPLATE_ID`
+  - `VITE_EMAILJS_PUBLIC_KEY`
+  - `VITE_INQUIRY_RECEIVER_EMAIL`
+
+  EmailJS template params used by the app:
+  - `to_email`
+  - `inquiry_type`
+  - `subject`
+  - `name`
+  - `email`
+  - `phone`
+  - `message`
+  - `car_name`
+  - `car_year`
+  - `car_price`
+  - `availability`
+  - `submitted_at`
 
   ## Deploy to GitHub Pages
 

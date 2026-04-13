@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { X, Phone, Mail, Clock, Send, CheckCircle, AlertCircle, User } from "lucide-react";
 import { toast } from "sonner";
 import { projectId, publicAnonKey } from "/utils/supabase/info";
+import { sendInquiryEmail } from "/utils/emailjs";
 import { useState } from "react";
 
 // ── Types ────────────────────────────────────────────────────────────────────
@@ -150,6 +151,24 @@ export function CarInquiryModal({ car, onClose }: Props) {
         }
       );
       if (!response.ok) throw new Error();
+
+      try {
+        await sendInquiryEmail({
+          inquiryType: "car_inquiry",
+          subject: `Neue Fahrzeuganfrage: ${car.brand} ${car.model}`,
+          name: data.name,
+          email: data.email,
+          phone: data.phone,
+          message: `Neue Anfrage zum Fahrzeug ${car.brand} ${car.model}`,
+          carName: `${car.brand} ${car.model}`,
+          carYear: car.year,
+          carPrice: car.price,
+          availability,
+        });
+      } catch (error) {
+        console.error("EmailJS notification failed", error);
+      }
+
       setSubmitted(true);
     } catch {
       toast.error("Es gab ein Problem. Bitte versuchen Sie es später erneut.");

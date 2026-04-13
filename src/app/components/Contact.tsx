@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { Send, Car, Search, Phone, Mail, CheckCircle, AlertCircle } from "lucide-react";
+import { Send, Car, Search, Phone, Mail, AlertCircle } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { useLocation } from "react-router";
 import { projectId, publicAnonKey } from "/utils/supabase/info";
+import { sendInquiryEmail } from "/utils/emailjs";
 import { SEO } from "./SEO";
 
 // ─── TYPES ─────────────────────────────────────────────────────────────────────
@@ -175,7 +176,19 @@ function SuccessScreen({ type, onReset }: { type: "search" | "sell"; onReset: ()
           transition={{ type: "spring", stiffness: 320, damping: 22, delay: 0.1 }}
           className="w-20 h-20 bg-black rounded-full flex items-center justify-center"
         >
-          <CheckCircle className="w-10 h-10 text-white" strokeWidth={1.5} />
+          <svg viewBox="0 0 52 52" className="w-10 h-10" aria-hidden="true">
+            <motion.path
+              d="M14 27 L22 35 L38 18"
+              fill="none"
+              stroke="white"
+              strokeWidth="4"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              initial={{ pathLength: 0 }}
+              animate={{ pathLength: 1 }}
+              transition={{ duration: 0.5, delay: 0.22, ease: "easeInOut" }}
+            />
+          </svg>
         </motion.div>
         <motion.div
           initial={{ scale: 0.8, opacity: 0.5 }}
@@ -187,10 +200,10 @@ function SuccessScreen({ type, onReset }: { type: "search" | "sell"; onReset: ()
 
       <div>
         <h3 className="text-xl text-black mb-2" style={{ fontWeight: 600 }}>
-          {type === "search" ? "Suchauftrag erfolgreich!" : "Angebot erfolgreich eingereicht!"}
+          {type === "search" ? "Suchauftrag erfolgreich gesendet!" : "Verkaufsauftrag erfolgreich gesendet!"}
         </h3>
         <p className="text-gray-500 text-sm leading-relaxed max-w-sm">
-          Vielen Dank – wir melden uns schnellstmöglich bei Ihnen persönlich.
+          Ihre Anfrage ist bei uns eingegangen. Wir kuemmern uns schnellstmoeglich darum und melden uns zeitnah bei Ihnen.
         </p>
       </div>
 
@@ -265,6 +278,45 @@ export function Contact() {
         }
       );
       if (!response.ok) throw new Error();
+
+      const fullName = `${data.firstName} ${data.lastName}`.trim();
+      const isSearch = requestType === "search";
+      const summary = isSearch
+        ? [
+            `Typ: Suchauftrag`,
+            `Fahrzeug: ${data.brand} ${data.model}`,
+            data.year ? `Baujahr ab: ${data.year}` : undefined,
+            data.budget ? `Budget: ${data.budget} EUR` : undefined,
+            data.maxMileage ? `Max. Kilometer: ${data.maxMileage}` : undefined,
+            data.color ? `Farben: ${data.color}` : undefined,
+            data.message ? `Nachricht: ${data.message}` : undefined,
+          ]
+        : [
+            `Typ: Verkaufsangebot`,
+            `Fahrzeug: ${data.brand} ${data.model}`,
+            `Baujahr: ${data.year || "-"}`,
+            `Leistung (PS): ${data.power || "-"}`,
+            `Kilometerstand: ${data.mileage || "-"}`,
+            data.price ? `Preisvorstellung: ${data.price} EUR` : undefined,
+            data.message ? `Nachricht: ${data.message}` : undefined,
+          ];
+
+      try {
+        await sendInquiryEmail({
+          inquiryType: requestType,
+          subject: isSearch ? "Neuer Suchauftrag" : "Neues Verkaufsangebot",
+          name: fullName,
+          email: data.email,
+          phone: data.phone,
+          carName: `${data.brand} ${data.model}`,
+          carYear: data.year,
+          carPrice: isSearch ? data.budget : data.price,
+          message: summary.filter(Boolean).join("\n"),
+        });
+      } catch (error) {
+        console.error("EmailJS notification failed", error);
+      }
+
       setSubmitted(true);
       reset();
     } catch {
