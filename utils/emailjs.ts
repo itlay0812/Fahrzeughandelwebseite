@@ -13,6 +13,7 @@ type InquiryEmailPayload = {
   carYear?: string;
   carPrice?: string;
   availability?: string;
+  adminLink?: string;
 };
 
 const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
@@ -47,6 +48,7 @@ export async function sendInquiryEmail(payload: InquiryEmailPayload) {
       car_year: payload.carYear || "-",
       car_price: payload.carPrice || "-",
       availability: payload.availability || "-",
+      admin_link: payload.adminLink || "-",
       submitted_at: new Date().toLocaleString("de-DE"),
     },
     {

@@ -128,6 +128,7 @@ export function CarInquiryModal({ car, onClose }: Props) {
       data.availability === "Sonstiges" && data.availabilityCustom
         ? data.availabilityCustom
         : data.availability;
+    const adminLink = `${window.location.origin}${window.location.pathname.endsWith("/") ? window.location.pathname : `${window.location.pathname}/`}#/admin`;
     try {
       const response = await fetch(
         `https://${projectId}.supabase.co/functions/v1/make-server-004f047d/submissions`,
@@ -152,6 +153,24 @@ export function CarInquiryModal({ car, onClose }: Props) {
       );
       if (!response.ok) throw new Error();
 
+      const message = [
+        "=== ANFRAGE ===",
+        "Typ: Fahrzeuganfrage",
+        "",
+        "=== KUNDE ===",
+        `Name: ${data.name}`,
+        `E-Mail: ${data.email}`,
+        `Telefon: ${data.phone || "-"}`,
+        "",
+        "=== FAHRZEUG ===",
+        `Fahrzeug: ${car.brand} ${car.model}`,
+        `Baujahr: ${car.year || "-"}`,
+        `Preis: ${car.price || "-"}`,
+        "",
+        "=== ERREICHBARKEIT ===",
+        availability || "-",
+      ].join("\n");
+
       try {
         await sendInquiryEmail({
           inquiryType: "car_inquiry",
@@ -159,11 +178,12 @@ export function CarInquiryModal({ car, onClose }: Props) {
           name: data.name,
           email: data.email,
           phone: data.phone,
-          message: `Neue Anfrage zum Fahrzeug ${car.brand} ${car.model}`,
+          message,
           carName: `${car.brand} ${car.model}`,
           carYear: car.year,
           carPrice: car.price,
           availability,
+          adminLink,
         });
       } catch (error) {
         console.error("EmailJS notification failed", error);

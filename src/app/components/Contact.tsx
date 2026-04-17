@@ -281,24 +281,47 @@ export function Contact() {
 
       const fullName = `${data.firstName} ${data.lastName}`.trim();
       const isSearch = requestType === "search";
+      const adminLink = `${window.location.origin}${window.location.pathname.endsWith("/") ? window.location.pathname : `${window.location.pathname}/`}#/admin`;
       const summary = isSearch
         ? [
-            `Typ: Suchauftrag`,
-            `Fahrzeug: ${data.brand} ${data.model}`,
-            data.year ? `Baujahr ab: ${data.year}` : undefined,
-            data.budget ? `Budget: ${data.budget} EUR` : undefined,
-            data.maxMileage ? `Max. Kilometer: ${data.maxMileage}` : undefined,
-            data.color ? `Farben: ${data.color}` : undefined,
-            data.message ? `Nachricht: ${data.message}` : undefined,
+            "=== ANFRAGE ===",
+            "Typ: Suchauftrag",
+            "",
+            "=== KUNDE ===",
+            `Name: ${fullName}`,
+            `E-Mail: ${data.email}`,
+            `Telefon: ${data.phone || "-"}`,
+            "",
+            "=== FAHRZEUGWUNSCH ===",
+            `Marke: ${data.brand}`,
+            `Modell: ${data.model}`,
+            `Baujahr ab: ${data.year || "-"}`,
+            `Budget: ${data.budget ? `${data.budget} EUR` : "-"}`,
+            `Max. Kilometer: ${data.maxMileage || "-"}`,
+            `Farben: ${data.color || "-"}`,
+            "",
+            "=== NACHRICHT ===",
+            data.message || "-",
           ]
         : [
-            `Typ: Verkaufsangebot`,
-            `Fahrzeug: ${data.brand} ${data.model}`,
+            "=== ANFRAGE ===",
+            "Typ: Verkaufsangebot",
+            "",
+            "=== KUNDE ===",
+            `Name: ${fullName}`,
+            `E-Mail: ${data.email}`,
+            `Telefon: ${data.phone || "-"}`,
+            "",
+            "=== FAHRZEUGDATEN ===",
+            `Marke: ${data.brand}`,
+            `Modell: ${data.model}`,
             `Baujahr: ${data.year || "-"}`,
             `Leistung (PS): ${data.power || "-"}`,
             `Kilometerstand: ${data.mileage || "-"}`,
-            data.price ? `Preisvorstellung: ${data.price} EUR` : undefined,
-            data.message ? `Nachricht: ${data.message}` : undefined,
+            `Preisvorstellung: ${data.price ? `${data.price} EUR` : "-"}`,
+            "",
+            "=== NACHRICHT ===",
+            data.message || "-",
           ];
 
       try {
@@ -312,6 +335,7 @@ export function Contact() {
           carYear: data.year,
           carPrice: isSearch ? data.budget : data.price,
           message: summary.filter(Boolean).join("\n"),
+          adminLink,
         });
       } catch (error) {
         console.error("EmailJS notification failed", error);
