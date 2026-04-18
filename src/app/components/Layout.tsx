@@ -1,11 +1,15 @@
 import { Outlet, Link, useLocation } from "react-router";
 import logoImg from "../../assets/87104b765c1a1399e8e4b2a45f3225515652a099.png";
 import { Mail, Phone, Instagram, Menu, X, MapPin } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export function Layout() {
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  }, [location.pathname]);
 
   const navLinks = [
     { name: "Home", path: "/" },
