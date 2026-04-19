@@ -1,0 +1,12 @@
+# Ensure static assets are served with strict MIME types on Apache/STRATO
+<IfModule mod_mime.c>
+  AddType text/javascript .js .mjs
+  AddType text/css .css
+  AddType application/json .json
+  AddType image/svg+xml .svg
+</IfModule>
+
+# Better defaults for static delivery
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+</IfModule>
