@@ -435,7 +435,6 @@ export function Contact() {
           <motion.div
             {...fadeUp}
             transition={{ duration: 0.35, ease: "easeOut", delay: 0.12 }}
-            className="bg-[#f7f7f7] border border-black/8 p-1.5 rounded-2xl flex mb-8 relative"
             className="bg-[#f7f7f7] border border-black/8 p-1.5 rounded-2xl flex mb-3 relative"
           >
             {/* Sliding pill */}
