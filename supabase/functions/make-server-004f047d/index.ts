@@ -78,7 +78,7 @@ app.use(
   "/*",
   cors({
     origin: "*",
-    allowHeaders: ["Content-Type", "Authorization", "X-User-Token", "apikey"],
+    allowHeaders: ["Content-Type", "Authorization", "X-User-Token"],
     allowMethods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     exposeHeaders: ["Content-Length"],
     maxAge: 600,
@@ -86,12 +86,12 @@ app.use(
 );
 
 // Health check endpoint
-app.get("/health", (c) => {
+app.get("/make-server-004f047d/health", (c) => {
   return c.json({ status: "ok" });
 });
 
 // Admin user creation endpoint
-app.post("/signup", async (c) => {
+app.post("/make-server-004f047d/signup", async (c) => {
   try {
     const body = await c.req.json();
     const supabase = createClient(
@@ -119,7 +119,7 @@ app.post("/signup", async (c) => {
 });
 
 // Submit a form request
-app.post("/submissions", async (c) => {
+app.post("/make-server-004f047d/submissions", async (c) => {
   try {
     const body = await c.req.json();
     const id = crypto.randomUUID();
@@ -141,7 +141,7 @@ app.post("/submissions", async (c) => {
 });
 
 // Get all submissions (Admin Only)
-app.get("/submissions", async (c) => {
+app.get("/make-server-004f047d/submissions", async (c) => {
   try {
     const auth = await requireAuth(c);
     if (auth.error) {
@@ -167,7 +167,7 @@ app.get("/submissions", async (c) => {
 });
 
 // Update submission status and internal notes (Admin Only)
-app.patch("/submissions/:id/meta", async (c) => {
+app.patch("/make-server-004f047d/submissions/:id/meta", async (c) => {
   try {
     const auth = await requireAuth(c);
     if (auth.error) {
@@ -208,7 +208,7 @@ app.patch("/submissions/:id/meta", async (c) => {
 });
 
 // Upload document for a submission (Admin Only)
-app.post("/submissions/:id/documents", async (c) => {
+app.post("/make-server-004f047d/submissions/:id/documents", async (c) => {
   try {
     const auth = await requireAuth(c);
     if (auth.error) {
@@ -282,7 +282,7 @@ app.post("/submissions/:id/documents", async (c) => {
 });
 
 // Delete document from a submission (Admin Only)
-app.delete("/submissions/:id/documents/:docId", async (c) => {
+app.delete("/make-server-004f047d/submissions/:id/documents/:docId", async (c) => {
   try {
     const auth = await requireAuth(c);
     if (auth.error) {
@@ -325,7 +325,7 @@ app.delete("/submissions/:id/documents/:docId", async (c) => {
 });
 
 // Delete a submission (Admin Only)
-app.delete("/submissions/:id", async (c) => {
+app.delete("/make-server-004f047d/submissions/:id", async (c) => {
   try {
     const auth = await requireAuth(c);
     if (auth.error) {
