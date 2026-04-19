@@ -360,6 +360,11 @@ export function Contact() {
     return inputCls(hasError, isTouched, isEmpty);
   };
 
+  const requestTypeDescription =
+    requestType === "search"
+      ? "Sie beschreiben Ihr Wunschfahrzeug, wir übernehmen die Suche und melden uns mit passenden Angeboten bei Ihnen."
+      : "Sie übermitteln Ihre Fahrzeugdaten, wir prüfen den Markt und unterstützen Sie bei einem schnellen Verkauf.";
+
   return (
     <>
       <SEO
@@ -431,6 +436,7 @@ export function Contact() {
             {...fadeUp}
             transition={{ duration: 0.35, ease: "easeOut", delay: 0.12 }}
             className="bg-[#f7f7f7] border border-black/8 p-1.5 rounded-2xl flex mb-8 relative"
+            className="bg-[#f7f7f7] border border-black/8 p-1.5 rounded-2xl flex mb-3 relative"
           >
             {/* Sliding pill */}
             <motion.div
@@ -462,6 +468,19 @@ export function Contact() {
               Verkaufen
             </button>
           </motion.div>
+
+          <AnimatePresence mode="wait">
+            <motion.p
+              key={requestType}
+              initial={{ opacity: 0, y: -4 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -4 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+              className="text-sm text-gray-500 leading-relaxed mb-8 px-1"
+            >
+              {requestTypeDescription}
+            </motion.p>
+          </AnimatePresence>
 
           {/* Form or Success */}
           <AnimatePresence mode="wait">

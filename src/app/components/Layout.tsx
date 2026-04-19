@@ -12,7 +12,7 @@ export function Layout() {
   }, [location.pathname]);
 
   const navLinks = [
-    { name: "Home", path: "/" },
+    { name: "Startseite", path: "/" },
     { name: "Suchauftrag & Verkauf", path: "/kontakt" },
     { name: "Fahrzeugbestand", path: "/bestand" },
     { name: "Über uns", path: "/ueber-uns" },
