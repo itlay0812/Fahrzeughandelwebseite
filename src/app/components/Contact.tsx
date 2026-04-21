@@ -7,6 +7,7 @@ import { useLocation } from "react-router";
 import { projectId, publicAnonKey } from "/utils/supabase/info";
 import { sendInquiryEmail } from "/utils/emailjs";
 import { SEO } from "./SEO";
+import { ADMIN_ROUTE_SEGMENT } from "../adminRoute";
 
 // ─── TYPES ─────────────────────────────────────────────────────────────────────
 
@@ -281,7 +282,7 @@ export function Contact() {
 
       const fullName = `${data.firstName} ${data.lastName}`.trim();
       const isSearch = requestType === "search";
-      const adminLink = `${window.location.origin}${window.location.pathname.endsWith("/") ? window.location.pathname : `${window.location.pathname}/`}#/admin`;
+        const adminLink = `${window.location.origin}${window.location.pathname.endsWith("/") ? window.location.pathname : `${window.location.pathname}/`}#/${ADMIN_ROUTE_SEGMENT}`;
       const summary = isSearch
         ? [
             "=== ANFRAGE ===",

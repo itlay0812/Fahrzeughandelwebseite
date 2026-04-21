@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { Lock, User } from "lucide-react";
 import { motion } from "motion/react";
 import logoImg from "../../assets/87104b765c1a1399e8e4b2a45f3225515652a099.png";
+import { ADMIN_ROUTE_SEGMENT } from "../adminRoute";
 
 export function SetupAdmin() {
   const [email, setEmail] = useState("");
@@ -29,7 +30,7 @@ export function SetupAdmin() {
         const err = await response.json().catch(() => ({}));
         throw new Error(err.error || "Fehler. Möglicherweise existiert der Benutzer bereits.");
       }
-      toast.success("Admin-Account erstellt. Sie können sich jetzt unter /admin einloggen.");
+      toast.success(`Admin-Account erstellt. Login unter /${ADMIN_ROUTE_SEGMENT}`);
       setEmail("");
       setPassword("");
     } catch (error: any) {

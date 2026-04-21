@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { projectId, publicAnonKey } from "/utils/supabase/info";
 import { sendInquiryEmail } from "/utils/emailjs";
 import { useState } from "react";
+import { ADMIN_ROUTE_SEGMENT } from "../adminRoute";
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -128,7 +129,7 @@ export function CarInquiryModal({ car, onClose }: Props) {
       data.availability === "Sonstiges" && data.availabilityCustom
         ? data.availabilityCustom
         : data.availability;
-    const adminLink = `${window.location.origin}${window.location.pathname.endsWith("/") ? window.location.pathname : `${window.location.pathname}/`}#/admin`;
+    const adminLink = `${window.location.origin}${window.location.pathname.endsWith("/") ? window.location.pathname : `${window.location.pathname}/`}#/${ADMIN_ROUTE_SEGMENT}`;
     try {
       const response = await fetch(
         `https://${projectId}.supabase.co/functions/v1/make-server-004f047d/submissions`,
