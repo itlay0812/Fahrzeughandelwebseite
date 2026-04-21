@@ -741,11 +741,16 @@ function SubmissionCard({
               onChange={(e) => setDocDate(e.target.value)}
               className="rounded-xl border border-black/10 bg-[#f7f7f7] px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black/10"
             />
-            <input
-              type="file"
-              onChange={(e) => setDocFile(e.target.files?.[0] || null)}
-              className="md:col-span-1 rounded-xl border border-black/10 bg-[#f7f7f7] px-3 py-2 text-sm file:mr-3 file:rounded-lg file:border-0 file:bg-black file:px-3 file:py-1.5 file:text-xs file:text-white"
-            />
+            <div className="md:col-span-1">
+              <input
+                type="file"
+                onChange={(e) => setDocFile(e.target.files?.[0] || null)}
+                className="w-full rounded-xl border border-black/10 bg-[#f7f7f7] px-3 py-2 text-sm file:mr-3 file:rounded-lg file:border-0 file:bg-black file:px-3 file:py-1.5 file:text-xs file:text-white"
+              />
+              <p className="mt-1 text-xs text-gray-500 truncate" title={docFile?.name || "Keine Datei ausgewählt"}>
+                {docFile?.name || "Keine Datei ausgewählt"}
+              </p>
+            </div>
             <button
               type="button"
               onClick={handleUploadDocument}
