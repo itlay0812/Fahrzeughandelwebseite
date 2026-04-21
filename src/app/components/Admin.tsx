@@ -30,8 +30,8 @@ import logoImg from "../../assets/87104b765c1a1399e8e4b2a45f3225515652a099.png";
 import { motion, AnimatePresence } from "motion/react";
 import {
   ResponsiveContainer,
-  BarChart,
-  Bar,
+  LineChart,
+  Line,
   CartesianGrid,
   XAxis,
   YAxis,
@@ -66,9 +66,144 @@ function normalizeText(value: unknown) {
 }
 
 const DEFAULT_DOC_FOLDERS = ["Kundendokumente", "Rechnungen"];
+const CUSTOM_TAG_VALUE = "__custom__";
+
+type FinanceChartPoint = {
+  dateKey: string;
+  dateLabel: string;
+  umsatz: number;
+  gewinn: number;
+  kosten: number;
+};
+
+function asNumber(value: unknown): number {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function getSubmissionRevenue(submission: any): number {
+  return asNumber(submission.salePrice ?? submission.revenue ?? 0);
+}
+
+function getSubmissionProfit(submission: any): number {
+  return asNumber(submission.profit ?? 0);
+}
+
+function getSubmissionCosts(submission: any): number {
+  return asNumber(submission.costs ?? 0);
+}
+
+function formatDateKey(value: string) {
+  const date = new Date(`${value}T00:00:00`);
+  if (Number.isNaN(date.getTime())) return value;
+  return date.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" });
+}
+
+function buildDailyFinanceSeries(items: any[]): FinanceChartPoint[] {
+  const dailyMap = new Map<string, FinanceChartPoint>();
+
+  items.forEach((item) => {
+    const date = new Date(item.createdAt);
+    if (Number.isNaN(date.getTime())) return;
+
+    const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+    if (!dailyMap.has(key)) {
+      dailyMap.set(key, {
+        dateKey: key,
+        dateLabel: formatDateKey(key),
+        umsatz: 0,
+        gewinn: 0,
+        kosten: 0,
+      });
+    }
+
+    const current = dailyMap.get(key)!;
+    current.umsatz += getSubmissionRevenue(item);
+    current.gewinn += getSubmissionProfit(item);
+    current.kosten += getSubmissionCosts(item);
+  });
+
+  return Array.from(dailyMap.values()).sort((a, b) => a.dateKey.localeCompare(b.dateKey));
+}
 
 function formatEuro(value: number) {
   return new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR" }).format(value);
+}
+
+function FinanceTooltip({ active, payload, label }: any) {
+  if (!active || !payload || !payload.length) {
+    return null;
+  }
+
+  const revenue = asNumber(payload.find((item: any) => item.dataKey === "umsatz")?.value);
+  const profit = asNumber(payload.find((item: any) => item.dataKey === "gewinn")?.value);
+  const costs = asNumber(payload.find((item: any) => item.dataKey === "kosten")?.value);
+
+  return (
+    <div className="rounded-xl border border-black/10 bg-white px-3 py-2 shadow-sm">
+      <p className="text-xs text-gray-500 mb-1">{formatDateKey(String(label || ""))}</p>
+      <p className="text-xs text-gray-700">Umsatz: <span className="text-black" style={{ fontWeight: 600 }}>{formatEuro(revenue)}</span></p>
+      <p className="text-xs text-gray-700">Gewinn: <span className="text-black" style={{ fontWeight: 600 }}>{formatEuro(profit)}</span></p>
+      <p className="text-xs text-gray-700">Kosten: <span className="text-black" style={{ fontWeight: 600 }}>{formatEuro(costs)}</span></p>
+    </div>
+  );
+}
+
+function FinanceTrendChart({ data }: { data: FinanceChartPoint[] }) {
+  if (data.length === 0) {
+    return (
+      <div className="h-full w-full flex items-center justify-center text-sm text-gray-400">
+        Keine Finanzwerte vorhanden.
+      </div>
+    );
+  }
+
+  return (
+    <ResponsiveContainer width="100%" height="100%">
+      <LineChart data={data} margin={{ top: 8, right: 12, left: 0, bottom: 0 }}>
+        <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+        <XAxis
+          dataKey="dateKey"
+          tickFormatter={(value) => formatDateKey(String(value))}
+          tick={{ fontSize: 12 }}
+          minTickGap={28}
+        />
+        <YAxis
+          tickFormatter={(value) => `${Math.round(asNumber(value) / 1000)}k`}
+          tick={{ fontSize: 12 }}
+        />
+        <Tooltip content={<FinanceTooltip />} />
+        <Legend />
+        <Line
+          type="monotone"
+          dataKey="umsatz"
+          name="Umsatz"
+          stroke="#111827"
+          strokeWidth={2.4}
+          dot={false}
+          activeDot={{ r: 4 }}
+        />
+        <Line
+          type="monotone"
+          dataKey="gewinn"
+          name="Gewinn"
+          stroke="#16a34a"
+          strokeWidth={2.4}
+          dot={false}
+          activeDot={{ r: 4 }}
+        />
+        <Line
+          type="monotone"
+          dataKey="kosten"
+          name="Kosten"
+          stroke="#dc2626"
+          strokeWidth={2.4}
+          dot={false}
+          activeDot={{ r: 4 }}
+        />
+      </LineChart>
+    </ResponsiveContainer>
+  );
 }
 
 // ─── LOGIN SCREEN ──────────────────────────────────────────────────────────────
@@ -178,6 +313,7 @@ function SubmissionCard({
   onUpdateMeta,
   onUploadDocument,
   onDeleteDocument,
+  showSectionConnector = false,
 }: {
   sub: any;
   onDelete: (id: string) => void;
@@ -194,6 +330,7 @@ function SubmissionCard({
   ) => Promise<void>;
   onUploadDocument: (id: string, displayName: string, file: File, folder: string, documentDate: string) => Promise<void>;
   onDeleteDocument: (id: string, docId: string) => Promise<void>;
+  showSectionConnector?: boolean;
 }) {
   const isSearch = sub.type === "search";
   const [status, setStatus] = useState<"unbearbeitet" | "in_progress" | "abgeschlossen">(sub.status || "unbearbeitet");
@@ -206,9 +343,16 @@ function SubmissionCard({
   const [docName, setDocName] = useState("");
   const [docFile, setDocFile] = useState<File | null>(null);
   const [docFolderMode, setDocFolderMode] = useState<string>(DEFAULT_DOC_FOLDERS[0]);
+  const [customDocTag, setCustomDocTag] = useState("");
   const [docDate, setDocDate] = useState(new Date().toISOString().slice(0, 10));
   const [isUploadingDoc, setIsUploadingDoc] = useState(false);
   const [selectedDocFolder, setSelectedDocFolder] = useState("Alle");
+  const [isCardExpanded, setIsCardExpanded] = useState(true);
+
+  const existingDocumentFolders = Array.from(
+    new Set((sub.documents || []).map((doc: any) => String(doc.folder || "Kundendokumente").trim()).filter(Boolean)),
+  ) as string[];
+  const uploadFolderOptions = Array.from(new Set([...DEFAULT_DOC_FOLDERS, ...existingDocumentFolders])) as string[];
 
   useEffect(() => {
     setStatus(sub.status || "unbearbeitet");
@@ -221,7 +365,16 @@ function SubmissionCard({
 
   useEffect(() => {
     setSelectedDocFolder("Alle");
+    setDocFolderMode(DEFAULT_DOC_FOLDERS[0]);
+    setCustomDocTag("");
+    setIsCardExpanded(true);
   }, [sub.id]);
+
+  useEffect(() => {
+    if (selectedDocFolder !== "Alle" && !existingDocumentFolders.includes(selectedDocFolder)) {
+      setSelectedDocFolder("Alle");
+    }
+  }, [selectedDocFolder, existingDocumentFolders]);
 
   useEffect(() => {
     const parsedPurchasePrice = Number(purchasePrice.replace(",", "."));
@@ -285,7 +438,7 @@ function SubmissionCard({
       return;
     }
 
-    const effectiveFolder = docFolderMode.trim();
+    const effectiveFolder = docFolderMode === CUSTOM_TAG_VALUE ? customDocTag.trim() : docFolderMode.trim();
     if (!effectiveFolder) {
       toast.error("Bitte einen Tag auswählen oder eingeben.");
       return;
@@ -297,6 +450,7 @@ function SubmissionCard({
       setDocName("");
       setDocFile(null);
       setDocFolderMode(DEFAULT_DOC_FOLDERS[0]);
+      setCustomDocTag("");
       toast.success("Dokument hochgeladen.");
     } catch {
       toast.error("Upload fehlgeschlagen.");
@@ -312,18 +466,12 @@ function SubmissionCard({
         ? "bg-amber-50 text-amber-700 border-amber-200"
         : "bg-gray-50 text-gray-700 border-gray-200";
 
-  const documentFolders = Array.from(
-    new Set([
-      ...DEFAULT_DOC_FOLDERS,
-      ...(sub.documents || []).map((doc: any) => doc.folder || "Kundendokumente"),
-    ]),
-  ) as string[];
   const visibleDocuments = selectedDocFolder === "Alle"
     ? (sub.documents || [])
     : (sub.documents || []).filter((doc: any) => (doc.folder || "Kundendokumente") === selectedDocFolder);
   const documentTags: Array<{ label: string; active: boolean }> = [
     { label: "Alle", active: selectedDocFolder === "Alle" },
-    ...documentFolders.map((folder) => ({ label: folder, active: selectedDocFolder === folder })),
+    ...existingDocumentFolders.map((folder) => ({ label: folder, active: selectedDocFolder === folder })),
   ];
 
   return (
@@ -331,8 +479,12 @@ function SubmissionCard({
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.28, ease: "easeOut" }}
-      className="bg-white border border-black/8 rounded-3xl p-6 sm:p-8 hover:shadow-md transition-shadow"
+      className="relative bg-white border border-black/8 rounded-3xl p-6 sm:p-8 hover:shadow-md transition-shadow"
     >
+      {showSectionConnector ? (
+        <div className="absolute top-10 -right-10 h-px w-10 bg-black/10" aria-hidden="true" />
+      ) : null}
+
       {/* Header row */}
       <div className="flex items-start justify-between gap-4 mb-6 pb-6 border-b border-black/6">
         <div className="flex items-center gap-4">
@@ -364,17 +516,36 @@ function SubmissionCard({
         </div>
 
         {/* Delete — tertiary destructive */}
-        <button
-          onClick={() => onDelete(sub.id)}
-          className="p-2 rounded-xl text-gray-300 hover:text-red-500 hover:bg-red-50 transition-colors shrink-0"
-          title="Anfrage löschen"
-        >
-          <Trash2 className="w-4 h-4" />
-        </button>
+        <div className="flex items-center gap-2 shrink-0">
+          <button
+            type="button"
+            onClick={() => setIsCardExpanded((prev) => !prev)}
+            className="p-2 rounded-xl text-gray-500 hover:text-black hover:bg-black/5 transition-colors"
+            title={isCardExpanded ? "Eintrag einklappen" : "Eintrag ausklappen"}
+          >
+            {isCardExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+          </button>
+          <button
+            onClick={() => onDelete(sub.id)}
+            className="p-2 rounded-xl text-gray-300 hover:text-red-500 hover:bg-red-50 transition-colors"
+            title="Anfrage löschen"
+          >
+            <Trash2 className="w-4 h-4" />
+          </button>
+        </div>
       </div>
 
       {/* Body */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <AnimatePresence initial={false}>
+        {isCardExpanded ? (
+          <motion.div
+            key="card-body"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.22, ease: "easeOut" }}
+            className="grid grid-cols-1 md:grid-cols-2 gap-6 overflow-hidden"
+          >
 
         {/* Person */}
         <div className="space-y-4">
@@ -550,10 +721,20 @@ function SubmissionCard({
               onChange={(e) => setDocFolderMode(e.target.value)}
               className="rounded-xl border border-black/10 bg-[#f7f7f7] px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black/10"
             >
-              {documentFolders.map((folder) => (
+              {uploadFolderOptions.map((folder) => (
                 <option key={folder} value={folder}>{folder}</option>
               ))}
+              <option value={CUSTOM_TAG_VALUE}>Eigener Tag...</option>
             </select>
+            {docFolderMode === CUSTOM_TAG_VALUE && (
+              <input
+                type="text"
+                value={customDocTag}
+                onChange={(e) => setCustomDocTag(e.target.value)}
+                placeholder="Eigenen Tag eingeben"
+                className="rounded-xl border border-black/10 bg-[#f7f7f7] px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black/10"
+              />
+            )}
             <input
               type="date"
               value={docDate}
@@ -634,7 +815,9 @@ function SubmissionCard({
             </div>
           )}
         </div>
-      </div>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
     </motion.div>
   );
 }
@@ -671,6 +854,7 @@ export function Admin() {
 
     return () => subscription.unsubscribe();
   }, []);
+
 
   const fetchSubmissions = async (token: string) => {
     setIsFetching(true);
@@ -848,31 +1032,17 @@ export function Admin() {
   const searchSubmissions = submissions.filter((s) => s.type === "search" && matchesName(s, searchFilter));
   const sellSubmissions = submissions.filter((s) => s.type === "sell" && matchesName(s, sellFilter));
   const completedSubmissionsCount = submissions.filter((s) => s.status === "abgeschlossen").length;
-  const orderSaleTotal = submissions.reduce((sum, sub) => sum + Number(sub.salePrice || sub.revenue || 0), 0);
-  const orderPurchaseTotal = submissions.reduce((sum, sub) => sum + Number(sub.purchasePrice || sub.costPrice || 0), 0);
-  const orderCostsTotal = submissions.reduce((sum, sub) => sum + Number(sub.costs || 0), 0);
-  const orderProfitTotal = submissions.reduce((sum, sub) => sum + Number(sub.profit || 0), 0);
+  const orderSaleTotal = submissions.reduce((sum, sub) => sum + getSubmissionRevenue(sub), 0);
+  const orderRequestedSaleTotal = submissions
+    .filter((sub) => sub.type === "sell")
+    .reduce((sum, sub) => sum + asNumber(sub.price), 0);
+  const orderPurchaseTotal = submissions.reduce((sum, sub) => sum + asNumber(sub.purchasePrice ?? sub.costPrice ?? 0), 0);
+  const orderCostsTotal = submissions.reduce((sum, sub) => sum + asNumber(sub.costs || 0), 0);
+  const orderProfitTotal = submissions.reduce((sum, sub) => sum + getSubmissionProfit(sub), 0);
   const ordersWithFinance = submissions.filter(
-    (sub) => Number(sub.salePrice || sub.revenue || 0) !== 0 || Number(sub.profit || 0) !== 0,
+    (sub) => getSubmissionRevenue(sub) !== 0 || getSubmissionProfit(sub) !== 0,
   ).length;
-
-  const orderMonthlyMap = new Map<string, { month: string; verkaufspreis: number; gewinn: number }>();
-  submissions.forEach((sub) => {
-    const date = new Date(sub.createdAt);
-    const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
-    const label = date.toLocaleDateString("de-DE", { month: "short", year: "2-digit" });
-    if (!orderMonthlyMap.has(key)) {
-      orderMonthlyMap.set(key, { month: label, verkaufspreis: 0, gewinn: 0 });
-    }
-    const current = orderMonthlyMap.get(key)!;
-    current.verkaufspreis += Number(sub.salePrice || sub.revenue || 0);
-    current.gewinn += Number(sub.profit || 0);
-  });
-
-  const orderFinanceChartData = Array.from(orderMonthlyMap.entries())
-    .sort((a, b) => a[0].localeCompare(b[0]))
-    .slice(-8)
-    .map((entry) => entry[1]);
+  const orderFinanceChartData = buildDailyFinanceSeries(submissions).slice(-45);
 
   return (
     <div className="flex-1 min-h-screen bg-[#f7f7f7] text-black">
@@ -919,9 +1089,9 @@ export function Admin() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-3 mb-5">
             <div className="rounded-2xl border border-black/8 bg-[#f7f7f7] p-4">
-              <p className="text-xs tracking-[0.12em] text-gray-400 uppercase mb-1">Verkaufspreis gesamt</p>
+              <p className="text-xs tracking-[0.12em] text-gray-400 uppercase mb-1">Umsatz gesamt</p>
               <p className="text-xl text-black" style={{ fontWeight: 600 }}>{formatEuro(orderSaleTotal)}</p>
             </div>
             <div className="rounded-2xl border border-black/8 bg-[#f7f7f7] p-4">
@@ -929,6 +1099,10 @@ export function Admin() {
               <p className={`text-xl ${orderProfitTotal >= 0 ? "text-green-700" : "text-red-600"}`} style={{ fontWeight: 600 }}>
                 {formatEuro(orderProfitTotal)}
               </p>
+            </div>
+            <div className="rounded-2xl border border-black/8 bg-[#f7f7f7] p-4">
+              <p className="text-xs tracking-[0.12em] text-gray-400 uppercase mb-1">Verkaufspreis</p>
+              <p className="text-xl text-black" style={{ fontWeight: 600 }}>{formatEuro(orderRequestedSaleTotal)}</p>
             </div>
             <div className="rounded-2xl border border-black/8 bg-[#f7f7f7] p-4">
               <p className="text-xs tracking-[0.12em] text-gray-400 uppercase mb-1">Kaufpreis gesamt</p>
@@ -941,17 +1115,7 @@ export function Admin() {
           </div>
 
           <div className="h-72 w-full rounded-2xl border border-black/8 bg-[#fafafa] p-3">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={orderFinanceChartData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                <XAxis dataKey="month" tick={{ fontSize: 12 }} />
-                <YAxis tickFormatter={(value) => `${Math.round(Number(value) / 1000)}k`} tick={{ fontSize: 12 }} />
-                <Tooltip formatter={(value: number) => formatEuro(Number(value || 0))} />
-                <Legend />
-                <Bar dataKey="verkaufspreis" name="Verkaufspreis" fill="#111827" radius={[6, 6, 0, 0]} />
-                <Bar dataKey="gewinn" name="Gewinn" fill="#16a34a" radius={[6, 6, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
+            <FinanceTrendChart data={orderFinanceChartData} />
           </div>
         </motion.div>
 
@@ -1039,19 +1203,23 @@ export function Admin() {
                   <p className="text-sm text-gray-400">Keine Suchaufträge vorhanden.</p>
                 </div>
               ) : (
-                <div className="space-y-4">
-                  <AnimatePresence>
-                    {searchSubmissions.map((sub) => (
-                      <SubmissionCard
-                        key={sub.id}
-                        sub={sub}
-                        onDelete={handleDelete}
-                        onUpdateMeta={handleUpdateMeta}
-                        onUploadDocument={handleUploadDocument}
-                        onDeleteDocument={handleDeleteDocument}
-                      />
-                    ))}
-                  </AnimatePresence>
+                <div className="relative pr-14">
+                  <div className="absolute right-4 top-0 bottom-2 w-px bg-black/10" aria-hidden="true" />
+                  <div className="space-y-4">
+                    <AnimatePresence>
+                      {searchSubmissions.map((sub) => (
+                        <SubmissionCard
+                          key={sub.id}
+                          sub={sub}
+                          onDelete={handleDelete}
+                          onUpdateMeta={handleUpdateMeta}
+                          onUploadDocument={handleUploadDocument}
+                          onDeleteDocument={handleDeleteDocument}
+                          showSectionConnector
+                        />
+                      ))}
+                    </AnimatePresence>
+                  </div>
                 </div>
               )}
             </div>
@@ -1097,19 +1265,23 @@ export function Admin() {
                   <p className="text-sm text-gray-400">Keine Verkaufsangebote vorhanden.</p>
                 </div>
               ) : (
-                <div className="space-y-4">
-                  <AnimatePresence>
-                    {sellSubmissions.map((sub) => (
-                      <SubmissionCard
-                        key={sub.id}
-                        sub={sub}
-                        onDelete={handleDelete}
-                        onUpdateMeta={handleUpdateMeta}
-                        onUploadDocument={handleUploadDocument}
-                        onDeleteDocument={handleDeleteDocument}
-                      />
-                    ))}
-                  </AnimatePresence>
+                <div className="relative pr-14">
+                  <div className="absolute right-4 top-0 bottom-2 w-px bg-black/10" aria-hidden="true" />
+                  <div className="space-y-4">
+                    <AnimatePresence>
+                      {sellSubmissions.map((sub) => (
+                        <SubmissionCard
+                          key={sub.id}
+                          sub={sub}
+                          onDelete={handleDelete}
+                          onUpdateMeta={handleUpdateMeta}
+                          onUploadDocument={handleUploadDocument}
+                          onDeleteDocument={handleDeleteDocument}
+                          showSectionConnector
+                        />
+                      ))}
+                    </AnimatePresence>
+                  </div>
                 </div>
               )}
             </div>

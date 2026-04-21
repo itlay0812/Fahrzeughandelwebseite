@@ -175,6 +175,11 @@ function normalizeFinanceData(value: unknown): FinanceData {
   };
 }
 
+function parseNonNegativeNumber(value: unknown): number {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) && parsed >= 0 ? parsed : 0;
+}
+
 async function getFinanceData(): Promise<FinanceData> {
   const current = await kv.get("finance:data");
   return normalizeFinanceData(current);
@@ -237,16 +242,23 @@ app.post("/make-server-004f047d/submissions", async (c) => {
   try {
     const body = await c.req.json();
     const id = crypto.randomUUID();
+    const purchasePrice = parseNonNegativeNumber(body.purchasePrice);
+    const salePrice = parseNonNegativeNumber(body.salePrice);
+    const costs = parseNonNegativeNumber(body.costs);
+    const profit = Number.isFinite(Number(body.profit))
+      ? Number(body.profit)
+      : salePrice - purchasePrice - costs;
+
     const submission: Submission = {
       id,
       createdAt: new Date().toISOString(),
       ...body,
       status: "unbearbeitet",
       internalNotes: "",
-      purchasePrice: 0,
-      salePrice: 0,
-      costs: 0,
-      profit: 0,
+      purchasePrice,
+      salePrice,
+      costs,
+      profit,
       documents: [],
     };
     
