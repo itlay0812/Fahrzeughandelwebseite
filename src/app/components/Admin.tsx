@@ -81,8 +81,16 @@ function asNumber(value: unknown): number {
   return Number.isFinite(parsed) ? parsed : 0;
 }
 
+function parseNonNegativeNumber(value: unknown): number {
+  const normalized = String(value ?? "").trim().replace(",", ".");
+  const parsed = Number(normalized);
+  return Number.isFinite(parsed) && parsed >= 0 ? parsed : 0;
+}
+
 function getSubmissionRevenue(submission: any): number {
-  return asNumber(submission.salePrice ?? submission.revenue ?? 0);
+  const salePrice = asNumber(submission.salePrice ?? submission.revenue ?? 0);
+  const purchasePrice = asNumber(submission.purchasePrice ?? submission.costPrice ?? 0);
+  return salePrice - purchasePrice;
 }
 
 function getSubmissionProfit(submission: any): number {
@@ -128,6 +136,58 @@ function buildDailyFinanceSeries(items: any[]): FinanceChartPoint[] {
 
 function formatEuro(value: number) {
   return new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR" }).format(value);
+}
+
+const LOGIN_GUARD_KEY = "gcn_admin_login_guard_v1";
+const LOGIN_WINDOW_MS = 15 * 60 * 1000;
+const LOGIN_MAX_ATTEMPTS = 5;
+const LOGIN_LOCK_MINUTES = [5, 15, 30, 60] as const;
+
+type LoginGuardState = {
+  attemptCount: number;
+  windowStart: number;
+  lockUntil: number;
+  penaltyLevel: number;
+};
+
+const DEFAULT_LOGIN_GUARD: LoginGuardState = {
+  attemptCount: 0,
+  windowStart: 0,
+  lockUntil: 0,
+  penaltyLevel: 0,
+};
+
+function readLoginGuard(): LoginGuardState {
+  if (typeof window === "undefined") return DEFAULT_LOGIN_GUARD;
+  try {
+    const raw = window.localStorage.getItem(LOGIN_GUARD_KEY);
+    if (!raw) return DEFAULT_LOGIN_GUARD;
+    const parsed = JSON.parse(raw);
+    return {
+      attemptCount: asNumber(parsed?.attemptCount),
+      windowStart: asNumber(parsed?.windowStart),
+      lockUntil: asNumber(parsed?.lockUntil),
+      penaltyLevel: asNumber(parsed?.penaltyLevel),
+    };
+  } catch {
+    return DEFAULT_LOGIN_GUARD;
+  }
+}
+
+function writeLoginGuard(state: LoginGuardState) {
+  if (typeof window === "undefined") return;
+  window.localStorage.setItem(LOGIN_GUARD_KEY, JSON.stringify(state));
+}
+
+function formatLockTime(ms: number): string {
+  const seconds = Math.max(0, Math.ceil(ms / 1000));
+  const minutesPart = Math.floor(seconds / 60);
+  const secondsPart = seconds % 60;
+  return `${minutesPart}:${String(secondsPart).padStart(2, "0")}`;
+}
+
+function getTodayInputDate(): string {
+  return new Date().toISOString().slice(0, 10);
 }
 
 function FinanceTooltip({ active, payload, label }: any) {
@@ -210,15 +270,28 @@ function FinanceTrendChart({ data }: { data: FinanceChartPoint[] }) {
 
 function LoginScreen({
   onLogin,
+  lockedUntil,
 }: {
   onLogin: (email: string, password: string) => Promise<void>;
+  lockedUntil: number;
 }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [now, setNow] = useState(Date.now());
+
+  const remainingMs = Math.max(0, lockedUntil - now);
+  const isLocked = remainingMs > 0;
+
+  useEffect(() => {
+    if (!isLocked) return;
+    const interval = window.setInterval(() => setNow(Date.now()), 1000);
+    return () => window.clearInterval(interval);
+  }, [isLocked]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isLocked) return;
     setIsLoggingIn(true);
     try {
       await onLogin(email, password);
@@ -248,6 +321,12 @@ function LoginScreen({
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
+            {isLocked ? (
+              <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                Zu viele Fehlversuche. Neuer Login in {formatLockTime(remainingMs)}.
+              </div>
+            ) : null}
+
             <div>
               <label className="block text-xs tracking-wide text-gray-500 uppercase mb-2">
                 E-Mail
@@ -285,11 +364,13 @@ function LoginScreen({
             {/* PRIMARY button */}
             <button
               type="submit"
-              disabled={isLoggingIn}
+              disabled={isLoggingIn || isLocked}
               className="w-full mt-2 inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl text-sm text-white bg-black hover:bg-gray-900 disabled:opacity-50 disabled:cursor-not-allowed transition-all active:scale-[0.98]"
             >
               {isLoggingIn ? (
                 <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              ) : isLocked ? (
+                "Temporär gesperrt"
               ) : (
                 "Einloggen"
               )}
@@ -333,6 +414,12 @@ function SubmissionCard({
   showSectionConnector?: boolean;
 }) {
   const isSearch = sub.type === "search";
+  const isInventorySale = sub.type === "inventory_sale";
+  const submissionLabel = isSearch
+    ? "Suchauftrag"
+    : isInventorySale
+      ? "Bestandsverkauf"
+      : "Verkaufsangebot";
   const [status, setStatus] = useState<"unbearbeitet" | "in_progress" | "abgeschlossen">(sub.status || "unbearbeitet");
   const [internalNotes, setInternalNotes] = useState(sub.internalNotes || "");
   const [purchasePrice, setPurchasePrice] = useState(String(Number(sub.purchasePrice ?? sub.costPrice ?? 0)));
@@ -486,8 +573,8 @@ function SubmissionCard({
       ) : null}
 
       {/* Header row */}
-      <div className="flex items-start justify-between gap-4 mb-6 pb-6 border-b border-black/6">
-        <div className="flex items-center gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6 pb-6 border-b border-black/6">
+        <div className="flex items-center gap-4 min-w-0">
           <div className="w-11 h-11 rounded-2xl bg-[#f7f7f7] border border-black/6 flex items-center justify-center shrink-0">
             {isSearch ? (
               <Search className="w-5 h-5 text-gray-600" />
@@ -495,9 +582,9 @@ function SubmissionCard({
               <Car className="w-5 h-5 text-gray-600" />
             )}
           </div>
-          <div>
+          <div className="min-w-0">
             <span className="text-xs tracking-[0.2em] text-gray-400 uppercase">
-              {isSearch ? "Suchauftrag" : "Verkaufsangebot"}
+              {submissionLabel}
             </span>
             <div className={`inline-flex mt-1 px-2.5 py-1 rounded-full border text-[11px] tracking-wide ${statusBadgeClass}`}>
               {status === "unbearbeitet" ? "Unbearbeitet" : status === "in_progress" ? "In Progress" : "Abgeschlossen"}
@@ -516,7 +603,7 @@ function SubmissionCard({
         </div>
 
         {/* Delete — tertiary destructive */}
-        <div className="flex items-center gap-2 shrink-0">
+        <div className="self-end sm:self-auto flex items-center gap-2 shrink-0">
           <button
             type="button"
             onClick={() => setIsCardExpanded((prev) => !prev)}
@@ -603,6 +690,12 @@ function SubmissionCard({
                 {sub.power && <DataRow label="Leistung" value={`${sub.power} PS`} />}
                 {sub.mileage && (
                   <DataRow label="Kilometerstand" value={`${sub.mileage} km`} />
+                )}
+                {isInventorySale && sub.purchasePrice !== undefined && (
+                  <DataRow label="Einkauf" value={formatEuro(asNumber(sub.purchasePrice))} />
+                )}
+                {isInventorySale && sub.salePrice !== undefined && (
+                  <DataRow label="Verkauf" value={formatEuro(asNumber(sub.salePrice))} />
                 )}
                 {sub.price && <DataRow label="Preisvorstellung" value={`${sub.price} €`} />}
               </>
@@ -834,10 +927,40 @@ export function Admin() {
   const [isLoading, setIsLoading] = useState(true);
   const [submissions, setSubmissions] = useState<any[]>([]);
   const [isFetching, setIsFetching] = useState(false);
+  const [loginGuard, setLoginGuard] = useState<LoginGuardState>(() => readLoginGuard());
   const [searchFilter, setSearchFilter] = useState("");
   const [sellFilter, setSellFilter] = useState("");
+  const [inventoryFilter, setInventoryFilter] = useState("");
   const [isSearchSectionCollapsed, setIsSearchSectionCollapsed] = useState(false);
   const [isSellSectionCollapsed, setIsSellSectionCollapsed] = useState(false);
+  const [isInventorySectionCollapsed, setIsInventorySectionCollapsed] = useState(false);
+  const [isManualCreateCollapsed, setIsManualCreateCollapsed] = useState(false);
+  const [isOrderDashboardCollapsed, setIsOrderDashboardCollapsed] = useState(false);
+  const [isCreatingSubmission, setIsCreatingSubmission] = useState(false);
+
+  const [manualType, setManualType] = useState<"search" | "sell" | "inventory_sale">("inventory_sale");
+  const [manualReceivedDate, setManualReceivedDate] = useState(getTodayInputDate());
+  const [manualFirstName, setManualFirstName] = useState("");
+  const [manualLastName, setManualLastName] = useState("");
+  const [manualEmail, setManualEmail] = useState("");
+  const [manualPhone, setManualPhone] = useState("");
+  const [manualBrand, setManualBrand] = useState("");
+  const [manualModel, setManualModel] = useState("");
+  const [manualYear, setManualYear] = useState("");
+  const [manualPower, setManualPower] = useState("");
+  const [manualMileage, setManualMileage] = useState("");
+  const [manualBudget, setManualBudget] = useState("");
+  const [manualMaxMileage, setManualMaxMileage] = useState("");
+  const [manualColor, setManualColor] = useState("");
+  const [manualSellPrice, setManualSellPrice] = useState("");
+  const [manualPurchasePrice, setManualPurchasePrice] = useState("");
+  const [manualCosts, setManualCosts] = useState("");
+  const [manualMessage, setManualMessage] = useState("");
+
+  const persistLoginGuard = (next: LoginGuardState) => {
+    setLoginGuard(next);
+    writeLoginGuard(next);
+  };
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -887,11 +1010,45 @@ export function Admin() {
   };
 
   const handleLogin = async (email: string, password: string) => {
+    const now = Date.now();
+    if (loginGuard.lockUntil > now) {
+      const waitMs = loginGuard.lockUntil - now;
+      toast.error(`Zu viele Fehlversuche. Bitte ${formatLockTime(waitMs)} warten.`);
+      throw new Error("Login temporaer gesperrt");
+    }
+
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) {
-      toast.error("Login fehlgeschlagen. Bitte Zugangsdaten prüfen.");
+      const isWindowExpired = now - loginGuard.windowStart > LOGIN_WINDOW_MS;
+      const attemptCount = isWindowExpired ? 1 : loginGuard.attemptCount + 1;
+      const windowStart = isWindowExpired ? now : loginGuard.windowStart;
+      const shouldLock = attemptCount >= LOGIN_MAX_ATTEMPTS;
+
+      if (shouldLock) {
+        const nextPenaltyLevel = Math.min(loginGuard.penaltyLevel + 1, LOGIN_LOCK_MINUTES.length);
+        const lockMinutes = LOGIN_LOCK_MINUTES[nextPenaltyLevel - 1];
+        persistLoginGuard({
+          attemptCount: 0,
+          windowStart: now,
+          lockUntil: now + lockMinutes * 60 * 1000,
+          penaltyLevel: nextPenaltyLevel,
+        });
+        toast.error(`Login gesperrt. Zu viele Fehlversuche (${lockMinutes} Min. Wartezeit).`);
+      } else {
+        persistLoginGuard({
+          ...loginGuard,
+          attemptCount,
+          windowStart,
+          lockUntil: 0,
+        });
+        const attemptsLeft = LOGIN_MAX_ATTEMPTS - attemptCount;
+        toast.error(`Login fehlgeschlagen. Noch ${attemptsLeft} Versuche bis zur Sperre.`);
+      }
+
       throw error;
     }
+
+    persistLoginGuard(DEFAULT_LOGIN_GUARD);
     toast.success("Erfolgreich eingeloggt.");
   };
 
@@ -1009,6 +1166,105 @@ export function Admin() {
     toast.success("Dokument gelöscht.");
   };
 
+  const resetManualForm = () => {
+    setManualType("inventory_sale");
+    setManualReceivedDate(getTodayInputDate());
+    setManualFirstName("");
+    setManualLastName("");
+    setManualEmail("");
+    setManualPhone("");
+    setManualBrand("");
+    setManualModel("");
+    setManualYear("");
+    setManualPower("");
+    setManualMileage("");
+    setManualBudget("");
+    setManualMaxMileage("");
+    setManualColor("");
+    setManualSellPrice("");
+    setManualPurchasePrice("");
+    setManualCosts("");
+    setManualMessage("");
+  };
+
+  const handleCreateSubmission = async () => {
+    if (!manualFirstName.trim() || !manualLastName.trim()) {
+      toast.error("Bitte Vor- und Nachname angeben.");
+      return;
+    }
+    if (!manualEmail.trim()) {
+      toast.error("Bitte E-Mail angeben.");
+      return;
+    }
+    if (!manualBrand.trim() || !manualModel.trim()) {
+      toast.error("Bitte Marke und Modell angeben.");
+      return;
+    }
+
+    const purchasePrice = parseNonNegativeNumber(manualPurchasePrice);
+    const salePrice = parseNonNegativeNumber(manualSellPrice);
+    const costs = parseNonNegativeNumber(manualCosts);
+    const profit = salePrice - purchasePrice - costs;
+
+    const payload: Record<string, unknown> = {
+      type: manualType,
+      source: "admin_manual",
+      createdAt: manualReceivedDate ? `${manualReceivedDate}T12:00:00.000Z` : undefined,
+      firstName: manualFirstName.trim(),
+      lastName: manualLastName.trim(),
+      email: manualEmail.trim(),
+      phone: manualPhone.trim(),
+      brand: manualBrand.trim(),
+      model: manualModel.trim(),
+      year: manualYear.trim(),
+      power: manualPower.trim(),
+      mileage: manualMileage.trim(),
+      message: manualMessage.trim(),
+      purchasePrice,
+      salePrice,
+      costs,
+      profit,
+      price: manualType === "sell" ? manualSellPrice.trim() : undefined,
+      budget: manualType === "search" ? manualBudget.trim() : undefined,
+      maxMileage: manualType === "search" ? manualMaxMileage.trim() : undefined,
+      color: manualType === "search" ? manualColor.trim() : undefined,
+    };
+
+    setIsCreatingSubmission(true);
+    try {
+      const response = await fetch(
+        `https://${projectId}.supabase.co/functions/v1/make-server-004f047d/submissions`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${publicAnonKey}`,
+            "X-User-Token": session.access_token,
+          },
+          body: JSON.stringify(payload),
+        },
+      );
+
+      if (!response.ok) {
+        const err = await response.json().catch(() => ({}));
+        throw new Error(err.error || "Anlegen fehlgeschlagen");
+      }
+
+      const data = await response.json();
+      if (data?.submission) {
+        setSubmissions((prev) => [data.submission, ...prev]);
+      } else {
+        await fetchSubmissions(session.access_token);
+      }
+      toast.success("Auftrag erfolgreich angelegt.");
+      resetManualForm();
+    } catch (error: any) {
+      toast.error(error.message || "Auftrag konnte nicht angelegt werden.");
+    } finally {
+      setIsCreatingSubmission(false);
+    }
+  };
+
   // Loading
   if (isLoading) {
     return (
@@ -1020,7 +1276,7 @@ export function Admin() {
 
   // Login
   if (!session) {
-    return <LoginScreen onLogin={handleLogin} />;
+    return <LoginScreen onLogin={handleLogin} lockedUntil={loginGuard.lockUntil} />;
   }
 
   // Dashboard
@@ -1036,18 +1292,20 @@ export function Admin() {
 
   const searchSubmissions = submissions.filter((s) => s.type === "search" && matchesName(s, searchFilter));
   const sellSubmissions = submissions.filter((s) => s.type === "sell" && matchesName(s, sellFilter));
+  const inventorySalesSubmissions = submissions.filter((s) => s.type === "inventory_sale" && matchesName(s, inventoryFilter));
   const completedSubmissionsCount = submissions.filter((s) => s.status === "abgeschlossen").length;
-  const orderSaleTotal = submissions.reduce((sum, sub) => sum + getSubmissionRevenue(sub), 0);
-  const orderRequestedSaleTotal = submissions
+  const completedSubmissions = submissions.filter((sub) => sub.status === "abgeschlossen");
+  const orderSaleTotal = completedSubmissions.reduce((sum, sub) => sum + getSubmissionRevenue(sub), 0);
+  const orderRequestedSaleTotal = completedSubmissions
     .filter((sub) => sub.type === "sell")
     .reduce((sum, sub) => sum + asNumber(sub.price), 0);
-  const orderPurchaseTotal = submissions.reduce((sum, sub) => sum + asNumber(sub.purchasePrice ?? sub.costPrice ?? 0), 0);
-  const orderCostsTotal = submissions.reduce((sum, sub) => sum + asNumber(sub.costs || 0), 0);
-  const orderProfitTotal = submissions.reduce((sum, sub) => sum + getSubmissionProfit(sub), 0);
-  const ordersWithFinance = submissions.filter(
+  const orderPurchaseTotal = completedSubmissions.reduce((sum, sub) => sum + asNumber(sub.purchasePrice ?? sub.costPrice ?? 0), 0);
+  const orderCostsTotal = completedSubmissions.reduce((sum, sub) => sum + asNumber(sub.costs || 0), 0);
+  const orderProfitTotal = completedSubmissions.reduce((sum, sub) => sum + getSubmissionProfit(sub), 0);
+  const ordersWithFinance = completedSubmissions.filter(
     (sub) => getSubmissionRevenue(sub) !== 0 || getSubmissionProfit(sub) !== 0,
   ).length;
-  const orderFinanceChartData = buildDailyFinanceSeries(submissions).slice(-45);
+  const orderFinanceChartData = buildDailyFinanceSeries(completedSubmissions).slice(-45);
 
   return (
     <div className="flex-1 min-h-screen bg-[#f7f7f7] text-black">
@@ -1078,22 +1336,38 @@ export function Admin() {
         </motion.div>
 
         <motion.div {...fadeUp} className="bg-white border border-black/8 rounded-3xl p-5 sm:p-6 mb-8">
-          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4 mb-5">
+          <div className="flex items-start justify-between gap-3 mb-5">
             <div>
               <p className="text-xs tracking-[0.2em] text-gray-400 uppercase">Auftragsdashboard</p>
               <h2 className="text-xl text-black mt-1" style={{ fontWeight: 600 }}>
                 Such- und Verkaufsaufträge im Überblick
               </h2>
               <p className="text-sm text-gray-500 mt-2 max-w-2xl">
-                Die Kennzahlen unten werden direkt aus den Anfragen berechnet. Umsatz und Gewinn können Sie für jeden Eintrag im Auftrag selbst hinterlegen.
+                Das Dashboard berücksichtigt nur abgeschlossene Aufträge. Umsatz und Gewinn können Sie für jeden Eintrag im Auftrag selbst hinterlegen.
               </p>
             </div>
-            <div className="inline-flex items-center gap-2 text-xs text-gray-500">
-              <BarChart3 className="w-4 h-4" />
-              {ordersWithFinance} Einträge mit Finanzwerten
+            <div className="flex items-center gap-2 shrink-0">
+              <div className="inline-flex items-center gap-2 text-xs text-gray-500 mr-1">
+                <BarChart3 className="w-4 h-4" />
+                {ordersWithFinance} Einträge mit Finanzwerten
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsOrderDashboardCollapsed((prev) => !prev)}
+                className="w-9 h-9 rounded-xl border border-black/10 bg-white flex items-center justify-center"
+                title={isOrderDashboardCollapsed ? "Dashboard ausklappen" : "Dashboard einklappen"}
+              >
+                {isOrderDashboardCollapsed ? (
+                  <ChevronDown className="w-4 h-4 text-gray-600" />
+                ) : (
+                  <ChevronUp className="w-4 h-4 text-gray-600" />
+                )}
+              </button>
             </div>
           </div>
 
+          {isOrderDashboardCollapsed ? null : (
+          <>
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-3 mb-5">
             <div className="rounded-2xl border border-black/8 bg-[#f7f7f7] p-4">
               <p className="text-xs tracking-[0.12em] text-gray-400 uppercase mb-1">Umsatz gesamt</p>
@@ -1122,17 +1396,173 @@ export function Admin() {
           <div className="h-72 w-full rounded-2xl border border-black/8 bg-[#fafafa] p-3">
             <FinanceTrendChart data={orderFinanceChartData} />
           </div>
+          </>
+          )}
+        </motion.div>
+
+        <motion.div {...fadeUp} className="bg-white border border-black/8 rounded-3xl p-5 sm:p-6 mb-8">
+          <div className="flex items-start justify-between gap-3 mb-5">
+            <div>
+              <p className="text-xs tracking-[0.2em] text-gray-400 uppercase">Manueller Auftrag</p>
+              <h2 className="text-xl text-black mt-1" style={{ fontWeight: 600 }}>
+                Auftrag direkt im Adminpanel anlegen
+              </h2>
+              <p className="text-sm text-gray-500 mt-2">
+                Für Anfragen ohne Website-Formular: Typ auswählen und Basisdaten eintragen.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setIsManualCreateCollapsed((prev) => !prev)}
+              className="w-9 h-9 rounded-xl border border-black/10 bg-white flex items-center justify-center shrink-0"
+              title={isManualCreateCollapsed ? "Formular ausklappen" : "Formular einklappen"}
+            >
+              {isManualCreateCollapsed ? (
+                <ChevronDown className="w-4 h-4 text-gray-600" />
+              ) : (
+                <ChevronUp className="w-4 h-4 text-gray-600" />
+              )}
+            </button>
+          </div>
+
+          {isManualCreateCollapsed ? null : (
+          <>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            <div>
+              <label className="block text-xs tracking-[0.15em] text-gray-400 uppercase mb-2">Typ</label>
+              <select
+                value={manualType}
+                onChange={(e) => setManualType(e.target.value as "search" | "sell" | "inventory_sale")}
+                className="w-full rounded-2xl border border-black/10 px-4 py-2.5 bg-[#f7f7f7] text-sm"
+              >
+                <option value="inventory_sale">Bestandsverkauf</option>
+                <option value="search">Suchauftrag</option>
+                <option value="sell">Verkaufsauftrag</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-xs tracking-[0.15em] text-gray-400 uppercase mb-2">Eingangsdatum</label>
+              <input
+                type="date"
+                value={manualReceivedDate}
+                onChange={(e) => setManualReceivedDate(e.target.value)}
+                className="w-full rounded-2xl border border-black/10 px-4 py-2.5 bg-[#f7f7f7] text-sm"
+              />
+            </div>
+            <div>
+              <label className="block text-xs tracking-[0.15em] text-gray-400 uppercase mb-2">Vorname</label>
+              <input value={manualFirstName} onChange={(e) => setManualFirstName(e.target.value)} className="w-full rounded-2xl border border-black/10 px-4 py-2.5 bg-[#f7f7f7] text-sm" />
+            </div>
+            <div>
+              <label className="block text-xs tracking-[0.15em] text-gray-400 uppercase mb-2">Nachname</label>
+              <input value={manualLastName} onChange={(e) => setManualLastName(e.target.value)} className="w-full rounded-2xl border border-black/10 px-4 py-2.5 bg-[#f7f7f7] text-sm" />
+            </div>
+            <div>
+              <label className="block text-xs tracking-[0.15em] text-gray-400 uppercase mb-2">E-Mail</label>
+              <input value={manualEmail} onChange={(e) => setManualEmail(e.target.value)} className="w-full rounded-2xl border border-black/10 px-4 py-2.5 bg-[#f7f7f7] text-sm" />
+            </div>
+            <div>
+              <label className="block text-xs tracking-[0.15em] text-gray-400 uppercase mb-2">Telefon</label>
+              <input value={manualPhone} onChange={(e) => setManualPhone(e.target.value)} className="w-full rounded-2xl border border-black/10 px-4 py-2.5 bg-[#f7f7f7] text-sm" />
+            </div>
+            <div>
+              <label className="block text-xs tracking-[0.15em] text-gray-400 uppercase mb-2">Marke</label>
+              <input value={manualBrand} onChange={(e) => setManualBrand(e.target.value)} className="w-full rounded-2xl border border-black/10 px-4 py-2.5 bg-[#f7f7f7] text-sm" />
+            </div>
+            <div>
+              <label className="block text-xs tracking-[0.15em] text-gray-400 uppercase mb-2">Modell</label>
+              <input value={manualModel} onChange={(e) => setManualModel(e.target.value)} className="w-full rounded-2xl border border-black/10 px-4 py-2.5 bg-[#f7f7f7] text-sm" />
+            </div>
+            <div>
+              <label className="block text-xs tracking-[0.15em] text-gray-400 uppercase mb-2">Baujahr</label>
+              <input value={manualYear} onChange={(e) => setManualYear(e.target.value)} className="w-full rounded-2xl border border-black/10 px-4 py-2.5 bg-[#f7f7f7] text-sm" />
+            </div>
+            <div>
+              <label className="block text-xs tracking-[0.15em] text-gray-400 uppercase mb-2">Leistung (PS)</label>
+              <input value={manualPower} onChange={(e) => setManualPower(e.target.value)} className="w-full rounded-2xl border border-black/10 px-4 py-2.5 bg-[#f7f7f7] text-sm" />
+            </div>
+            <div>
+              <label className="block text-xs tracking-[0.15em] text-gray-400 uppercase mb-2">Kilometerstand</label>
+              <input value={manualMileage} onChange={(e) => setManualMileage(e.target.value)} className="w-full rounded-2xl border border-black/10 px-4 py-2.5 bg-[#f7f7f7] text-sm" />
+            </div>
+
+            {manualType === "search" ? (
+              <>
+                <div>
+                  <label className="block text-xs tracking-[0.15em] text-gray-400 uppercase mb-2">Budget</label>
+                  <input value={manualBudget} onChange={(e) => setManualBudget(e.target.value)} className="w-full rounded-2xl border border-black/10 px-4 py-2.5 bg-[#f7f7f7] text-sm" />
+                </div>
+                <div>
+                  <label className="block text-xs tracking-[0.15em] text-gray-400 uppercase mb-2">Max. KM</label>
+                  <input value={manualMaxMileage} onChange={(e) => setManualMaxMileage(e.target.value)} className="w-full rounded-2xl border border-black/10 px-4 py-2.5 bg-[#f7f7f7] text-sm" />
+                </div>
+                <div>
+                  <label className="block text-xs tracking-[0.15em] text-gray-400 uppercase mb-2">Farbe</label>
+                  <input value={manualColor} onChange={(e) => setManualColor(e.target.value)} className="w-full rounded-2xl border border-black/10 px-4 py-2.5 bg-[#f7f7f7] text-sm" />
+                </div>
+              </>
+            ) : (
+              <>
+                <div>
+                  <label className="block text-xs tracking-[0.15em] text-gray-400 uppercase mb-2">Verkaufspreis (EUR)</label>
+                  <input value={manualSellPrice} onChange={(e) => setManualSellPrice(e.target.value)} className="w-full rounded-2xl border border-black/10 px-4 py-2.5 bg-[#f7f7f7] text-sm" />
+                </div>
+                {manualType === "inventory_sale" ? (
+                  <>
+                    <div>
+                      <label className="block text-xs tracking-[0.15em] text-gray-400 uppercase mb-2">Einkaufspreis (EUR)</label>
+                      <input value={manualPurchasePrice} onChange={(e) => setManualPurchasePrice(e.target.value)} className="w-full rounded-2xl border border-black/10 px-4 py-2.5 bg-[#f7f7f7] text-sm" />
+                    </div>
+                    <div>
+                      <label className="block text-xs tracking-[0.15em] text-gray-400 uppercase mb-2">Kosten (EUR)</label>
+                      <input value={manualCosts} onChange={(e) => setManualCosts(e.target.value)} className="w-full rounded-2xl border border-black/10 px-4 py-2.5 bg-[#f7f7f7] text-sm" />
+                    </div>
+                  </>
+                ) : null}
+              </>
+            )}
+
+            <div className="sm:col-span-2 lg:col-span-3">
+              <label className="block text-xs tracking-[0.15em] text-gray-400 uppercase mb-2">Notiz</label>
+              <textarea
+                value={manualMessage}
+                onChange={(e) => setManualMessage(e.target.value)}
+                className="w-full h-24 rounded-2xl border border-black/10 px-4 py-2.5 bg-[#f7f7f7] text-sm"
+              />
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 mt-4">
+            <button
+              type="button"
+              onClick={handleCreateSubmission}
+              disabled={isCreatingSubmission}
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-black text-white text-sm hover:bg-gray-900 disabled:opacity-60"
+            >
+              {isCreatingSubmission ? "Legt an..." : "Auftrag anlegen"}
+            </button>
+            <button
+              type="button"
+              onClick={resetManualForm}
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl border border-black/15 text-sm hover:bg-black hover:text-white transition-colors"
+            >
+              Zurücksetzen
+            </button>
+          </div>
+          </>
+          )}
         </motion.div>
 
         {/* Stats bar */}
         <motion.div
           {...fadeUp}
-          className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8"
+          className="grid grid-cols-2 sm:grid-cols-5 gap-3 mb-8"
         >
           {[
             { label: "Gesamt", value: submissions.length },
             { label: "Suchaufträge", value: submissions.filter((s) => s.type === "search").length },
             { label: "Verkaufsangebote", value: submissions.filter((s) => s.type === "sell").length },
+            { label: "Bestandsverkäufe", value: submissions.filter((s) => s.type === "inventory_sale").length },
             { label: "Abgeschlossen", value: completedSubmissionsCount },
           ].map((stat) => (
             <div
@@ -1168,21 +1598,23 @@ export function Admin() {
         ) : (
           <div className="space-y-6">
             <div>
-              <motion.div {...fadeUp} className="mb-4">
-                <label className="block text-xs tracking-[0.15em] text-gray-400 uppercase mb-2">
-                  Suchaufträge suchen
-                </label>
-                <div className="relative">
-                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
-                  <input
-                    type="text"
-                    value={searchFilter}
-                    onChange={(e) => setSearchFilter(e.target.value)}
-                    placeholder="Vor- oder Nachname eingeben"
-                    className="w-full rounded-2xl border border-black/10 py-3.5 pl-11 pr-4 bg-white text-black placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black/10 focus:border-black/20 text-sm transition-all"
-                  />
-                </div>
-              </motion.div>
+              {isSearchSectionCollapsed ? null : (
+                <motion.div {...fadeUp} className="mb-4">
+                  <label className="block text-xs tracking-[0.15em] text-gray-400 uppercase mb-2">
+                    Suchaufträge suchen
+                  </label>
+                  <div className="relative">
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                    <input
+                      type="text"
+                      value={searchFilter}
+                      onChange={(e) => setSearchFilter(e.target.value)}
+                      placeholder="Vor- oder Nachname eingeben"
+                      className="w-full rounded-2xl border border-black/10 py-3.5 pl-11 pr-4 bg-white text-black placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black/10 focus:border-black/20 text-sm transition-all"
+                    />
+                  </div>
+                </motion.div>
+              )}
 
               <div className="flex items-center justify-between mb-4 px-1">
                 <div>
@@ -1208,8 +1640,8 @@ export function Admin() {
                   <p className="text-sm text-gray-400">Keine Suchaufträge vorhanden.</p>
                 </div>
               ) : (
-                <div className="relative pr-14">
-                  <div className="absolute right-4 top-0 bottom-2 w-px bg-black/10" aria-hidden="true" />
+                <div className="relative lg:pr-14">
+                  <div className="hidden lg:block absolute right-4 top-0 bottom-2 w-px bg-black/10" aria-hidden="true" />
                   <div className="space-y-4">
                     <AnimatePresence>
                       {searchSubmissions.map((sub) => (
@@ -1229,23 +1661,89 @@ export function Admin() {
               )}
             </div>
 
-            <motion.div {...fadeUp} className="mb-4">
-              <label className="block text-xs tracking-[0.15em] text-gray-400 uppercase mb-2">
-                Verkaufsangebote suchen
-              </label>
-              <div className="relative">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
-                <input
-                  type="text"
-                  value={sellFilter}
-                  onChange={(e) => setSellFilter(e.target.value)}
-                  placeholder="Vor- oder Nachname eingeben"
-                  className="w-full rounded-2xl border border-black/10 py-3.5 pl-11 pr-4 bg-white text-black placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black/10 focus:border-black/20 text-sm transition-all"
-                />
+            <div>
+              {isInventorySectionCollapsed ? null : (
+                <motion.div {...fadeUp} className="mb-4">
+                  <label className="block text-xs tracking-[0.15em] text-gray-400 uppercase mb-2">
+                    Bestandsverkäufe suchen
+                  </label>
+                  <div className="relative">
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                    <input
+                      type="text"
+                      value={inventoryFilter}
+                      onChange={(e) => setInventoryFilter(e.target.value)}
+                      placeholder="Vor- oder Nachname eingeben"
+                      className="w-full rounded-2xl border border-black/10 py-3.5 pl-11 pr-4 bg-white text-black placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black/10 focus:border-black/20 text-sm transition-all"
+                    />
+                  </div>
+                </motion.div>
+              )}
+
+              <div className="flex items-center justify-between mb-4 px-1">
+                <div>
+                  <p className="text-xs tracking-[0.2em] text-gray-400 uppercase">Bestandsverkäufe</p>
+                  <p className="text-sm text-black mt-1" style={{ fontWeight: 600 }}>
+                    {inventorySalesSubmissions.length} Einträge
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsInventorySectionCollapsed((prev) => !prev)}
+                  className="w-9 h-9 rounded-xl border border-black/10 bg-white flex items-center justify-center"
+                >
+                  {isInventorySectionCollapsed ? (
+                    <ChevronDown className="w-4 h-4 text-gray-600" />
+                  ) : (
+                    <ChevronUp className="w-4 h-4 text-gray-600" />
+                  )}
+                </button>
               </div>
-            </motion.div>
+              {isInventorySectionCollapsed ? null : inventorySalesSubmissions.length === 0 ? (
+                <div className="bg-white border border-black/8 rounded-3xl p-6">
+                  <p className="text-sm text-gray-400">Keine Bestandsverkäufe vorhanden.</p>
+                </div>
+              ) : (
+                <div className="relative lg:pr-14">
+                  <div className="hidden lg:block absolute right-4 top-0 bottom-2 w-px bg-black/10" aria-hidden="true" />
+                  <div className="space-y-4">
+                    <AnimatePresence>
+                      {inventorySalesSubmissions.map((sub) => (
+                        <SubmissionCard
+                          key={sub.id}
+                          sub={sub}
+                          onDelete={handleDelete}
+                          onUpdateMeta={handleUpdateMeta}
+                          onUploadDocument={handleUploadDocument}
+                          onDeleteDocument={handleDeleteDocument}
+                          showSectionConnector
+                        />
+                      ))}
+                    </AnimatePresence>
+                  </div>
+                </div>
+              )}
+            </div>
 
             <div>
+              {isSellSectionCollapsed ? null : (
+                <motion.div {...fadeUp} className="mb-4">
+                  <label className="block text-xs tracking-[0.15em] text-gray-400 uppercase mb-2">
+                    Verkaufsangebote suchen
+                  </label>
+                  <div className="relative">
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                    <input
+                      type="text"
+                      value={sellFilter}
+                      onChange={(e) => setSellFilter(e.target.value)}
+                      placeholder="Vor- oder Nachname eingeben"
+                      className="w-full rounded-2xl border border-black/10 py-3.5 pl-11 pr-4 bg-white text-black placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black/10 focus:border-black/20 text-sm transition-all"
+                    />
+                  </div>
+                </motion.div>
+              )}
+
               <div className="flex items-center justify-between mb-4 px-1">
                 <div>
                   <p className="text-xs tracking-[0.2em] text-gray-400 uppercase">Verkaufsangebote</p>
@@ -1270,8 +1768,8 @@ export function Admin() {
                   <p className="text-sm text-gray-400">Keine Verkaufsangebote vorhanden.</p>
                 </div>
               ) : (
-                <div className="relative pr-14">
-                  <div className="absolute right-4 top-0 bottom-2 w-px bg-black/10" aria-hidden="true" />
+                <div className="relative lg:pr-14">
+                  <div className="hidden lg:block absolute right-4 top-0 bottom-2 w-px bg-black/10" aria-hidden="true" />
                   <div className="space-y-4">
                     <AnimatePresence>
                       {sellSubmissions.map((sub) => (
