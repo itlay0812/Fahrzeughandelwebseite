@@ -287,9 +287,9 @@ export function Home() {
   return (
     <>
       <SEO
-        title="GCN Fahrzeughandel GbR – Fahrzeug kaufen & verkaufen"
-        description="Ihr persönlicher Fahrzeugexperte aus Sankt Georgen im Schwarzwald. Suchauftrag, Fahrzeugverkauf und Bestand – diskret, transparent und professionell."
-        keywords="Gebrauchtwagen kaufen, Auto verkaufen, Fahrzeughandel, GCN, Suchauftrag, Schwarzwald"
+        title="Autohandel in St. Georgen im Schwarzwald – GCN Fahrzeughandel GbR"
+        description="Ihr persoenlicher Fahrzeugexperte und Autohandel in St. Georgen im Schwarzwald. Suchauftrag, Fahrzeugverkauf und Bestand fuer Kunden aus St. Georgen, Triberg, Villingen-Schwenningen, Furtwangen und Umgebung."
+        keywords="Autohandel St. Georgen, Fahrzeughandel Schwarzwald, Gebrauchtwagen Triberg, Auto verkaufen Villingen-Schwenningen, Auto kaufen Furtwangen, Suchauftrag"
         ogType="website"
       />
 

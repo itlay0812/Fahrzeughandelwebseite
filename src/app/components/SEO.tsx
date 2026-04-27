@@ -10,9 +10,9 @@ interface SEOProps {
 }
 
 export function SEO({
-  title = "GCN Fahrzeughandel GbR - Gebrauchtwagen kaufen & verkaufen",
-  description = "GCN Fahrzeughandel GbR - Ihr zuverlässiger Partner für Gebrauchtwagen. Wir finden Ihr Traumfahrzeug oder kaufen Ihren Gebrauchten. Faire Preise, persönliche Beratung.",
-  keywords = "Gebrauchtwagen, Fahrzeughandel, Auto kaufen, Auto verkaufen, GCN, Gebrauchtwagen Ankauf, Fahrzeugsuche, Autohandel",
+  title = "GCN Fahrzeughandel GbR - Autohandel in St. Georgen im Schwarzwald",
+  description = "GCN Fahrzeughandel GbR - Ihr Autohandel in St. Georgen im Schwarzwald. Gebrauchtwagen kaufen und verkaufen mit persoenlicher Beratung in St. Georgen, Triberg, Villingen-Schwenningen, Furtwangen, Schonach und Umgebung.",
+  keywords = "Autohandel St. Georgen, Fahrzeughandel St. Georgen, Gebrauchtwagen kaufen Schwarzwald, Auto verkaufen Triberg, Auto kaufen Villingen-Schwenningen, Furtwangen, Schonach, GCN Fahrzeughandel",
   ogImage = "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=1200&h=630&fit=crop",
   ogType = "website",
   canonical
@@ -57,22 +57,40 @@ export function SEO({
           "@context": "https://schema.org",
           "@type": "AutoDealer",
           "name": "GCN Fahrzeughandel GbR",
-          "description": "Gebrauchtwagen Handel - Ankauf und Verkauf",
+          "description": "Autohandel in St. Georgen im Schwarzwald - Ankauf und Verkauf von Gebrauchtwagen in der Region.",
           "telephone": "+49-176-41651086",
           "email": "gcn-fahrzeughandel@outlook.de",
           "address": {
             "@type": "PostalAddress",
             "addressCountry": "DE",
-            "addressLocality": "Deutschland"
+            "addressLocality": "St. Georgen im Schwarzwald"
           },
           "url": siteUrl,
           "priceRange": "€€",
           "openingHours": "Mo-Fr 09:00-18:00",
           "paymentAccepted": "Cash, Bank Transfer",
-          "areaServed": {
-            "@type": "Country",
-            "name": "Deutschland"
-          }
+          "areaServed": [
+            {
+              "@type": "City",
+              "name": "St. Georgen im Schwarzwald"
+            },
+            {
+              "@type": "City",
+              "name": "Triberg"
+            },
+            {
+              "@type": "City",
+              "name": "Villingen-Schwenningen"
+            },
+            {
+              "@type": "City",
+              "name": "Furtwangen"
+            },
+            {
+              "@type": "City",
+              "name": "Schonach"
+            }
+          ]
         })}
       </script>
     </Helmet>
