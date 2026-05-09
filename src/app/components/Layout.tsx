@@ -1,6 +1,7 @@
 import { Outlet, Link, useLocation } from "react-router";
 import logoImg from "../../assets/87104b765c1a1399e8e4b2a45f3225515652a099.png";
 import { Mail, Phone, Instagram, Menu, X, MapPin } from "lucide-react";
+import GisslerBranding from "./GisslerBranding";
 import { useEffect, useState } from "react";
 
 export function Layout() {
@@ -164,13 +165,17 @@ export function Layout() {
           </div>
 
           {/* Bottom bar */}
-          <div className="border-t border-white/5 pt-7 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div className="border-t border-white/5 pt-7 flex flex-col sm:flex-row items-center justify-between gap-4">
             <p className="text-gray-600 text-xs">
               © {new Date().getFullYear()} GCN Fahrzeughandel GbR. Alle Rechte vorbehalten.
             </p>
             <div className="flex items-center gap-6">
               <Link to="/impressum" className="text-gray-600 hover:text-gray-300 transition-colors text-xs">Impressum</Link>
               <Link to="/datenschutz" className="text-gray-600 hover:text-gray-300 transition-colors text-xs">Datenschutz</Link>
+            </div>
+            <div className="flex items-center gap-2 text-gray-600 text-xs">
+              <span>Erstellt von</span>
+              <GisslerBranding href="https://gissler-webdesign.de" />
             </div>
           </div>
         </div>

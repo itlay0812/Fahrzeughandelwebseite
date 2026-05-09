@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import heroBg from "../../assets/6ca19209d42aea8c15819f803e558f77243107be.png";
 import vwUpImage from "../../assets/a73f31ab97428181cb471f206b6a5d44e6e6087a.png";
+import giosueImg from "../../assets/Giosue.jpeg";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { SEO } from "./SEO";
 
@@ -104,8 +105,7 @@ const FOUNDERS = [
     age: 22,
     role: "Mitgründer & Geschäftsführer",
     bio: "Dualer Student im Studiengang Finanzdienstleistungen – verbindet Kundenberatung mit langjähriger Automobil-Leidenschaft.",
-    avatar:
-      "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=256&h=256",
+    avatar: giosueImg,
   },
   {
     name: "Christopher Neun",

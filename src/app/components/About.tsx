@@ -3,6 +3,7 @@ import { motion } from "motion/react";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import carPassion1 from "../../assets/4ac31d9b72adda06dd32f483a379f070be76398f.png";
 import carPassion2 from "../../assets/a786cbfb8d2e28889a626c9df9c05677c5df86ee.png";
+import giosueImg from "../../assets/Giosue.jpeg";
 import { SEO } from "./SEO";
 
 const VALUES = [
@@ -34,7 +35,7 @@ const FOUNDERS = [
     age: 22,
     role: "Mitgründer & Geschäftsführer",
     bio: "Als dualer Student im Studiengang Finanzdienstleistungen verbindet Giosue an seinen Standorten Sankt Georgen und Lörrach berufliche Erfahrung in der Kundenberatung mit einer langjährigen Leidenschaft für Autos. Dieses tiefe Interesse ermöglicht es ihm, Marktpreise, technische Details und Fahrzeugqualitäten für Sie optimal und realistisch einzuschätzen.",
-    avatar: "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=256&h=256",
+    avatar: giosueImg,
   },
   {
     name: "Christopher Neun",
