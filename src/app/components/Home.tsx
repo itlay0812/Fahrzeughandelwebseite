@@ -21,6 +21,7 @@ import {
 import heroBg from "../../assets/6ca19209d42aea8c15819f803e558f77243107be.png";
 import vwUpImage from "../../assets/a73f31ab97428181cb471f206b6a5d44e6e6087a.png";
 import giosueImg from "../../assets/Giosue.jpeg";
+import christophImg from "../../assets/Christoph.jpeg";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { SEO } from "./SEO";
 
@@ -112,8 +113,7 @@ const FOUNDERS = [
     age: 28,
     role: "Mitgründer & Geschäftsführer",
     bio: "Kaufmann für Versicherungen & Finanzen, dualer Student – strukturiert, verlässlich und klar in der Kommunikation.",
-    avatar:
-      "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=256&h=256",
+    avatar: christophImg,
   },
 ];
 

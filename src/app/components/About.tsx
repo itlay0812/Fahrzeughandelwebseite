@@ -4,6 +4,7 @@ import { ImageWithFallback } from "./figma/ImageWithFallback";
 import carPassion1 from "../../assets/4ac31d9b72adda06dd32f483a379f070be76398f.png";
 import carPassion2 from "../../assets/a786cbfb8d2e28889a626c9df9c05677c5df86ee.png";
 import giosueImg from "../../assets/Giosue.jpeg";
+import christophImg from "../../assets/Christoph.jpeg";
 import { SEO } from "./SEO";
 
 const VALUES = [
@@ -42,7 +43,7 @@ const FOUNDERS = [
     age: 28,
     role: "Mitgründer & Geschäftsführer",
     bio: "Als gelernter Kaufmann für Versicherungen und Finanzen sowie dualer Student (Finanzdienstleistungen) bringt Christopher ein ausgeprägtes Verständnis für strukturierte Abläufe mit. Von seinen Standorten Singen und Lörrach aus liegt sein Fokus darauf, Prozesse klar zu gestalten und Sie als Kunden sachlich und verlässlich zu begleiten.",
-    avatar: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=256&h=256",
+    avatar: christophImg,
   },
 ];
 
