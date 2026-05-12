@@ -3,7 +3,13 @@
     "allow": [
       "Bash(Get-ChildItem -Path \"g:\\\\Fertige_Projekte\\\\Fahrzeughandel\\\\Fahrzeughandelwebseite\" -Recurse -Depth 2)",
       "Bash(Select-Object FullName)",
-      "PowerShell(head -50)"
+      "PowerShell(head -50)",
+      "Bash(Get-ChildItem \"g:\\\\Fertige_Projekte\\\\Fahrzeughandel\\\\Fahrzeughandelwebseite\" -Force)",
+      "Bash(Select-Object Name, PSIsContainer)",
+      "Bash(git rm *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)"
     ]
   }
 }
