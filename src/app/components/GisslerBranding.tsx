@@ -34,7 +34,7 @@ export default function GisslerBranding({ href, className = "" }: GisslerBrandin
           backgroundClip: "text",
         }}
       >
-        GA Webdesign
+        G&A Webdesign
       </div>
     </div>
   );
@@ -46,7 +46,7 @@ export default function GisslerBranding({ href, className = "" }: GisslerBrandin
         target="_blank"
         rel="noopener noreferrer"
         className="inline-flex transition-opacity hover:opacity-70"
-        aria-label="GA Webdesign"
+        aria-label="G&A Webdesign"
       >
         {inner}
       </a>
