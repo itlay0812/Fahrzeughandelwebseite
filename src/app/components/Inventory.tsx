@@ -155,7 +155,7 @@ export function Inventory() {
                       href={car.mobileLink}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="w-full py-3 border border-black/12 hover:border-black/25 text-black text-sm rounded-2xl transition-colors text-center inline-flex items-center justify-center gap-1.5 text-gray-500 hover:text-black"
+                      className="w-full py-3 border border-black/15 text-gray-500 text-sm rounded-2xl transition-all text-center inline-flex items-center justify-center gap-1.5 hover:bg-black hover:text-white hover:border-black active:scale-[0.98]"
                     >
                       Ansehen auf Mobile.de
                       <ChevronRight className="w-3.5 h-3.5" />

@@ -210,7 +210,7 @@ function SuccessScreen({ type, onReset }: { type: "search" | "sell"; onReset: ()
 
       <button
         onClick={onReset}
-        className="mt-2 px-6 py-3 rounded-2xl border border-black/12 text-sm text-gray-500 hover:text-black hover:border-black/25 transition-colors"
+        className="mt-2 inline-flex items-center gap-2 px-6 py-3 rounded-2xl border border-black/15 text-sm text-black hover:bg-black hover:text-white hover:border-black transition-all active:scale-[0.98]"
       >
         Weiteres Anliegen senden
       </button>

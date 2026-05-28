@@ -175,9 +175,9 @@ function InventoryCarousel() {
           <button
             onClick={() => emblaApi?.scrollPrev()}
             disabled={!canPrev}
-            className={`w-10 h-10 rounded-2xl border flex items-center justify-center transition-colors ${
+            className={`w-10 h-10 rounded-2xl border flex items-center justify-center transition-all ${
               canPrev
-                ? "border-black/20 text-black hover:bg-black hover:text-white hover:border-black"
+                ? "border-black/15 text-black hover:bg-black hover:text-white hover:border-black active:scale-[0.95]"
                 : "border-black/8 text-black/20 cursor-default"
             }`}
           >
@@ -186,9 +186,9 @@ function InventoryCarousel() {
           <button
             onClick={() => emblaApi?.scrollNext()}
             disabled={!canNext}
-            className={`w-10 h-10 rounded-2xl border flex items-center justify-center transition-colors ${
+            className={`w-10 h-10 rounded-2xl border flex items-center justify-center transition-all ${
               canNext
-                ? "border-black/20 text-black hover:bg-black hover:text-white hover:border-black"
+                ? "border-black/15 text-black hover:bg-black hover:text-white hover:border-black active:scale-[0.95]"
                 : "border-black/8 text-black/20 cursor-default"
             }`}
           >
@@ -355,7 +355,7 @@ export function Home() {
             {/* SECONDARY — supporting action */}
             <Link
               to="/bestand"
-              className="inline-flex items-center justify-center gap-2.5 bg-white/10 text-white border border-white/25 px-8 py-4 rounded-2xl text-sm tracking-wide hover:bg-white/15 hover:border-white/40 transition-colors active:scale-[0.98] backdrop-blur-sm"
+              className="inline-flex items-center justify-center gap-2.5 bg-white/10 text-white border border-white/25 px-8 py-4 rounded-2xl text-sm tracking-wide hover:bg-white/20 hover:border-white/50 transition-all active:scale-[0.98] backdrop-blur-sm"
             >
               <CarFront className="w-4 h-4 shrink-0" />
               Bestand ansehen
@@ -363,9 +363,6 @@ export function Home() {
           </motion.div>
         </div>
 
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 opacity-35">
-          <div className="w-px h-10 bg-white animate-pulse mx-auto" />
-        </div>
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════
@@ -601,7 +598,7 @@ export function Home() {
               {/* SECONDARY on dark bg */}
               <Link
                 to="/kontakt"
-                className="inline-flex items-center justify-center gap-2 border border-white/20 text-white px-7 py-3.5 rounded-2xl text-sm hover:border-white/40 hover:bg-white/5 transition-colors whitespace-nowrap"
+                className="inline-flex items-center justify-center gap-2 border border-white/25 text-white px-7 py-3.5 rounded-2xl text-sm hover:bg-white/10 hover:border-white/50 transition-all whitespace-nowrap active:scale-[0.98]"
               >
                 Kontakt aufnehmen
                 <ArrowRight className="w-4 h-4 shrink-0" />
