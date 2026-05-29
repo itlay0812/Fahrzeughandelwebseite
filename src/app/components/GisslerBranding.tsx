@@ -25,16 +25,28 @@ export default function GisslerBranding({ href, className = "" }: GisslerBrandin
         />
       </svg>
 
-      <div
-        className="text-[18px] sm:text-[20px] 2xl:text-[22px] font-semibold"
-        style={{
-          background: "linear-gradient(135deg, #4dbef3, #006999)",
-          WebkitBackgroundClip: "text",
-          WebkitTextFillColor: "transparent",
-          backgroundClip: "text",
-        }}
-      >
-        G&A Webdesign
+      <div className="text-[18px] sm:text-[20px] 2xl:text-[22px] font-semibold inline-flex items-baseline">
+        <span
+          style={{
+            background: "linear-gradient(135deg, #4dbef3, #006999)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            backgroundClip: "text",
+          }}
+        >
+          G
+        </span>
+        <span className="text-[#3399cc]">&</span>
+        <span
+          style={{
+            background: "linear-gradient(135deg, #4dbef3, #006999)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            backgroundClip: "text",
+          }}
+        >
+          A Webdesign
+        </span>
       </div>
     </div>
   );
