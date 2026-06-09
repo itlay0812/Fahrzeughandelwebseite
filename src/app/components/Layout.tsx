@@ -175,7 +175,7 @@ export function Layout() {
             </div>
             <div className="flex items-center gap-2 text-gray-600 text-xs">
               <span>Erstellt von</span>
-              <GisslerBranding href="https://gissler-webdesign.de" />
+              <GisslerBranding href="https://ga-webdesign.de" />
             </div>
           </div>
         </div>
