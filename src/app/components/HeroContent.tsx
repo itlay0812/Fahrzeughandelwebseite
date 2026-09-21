@@ -45,12 +45,14 @@ export function HeroContent({ as = "h1" }: { as?: "h1" | "p" }) {
             Auftrag erstellen
             <ArrowRight className="h-4 w-4 shrink-0" aria-hidden="true" />
           </Link>
+          {/*
           <Link
             to="/bestand"
             className="inline-flex items-center justify-center gap-2.5 rounded-full border border-nero/20 bg-crema-chiara/70 px-8 py-4 text-sm text-nero backdrop-blur-sm transition-colors hover:border-nero/40 hover:bg-crema-chiara active:scale-[0.98]"
           >
             Fahrzeugbestand ansehen
           </Link>
+          */}
         </div>
 
         <ul className="mt-10 flex flex-wrap gap-x-7 gap-y-3 text-sm text-asfalto">

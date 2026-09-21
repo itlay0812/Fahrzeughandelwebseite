@@ -261,9 +261,10 @@ function InventoryCarousel() {
                   href={car.mobileLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-auto w-full rounded-full bg-nero py-3.5 text-center text-sm text-crema-chiara transition-colors hover:bg-rosso active:scale-[0.99]"
+                  className="mt-auto inline-flex w-full items-center justify-center gap-1.5 rounded-full border border-linea py-3.5 text-center text-sm text-asfalto transition-all hover:border-nero hover:bg-nero hover:text-crema-chiara"
                 >
                   Auf mobile.de ansehen
+                  <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
                 </a>
               </div>
             </article>
@@ -384,6 +385,7 @@ export function Home() {
       </section>
 
       {/* ── Bestand ───────────────────────────────────────────────── */}
+      {/*
       <section className="border-t border-linea bg-crema-chiara" aria-labelledby="bestand">
         <div className="mx-auto max-w-[1440px] px-4 py-16 sm:px-6 sm:py-24 lg:px-12">
           <div className="mb-10 flex flex-col justify-between gap-5 border-b border-linea pb-9 md:flex-row md:items-end">
@@ -412,6 +414,7 @@ export function Home() {
           </div>
         </div>
       </section>
+      */}
 
       {/* ── Warum GCN ─────────────────────────────────────────────── */}
       <section className="bg-crema" aria-labelledby="warum">

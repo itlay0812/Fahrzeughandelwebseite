@@ -9,7 +9,7 @@ import { IntroProvider, useIntro } from "../intro/IntroContext";
 
 const NAV_LINKS = [
   { name: "Startseite", path: "/" },
-  { name: "Fahrzeugbestand", path: "/bestand" },
+  // { name: "Fahrzeugbestand", path: "/bestand" },
   { name: "Suchauftrag & Verkauf", path: "/kontakt" },
   { name: "Über uns", path: "/ueber-uns" },
 ];

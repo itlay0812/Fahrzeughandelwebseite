@@ -130,7 +130,7 @@ export function CockpitIntro({ onSkip }: { onSkip: () => void }) {
         /* Die Bühne beginnt bündig an der Bildschirmkante, nicht unter dem
            ausgeblendeten Header – sonst springt das Layout am Ende. */
         marginTop: "calc(-1 * var(--header-h))",
-        height: "calc(720vh + var(--header-h))",
+        height: "calc(940vh + var(--header-h))",
       }}
     >
       <div className="sticky top-0 h-[100svh] w-full overflow-hidden bg-crema">
