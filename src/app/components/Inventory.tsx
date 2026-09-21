@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { Search, Calendar, Fuel, Settings2, Gauge, ChevronRight } from "lucide-react";
-import { motion } from "motion/react";
-import vwUpImage from "../../assets/a73f31ab97428181cb471f206b6a5d44e6e6087a.png";
+import { Search, Calendar, Fuel, Settings2, Gauge, ArrowRight } from "lucide-react";
+import { Link } from "react-router";
+import vwUpImage from "../../assets/vw-up.jpg";
+import stellplatzImg from "../../assets/illustrations/stellplatz.jpg";
 import { SEO } from "./SEO";
 import { CarInquiryModal } from "./CarInquiryModal";
 
@@ -18,7 +19,7 @@ const INVENTORY = [
     power: "44 kW (60 PS)",
     image: vwUpImage,
     condition: "Gebraucht",
-    tags: ["Klimaanlage", "HU Neu"],
+    tags: ["Klimaanlage", "HU neu"],
     mobileLink:
       "https://suchen.mobile.de/fahrzeuge/details.html?id=446353280&secret=b4a0bae92056da4585f40245617943e7",
   },
@@ -28,10 +29,11 @@ export function Inventory() {
   const [searchTerm, setSearchTerm] = useState("");
   const [inquiryCar, setInquiryCar] = useState<(typeof INVENTORY)[0] | null>(null);
 
+  const query = searchTerm.trim().toLowerCase();
   const filteredInventory = INVENTORY.filter(
     (car) =>
-      car.brand.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      car.model.toLowerCase().includes(searchTerm.toLowerCase())
+      car.brand.toLowerCase().includes(query) ||
+      car.model.toLowerCase().includes(query),
   );
 
   return (
@@ -42,146 +44,164 @@ export function Inventory() {
         keywords="Gebrauchtwagen Bestand, Auto sofort verfügbar, Gebrauchtwagen kaufen, Fahrzeuge auf Lager"
       />
 
-      <div className="flex-1 min-h-screen bg-white text-black">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
-
-          {/* Header & Search */}
-          <motion.div
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, ease: "easeOut" }}
-            className="flex flex-col md:flex-row md:items-end justify-between gap-5 mb-8 sm:mb-12 border-b border-black/8 pb-8 sm:pb-10"
-          >
+      <div className="min-h-screen flex-1 bg-crema text-nero">
+        <div className="mx-auto max-w-[1440px] px-4 py-12 sm:px-6 sm:py-16 lg:px-12">
+          <div className="mb-10 flex flex-col justify-between gap-6 border-b border-linea pb-9 md:flex-row md:items-end">
             <div>
-              <p className="text-xs tracking-[0.25em] text-gray-400 uppercase mb-3">Direktkauf</p>
-              <h1 className="text-3xl sm:text-4xl tracking-tight text-black" style={{ fontWeight: 300 }}>
-                Fahrzeugbestand
-              </h1>
-              <p className="text-gray-400 text-sm mt-2">
-                Aktuell {INVENTORY.length} {INVENTORY.length === 1 ? "Fahrzeug" : "Fahrzeuge"} verfügbar
+              <h1 className="titolo-pagina">Fahrzeugbestand</h1>
+              <p className="mt-3 text-asfalto">
+                <span className="numeri">{INVENTORY.length}</span>{" "}
+                {INVENTORY.length === 1 ? "Fahrzeug" : "Fahrzeuge"} sofort
+                verfügbar. Was nicht dabei ist, finden wir über unseren
+                Suchauftrag.
               </p>
             </div>
 
             <div className="relative w-full md:max-w-xs lg:max-w-sm">
-              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <Search className="h-4 w-4 text-gray-400" />
-              </div>
+              <label htmlFor="bestand-suche" className="sr-only">
+                Bestand nach Marke oder Modell durchsuchen
+              </label>
+              <Search
+                className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-alluminio"
+                aria-hidden="true"
+              />
               <input
-                type="text"
-                className="block w-full pl-11 pr-4 py-3.5 border border-black/10 rounded-2xl bg-[#f7f7f7] text-black placeholder:text-gray-400 focus:outline-none focus:border-black/25 text-sm transition-all"
-                placeholder="Marke oder Modell..."
+                id="bestand-suche"
+                type="search"
+                className="block w-full rounded-2xl border border-linea bg-crema-chiara py-3.5 pl-11 pr-4 text-sm text-nero transition-colors placeholder:text-alluminio focus:border-nero/30"
+                placeholder="Marke oder Modell"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
-          </motion.div>
+          </div>
 
-          {/* Grid */}
           {filteredInventory.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-              {filteredInventory.map((car, i) => (
-                <motion.div
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
+              {filteredInventory.map((car) => (
+                <article
                   key={car.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.38, ease: "easeOut", delay: i * 0.07 }}
-                  className="bg-[#f7f7f7] rounded-3xl overflow-hidden flex flex-col group shadow-sm hover:shadow-md transition-shadow border border-black/5"
+                  className="finestra group flex flex-col overflow-hidden border border-linea bg-crema-chiara transition-shadow hover:shadow-[0_18px_40px_-28px_rgba(26,21,18,0.5)]"
                 >
-                  {/* Image */}
-                  <div className="relative aspect-[4/3] overflow-hidden bg-gray-200">
+                  <div className="relative aspect-[4/3] overflow-hidden bg-crema-scura">
                     <img
                       src={car.image}
                       alt={`${car.brand} ${car.model}`}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                      className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+                      loading="lazy"
                     />
-                    <div className="absolute top-3 left-3 flex gap-2 flex-wrap">
-                      <span className="bg-white/90 backdrop-blur-sm text-black text-xs px-3 py-1.5 rounded-full border border-black/8">
-                        {car.condition}
-                      </span>
-                      {car.tags.map((tag) => (
-                        <span
-                          key={tag}
-                          className="bg-white/80 backdrop-blur-sm text-black text-xs px-3 py-1.5 rounded-full border border-black/8"
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
                   </div>
 
-                  {/* Content */}
-                  <div className="p-5 sm:p-6 flex-1 flex flex-col">
-                    <div className="flex justify-between items-start mb-4 pb-4 border-b border-black/6">
+                  <div className="flex flex-1 flex-col p-5 sm:p-6">
+                    <div className="mb-4 flex items-start justify-between gap-4 border-b border-linea-chiara pb-4">
                       <div>
-                        <h3 className="text-base sm:text-lg text-black" style={{ fontWeight: 600 }}>
+                        <h2 className="text-[19px] leading-snug" style={{ fontWeight: 700 }}>
                           {car.brand} {car.model}
-                        </h3>
-                        <p className="text-gray-400 text-sm">{car.power}</p>
+                        </h2>
+                        <p className="mt-1 text-sm text-asfalto">
+                          {car.power} · {car.condition}
+                        </p>
                       </div>
-                      <div className="text-black text-base sm:text-lg shrink-0 ml-2" style={{ fontWeight: 600 }}>
+                      <p className="numeri shrink-0 text-xl" style={{ fontWeight: 700 }}>
                         {car.price}
-                      </div>
+                      </p>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-x-4 gap-y-2.5 text-sm text-gray-500 mb-5">
+                    <dl className="mb-5 grid grid-cols-2 gap-x-4 gap-y-2.5 text-sm text-asfalto">
                       <div className="flex items-center gap-2">
-                        <Calendar className="w-3.5 h-3.5 text-gray-300 shrink-0" />
-                        <span>EZ {car.year}</span>
+                        <Calendar className="h-3.5 w-3.5 shrink-0 text-alluminio" aria-hidden="true" />
+                        <dt className="sr-only">Erstzulassung</dt>
+                        <dd className="numeri">EZ {car.year}</dd>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Gauge className="w-3.5 h-3.5 text-gray-300 shrink-0" />
-                        <span>{car.mileage}</span>
+                        <Gauge className="h-3.5 w-3.5 shrink-0 text-alluminio" aria-hidden="true" />
+                        <dt className="sr-only">Laufleistung</dt>
+                        <dd className="numeri">{car.mileage}</dd>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Settings2 className="w-3.5 h-3.5 text-gray-300 shrink-0" />
-                        <span>{car.transmission}</span>
+                        <Settings2 className="h-3.5 w-3.5 shrink-0 text-alluminio" aria-hidden="true" />
+                        <dt className="sr-only">Getriebe</dt>
+                        <dd>{car.transmission}</dd>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Fuel className="w-3.5 h-3.5 text-gray-300 shrink-0" />
-                        <span className="truncate">{car.fuel}</span>
+                        <Fuel className="h-3.5 w-3.5 shrink-0 text-alluminio" aria-hidden="true" />
+                        <dt className="sr-only">Kraftstoff</dt>
+                        <dd className="truncate">{car.fuel}</dd>
                       </div>
-                    </div>
+                    </dl>
 
-                    {/* Primary: Interesse anmelden */}
+                    {car.tags.length > 0 && (
+                      <ul className="mb-6 flex flex-wrap gap-2">
+                        {car.tags.map((tag) => (
+                          <li
+                            key={tag}
+                            className="rounded-full border border-linea px-3 py-1 text-xs text-asfalto"
+                          >
+                            {tag}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+
                     <button
                       onClick={() => setInquiryCar(car)}
-                      className="w-full py-3.5 bg-black hover:bg-gray-900 text-white text-sm rounded-2xl transition-colors mt-auto text-center active:scale-[0.98] mb-2.5"
+                      className="mb-2.5 mt-auto w-full rounded-full bg-rosso py-3.5 text-center text-sm text-crema-chiara transition-colors hover:bg-rosso-scuro active:scale-[0.99]"
                     >
                       Interesse anmelden
                     </button>
-
-                    {/* Secondary: Mobile.de */}
                     <a
                       href={car.mobileLink}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="w-full py-3 border border-black/15 text-gray-500 text-sm rounded-2xl transition-all text-center inline-flex items-center justify-center gap-1.5 hover:bg-black hover:text-white hover:border-black active:scale-[0.98]"
+                      className="inline-flex w-full items-center justify-center gap-1.5 rounded-full border border-linea py-3 text-center text-sm text-asfalto transition-all hover:border-nero hover:bg-nero hover:text-crema-chiara"
                     >
-                      Ansehen auf Mobile.de
-                      <ChevronRight className="w-3.5 h-3.5" />
+                      Auf mobile.de ansehen
+                      <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
                     </a>
                   </div>
-                </motion.div>
+                </article>
               ))}
             </div>
           ) : (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.3 }}
-              className="text-center py-20 sm:py-28 bg-[#f7f7f7] rounded-3xl border border-black/6"
-            >
-              <Search className="w-8 h-8 text-gray-300 mx-auto mb-4" />
-              <h3 className="text-lg text-black" style={{ fontWeight: 400 }}>
-                Keine Fahrzeuge gefunden
-              </h3>
-              <p className="text-gray-400 text-sm mt-2">Versuchen Sie es mit einem anderen Suchbegriff.</p>
-            </motion.div>
+            <div className="finestra overflow-hidden border border-linea bg-crema-chiara md:flex">
+              <img
+                src={stellplatzImg}
+                alt="Illustrierter leerer Stellplatz mit frischen Reifenspuren"
+                className="h-56 w-full object-cover md:h-auto md:w-1/2"
+                loading="lazy"
+              />
+              <div className="p-7 sm:p-10 md:w-1/2">
+                <h2 className="text-2xl" style={{ fontWeight: 700 }}>
+                  {query ? "Dazu steht gerade nichts bei uns." : "Gerade steht nichts bei uns."}
+                </h2>
+                <p className="mt-3 text-asfalto">
+                  {query
+                    ? "Unser Bestand wechselt schnell. Sagen Sie uns, was Sie suchen – wir melden uns, sobald das passende Fahrzeug da ist."
+                    : "Der Bestand ist aktuell leer. Über einen Suchauftrag finden wir Ihr Wunschfahrzeug über unser Händlernetzwerk."}
+                </p>
+                <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+                  <Link
+                    to="/kontakt?type=search"
+                    className="inline-flex items-center justify-center gap-2 rounded-full bg-rosso px-6 py-3.5 text-sm text-crema-chiara transition-colors hover:bg-rosso-scuro"
+                  >
+                    Suchauftrag erstellen
+                    <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                  </Link>
+                  {query && (
+                    <button
+                      onClick={() => setSearchTerm("")}
+                      className="inline-flex items-center justify-center rounded-full border border-linea px-6 py-3.5 text-sm text-nero transition-colors hover:border-nero"
+                    >
+                      Suche zurücksetzen
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
           )}
         </div>
       </div>
 
-      {/* Inquiry Modal */}
       <CarInquiryModal car={inquiryCar} onClose={() => setInquiryCar(null)} />
     </>
   );

@@ -42,7 +42,7 @@ function FieldError({ message }: { message?: string }) {
           animate={{ opacity: 1, y: 0, height: "auto" }}
           exit={{ opacity: 0, y: -4, height: 0 }}
           transition={{ duration: 0.16 }}
-          className="flex items-center gap-1.5 text-red-500 text-xs mt-1.5 ml-1 overflow-hidden"
+          className="flex items-center gap-1.5 text-rosso-scuro text-xs mt-1.5 ml-1 overflow-hidden"
         >
           <AlertCircle className="w-3 h-3 shrink-0" />
           {message}
@@ -53,12 +53,12 @@ function FieldError({ message }: { message?: string }) {
 }
 
 const inputBase =
-  "block w-full rounded-2xl py-3.5 px-5 text-black placeholder:text-gray-400 text-sm transition-all duration-200 focus:outline-none bg-white border";
+  "block w-full rounded-2xl py-3.5 px-5 text-nero placeholder:text-asfalto text-sm transition-all duration-200 focus:outline-none bg-crema-chiara border";
 
 function inputCls(hasError: boolean, isTouched: boolean, isEmpty: boolean) {
-  if (hasError) return `${inputBase} border-red-400 focus:ring-2 focus:ring-red-100`;
+  if (hasError) return `${inputBase} border-rosso focus:ring-2 focus:ring-red-100`;
   if (isTouched && !isEmpty) return `${inputBase} border-green-400/70 focus:ring-2 focus:ring-green-100`;
-  return `${inputBase} border-black/10 focus:ring-2 focus:ring-black/10 focus:border-black/25`;
+  return `${inputBase} border-linea focus:border-nero/35`;
 }
 
 const AVAILABILITY_OPTIONS = [
@@ -209,7 +209,7 @@ export function CarInquiryModal({ car, onClose }: Props) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.22 }}
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100]"
+            className="fixed inset-0 bg-rosso-wash0 backdrop-blur-sm z-[100]"
             onClick={onClose}
           />
 
@@ -223,21 +223,21 @@ export function CarInquiryModal({ car, onClose }: Props) {
             className="fixed inset-x-0 bottom-0 sm:inset-0 sm:flex sm:items-center sm:justify-center z-[101] px-0 sm:px-4"
           >
             <div
-              className="bg-white rounded-t-3xl sm:rounded-3xl w-full sm:max-w-lg shadow-2xl overflow-hidden flex flex-col max-h-[95dvh] sm:max-h-[90vh]"
+              className="bg-crema-chiara rounded-t-3xl sm:finestra w-full sm:max-w-lg shadow-2xl overflow-hidden flex flex-col max-h-[95dvh] sm:max-h-[90vh]"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Header */}
-              <div className="flex items-start justify-between px-6 pt-6 pb-5 border-b border-black/8 shrink-0">
+              <div className="flex items-start justify-between px-6 pt-6 pb-5 border-b border-linea shrink-0">
                 <div>
-                  <p className="text-xs tracking-[0.2em] text-gray-400 uppercase mb-1">Interesse anmelden</p>
-                  <h2 className="text-lg text-black" style={{ fontWeight: 600 }}>
+                  <p className="text-xs tracking-[0.2em] text-asfalto uppercase mb-1">Interesse anmelden</p>
+                  <h2 className="text-lg text-nero" style={{ fontWeight: 600 }}>
                     {car.brand} {car.model}
                   </h2>
-                  <p className="text-gray-400 text-sm mt-0.5">EZ {car.year} · {car.price}</p>
+                  <p className="text-asfalto text-sm mt-0.5">EZ {car.year} · {car.price}</p>
                 </div>
                 <button
                   onClick={onClose}
-                  className="w-9 h-9 rounded-xl bg-[#f7f7f7] hover:bg-gray-200 flex items-center justify-center text-gray-500 hover:text-black transition-colors shrink-0 ml-4 mt-0.5"
+                  className="w-9 h-9 rounded-xl bg-crema-chiara hover:bg-crema-scura flex items-center justify-center text-asfalto hover:text-nero transition-colors shrink-0 ml-4 mt-0.5"
                   aria-label="Schließen"
                 >
                   <X className="w-4 h-4" />
@@ -261,21 +261,21 @@ export function CarInquiryModal({ car, onClose }: Props) {
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
                         transition={{ type: "spring", stiffness: 320, damping: 22, delay: 0.08 }}
-                        className="w-16 h-16 bg-black rounded-full flex items-center justify-center"
+                        className="w-16 h-16 bg-rosso rounded-full flex items-center justify-center"
                       >
-                        <CheckCircle className="w-8 h-8 text-white" strokeWidth={1.5} />
+                        <CheckCircle className="w-8 h-8 text-crema-chiara" strokeWidth={1.5} />
                       </motion.div>
                       <div>
-                        <h3 className="text-lg text-black mb-2" style={{ fontWeight: 600 }}>
+                        <h3 className="text-lg text-nero mb-2" style={{ fontWeight: 600 }}>
                           Anfrage gesendet!
                         </h3>
-                        <p className="text-gray-500 text-sm leading-relaxed max-w-xs">
+                        <p className="text-asfalto text-sm leading-relaxed max-w-xs">
                           Vielen Dank! Wir melden uns schnellstmöglich persönlich bei Ihnen – zum vereinbarten Zeitpunkt.
                         </p>
                       </div>
                       <button
                         onClick={onClose}
-                        className="mt-2 px-6 py-3 rounded-2xl bg-black text-white text-sm hover:bg-gray-900 transition-colors"
+                        className="mt-2 px-6 py-3 rounded-2xl bg-rosso text-crema-chiara text-sm hover:bg-rosso-scuro transition-colors"
                       >
                         Schließen
                       </button>
@@ -292,14 +292,14 @@ export function CarInquiryModal({ car, onClose }: Props) {
                       className="px-6 py-6 space-y-4"
                       noValidate
                     >
-                      <p className="text-gray-500 text-sm leading-relaxed">
+                      <p className="text-asfalto text-sm leading-relaxed">
                         Hinterlassen Sie uns Ihre Kontaktdaten – wir melden uns zum gewünschten Zeitpunkt persönlich bei Ihnen bezüglich des Fahrzeugs.
                       </p>
 
                       {/* Name */}
                       <div>
                         <div className="relative">
-                          <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300 pointer-events-none" />
+                          <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-alluminio pointer-events-none" />
                           <input
                             {...register("name", {
                               required: "Name ist erforderlich",
@@ -317,7 +317,7 @@ export function CarInquiryModal({ car, onClose }: Props) {
                       {/* E-Mail */}
                       <div>
                         <div className="relative">
-                          <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300 pointer-events-none" />
+                          <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-alluminio pointer-events-none" />
                           <input
                             {...register("email", {
                               required: "E-Mail ist erforderlich",
@@ -338,7 +338,7 @@ export function CarInquiryModal({ car, onClose }: Props) {
                       {/* Telefon */}
                       <div>
                         <div className="relative">
-                          <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300 pointer-events-none" />
+                          <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-alluminio pointer-events-none" />
                           <input
                             {...register("phone", {
                               required: "Telefonnummer ist erforderlich",
@@ -359,7 +359,7 @@ export function CarInquiryModal({ car, onClose }: Props) {
                       {/* Erreichbarkeit */}
                       <div>
                         <div className="relative">
-                          <Clock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300 pointer-events-none" />
+                          <Clock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-alluminio pointer-events-none" />
                           <select
                             {...register("availability", { required: "Bitte Erreichbarkeit wählen" })}
                             className={`${field("availability")} pl-11 appearance-none cursor-pointer`}
@@ -408,7 +408,7 @@ export function CarInquiryModal({ car, onClose }: Props) {
                       <button
                         type="submit"
                         disabled={isSubmitting}
-                        className="w-full inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl text-sm text-white bg-black hover:bg-gray-900 disabled:opacity-60 disabled:cursor-not-allowed transition-all active:scale-[0.98] mt-2"
+                        className="w-full inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl text-sm text-crema-chiara bg-rosso hover:bg-rosso-scuro disabled:opacity-60 disabled:cursor-not-allowed transition-all active:scale-[0.98] mt-2"
                       >
                         {isSubmitting ? (
                           <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -420,7 +420,7 @@ export function CarInquiryModal({ car, onClose }: Props) {
                         )}
                       </button>
 
-                      <p className="text-center text-gray-400 text-xs pb-2">
+                      <p className="text-center text-asfalto text-xs pb-2">
                         Mit * markierte Felder sind Pflichtfelder
                       </p>
                     </motion.form>

@@ -1,0 +1,4 @@
+/* Archivo Variable – self-hosted (DSGVO: kein Google-Fonts-CDN).
+   Eine Familie, zwei Rollen: Display nutzt die Breitenachse (font-stretch),
+   Fließtext läuft auf Normalbreite. */
+@import '@fontsource-variable/archivo/standard.css';

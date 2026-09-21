@@ -1,4 +1,5 @@
 import { Helmet } from 'react-helmet-async';
+import ogFallback from '../../assets/illustrations/hero.jpg';
 
 interface SEOProps {
   title?: string;
@@ -13,13 +14,15 @@ export function SEO({
   title = "GCN Fahrzeughandel GbR - Autohandel in St. Georgen im Schwarzwald",
   description = "GCN Fahrzeughandel GbR - Ihr Autohandel in St. Georgen im Schwarzwald. Gebrauchtwagen kaufen und verkaufen mit persoenlicher Beratung in St. Georgen, Triberg, Villingen-Schwenningen, Furtwangen, Schonach und Umgebung.",
   keywords = "Autohandel St. Georgen, Fahrzeughandel St. Georgen, Gebrauchtwagen kaufen Schwarzwald, Auto verkaufen Triberg, Auto kaufen Villingen-Schwenningen, Furtwangen, Schonach, GCN Fahrzeughandel",
-  ogImage = "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=1200&h=630&fit=crop",
+  ogImage,
   ogType = "website",
   canonical
 }: SEOProps) {
   const fullTitle = title.includes("GCN") ? title : `${title} | GCN Fahrzeughandel`;
   const siteUrl = typeof window !== 'undefined' ? window.location.origin : '';
   const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
+  // Eigenes Bild statt Stockfoto – und absolut, wie es Open Graph verlangt.
+  const shareImage = ogImage ?? `${siteUrl}${ogFallback}`;
 
   return (
     <Helmet>
@@ -33,7 +36,7 @@ export function SEO({
       <meta property="og:url" content={canonical || currentUrl} />
       <meta property="og:title" content={fullTitle} />
       <meta property="og:description" content={description} />
-      <meta property="og:image" content={ogImage} />
+      <meta property="og:image" content={shareImage} />
       <meta property="og:locale" content="de_DE" />
       <meta property="og:site_name" content="GCN Fahrzeughandel GbR" />
 
@@ -42,7 +45,7 @@ export function SEO({
       <meta name="twitter:url" content={canonical || currentUrl} />
       <meta name="twitter:title" content={fullTitle} />
       <meta name="twitter:description" content={description} />
-      <meta name="twitter:image" content={ogImage} />
+      <meta name="twitter:image" content={shareImage} />
 
       {/* Additional SEO */}
       <meta name="robots" content="index, follow" />

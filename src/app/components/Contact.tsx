@@ -1,15 +1,17 @@
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, type UseFormRegisterReturn } from "react-hook-form";
 import { toast } from "sonner";
-import { Send, Car, Search, Phone, Mail, AlertCircle } from "lucide-react";
+import { Send, Car, Search, Phone, Mail, AlertCircle, Check } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { useLocation } from "react-router";
 import { projectId, publicAnonKey } from "/utils/supabase/info";
 import { sendInquiryEmail } from "/utils/emailjs";
+import suchauftragImg from "../../assets/illustrations/suchauftrag.jpg";
+import uebergabeImg from "../../assets/illustrations/uebergabe.jpg";
 import { SEO } from "./SEO";
 import { ADMIN_ROUTE_SEGMENT } from "../adminRoute";
 
-// ─── TYPES ─────────────────────────────────────────────────────────────────────
+// ─── TYPEN ────────────────────────────────────────────────────────────────────
 
 type SearchFormData = {
   firstName: string;
@@ -41,7 +43,7 @@ type SellFormData = {
 
 type FormData = SearchFormData & SellFormData;
 
-// ─── VALIDATION RULES ──────────────────────────────────────────────────────────
+// ─── VALIDIERUNG ──────────────────────────────────────────────────────────────
 
 const CURRENT_YEAR = new Date().getFullYear();
 
@@ -63,16 +65,16 @@ const rules = {
     },
   },
   email: {
-    required: "E-Mail Adresse ist erforderlich",
+    required: "E-Mail-Adresse ist erforderlich",
     pattern: {
       value: /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/,
-      message: "Bitte eine gültige E-Mail Adresse eingeben",
+      message: "Bitte eine gültige E-Mail-Adresse eingeben",
     },
   },
   phone: {
     pattern: {
       value: /^[+\d\s\-()]{6,20}$/,
-      message: "Ungültiges Format (z.B. +49 176 12345678)",
+      message: "Ungültiges Format (z. B. +49 176 12345678)",
     },
   },
   brand: {
@@ -104,7 +106,7 @@ const rules = {
   budget: {
     validate: (val: string | undefined) => {
       if (!val || val.trim() === "") return true;
-      if (!/^[\d\s.,]+$/.test(val)) return "Nur Zahlen eingeben (z.B. 25000)";
+      if (!/^[\d\s.,]+$/.test(val)) return "Nur Zahlen eingeben (z. B. 25000)";
       return true;
     },
   },
@@ -125,9 +127,9 @@ const rules = {
   },
 };
 
-// ─── FIELD WRAPPER ──────────────────────────────────────────────────────────────
+// ─── FELDER ───────────────────────────────────────────────────────────────────
 
-function FieldError({ message }: { message?: string }) {
+function FieldError({ id, message }: { id: string; message?: string }) {
   return (
     <AnimatePresence>
       {message && (
@@ -138,8 +140,8 @@ function FieldError({ message }: { message?: string }) {
           transition={{ duration: 0.18, ease: "easeOut" }}
           className="overflow-hidden"
         >
-          <p className="flex items-center gap-1.5 text-red-500 text-xs mt-1.5 ml-1">
-            <AlertCircle className="w-3 h-3 shrink-0" />
+          <p id={id} className="ml-1 mt-1.5 flex items-center gap-1.5 text-xs text-rosso-scuro">
+            <AlertCircle className="h-3 w-3 shrink-0" aria-hidden="true" />
             {message}
           </p>
         </motion.div>
@@ -148,69 +150,132 @@ function FieldError({ message }: { message?: string }) {
   );
 }
 
-function inputCls(hasError: boolean, isTouched: boolean, isEmpty: boolean) {
+type FieldProps = {
+  id: string;
+  label: string;
+  registration: UseFormRegisterReturn;
+  error?: string;
+  filled: boolean;
+  touched: boolean;
+  required?: boolean;
+  hint?: string;
+  className?: string;
+  textarea?: boolean;
+  inputProps?: React.InputHTMLAttributes<HTMLInputElement>;
+};
+
+function Field({
+  id,
+  label,
+  registration,
+  error,
+  filled,
+  touched,
+  required,
+  hint,
+  className,
+  textarea,
+  inputProps,
+}: FieldProps) {
+  const valid = touched && filled && !error;
   const base =
-    "block w-full rounded-2xl py-3.5 px-5 text-black placeholder:text-gray-400 focus:outline-none text-sm transition-all duration-200";
-  if (hasError)
-    return `${base} bg-red-50 border border-red-400 focus:ring-2 focus:ring-red-200`;
-  if (isTouched && !isEmpty)
-    return `${base} bg-[#f7f7f7] border border-green-400/70 focus:ring-2 focus:ring-green-100`;
-  return `${base} bg-[#f7f7f7] border border-black/10 focus:ring-2 focus:ring-black/10 focus:border-black/20`;
+    "block w-full rounded-2xl border px-5 py-3.5 text-sm text-nero transition-colors placeholder:text-alluminio focus:outline-none";
+  const state = error
+    ? "border-rosso bg-rosso-wash/50"
+    : valid
+      ? "border-nero/30 bg-crema-chiara"
+      : "border-linea bg-crema-chiara focus:border-nero/35";
+
+  return (
+    <div className={className}>
+      <label htmlFor={id} className="mb-1.5 flex items-center gap-1 pl-1 text-sm text-asfalto">
+        {label}
+        {required && (
+          <span className="text-rosso" aria-hidden="true">
+            *
+          </span>
+        )}
+        {hint && <span className="text-alluminio">· {hint}</span>}
+      </label>
+      <div className="relative">
+        {textarea ? (
+          <textarea
+            id={id}
+            rows={4}
+            {...registration}
+            {...(inputProps as React.TextareaHTMLAttributes<HTMLTextAreaElement>)}
+            aria-invalid={!!error}
+            aria-describedby={error ? `${id}-error` : undefined}
+            className={`${base} ${state} resize-none`}
+          />
+        ) : (
+          <input
+            id={id}
+            {...registration}
+            {...inputProps}
+            aria-invalid={!!error}
+            aria-describedby={error ? `${id}-error` : undefined}
+            className={`${base} ${state}`}
+          />
+        )}
+        {valid && !textarea && (
+          <Check
+            className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-nero/45"
+            aria-hidden="true"
+          />
+        )}
+      </div>
+      <FieldError id={`${id}-error`} message={error} />
+    </div>
+  );
 }
 
-// ─── SUCCESS SCREEN ────────────────────────────────────────────────────────────
+// ─── ERFOLG ───────────────────────────────────────────────────────────────────
 
 function SuccessScreen({ type, onReset }: { type: "search" | "sell"; onReset: () => void }) {
   return (
     <motion.div
       key="success"
-      initial={{ opacity: 0, scale: 0.94 }}
+      initial={{ opacity: 0, scale: 0.96 }}
       animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.94 }}
+      exit={{ opacity: 0, scale: 0.96 }}
       transition={{ duration: 0.3, ease: "easeOut" }}
-      className="bg-[#f7f7f7] rounded-3xl p-10 sm:p-14 border border-black/6 flex flex-col items-center text-center gap-6"
+      className="finestra flex flex-col items-center gap-6 border border-linea bg-crema-chiara p-10 text-center sm:p-14"
     >
-      <div className="relative">
-        <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ type: "spring", stiffness: 320, damping: 22, delay: 0.1 }}
-          className="w-20 h-20 bg-black rounded-full flex items-center justify-center"
-        >
-          <svg viewBox="0 0 52 52" className="w-10 h-10" aria-hidden="true">
-            <motion.path
-              d="M14 27 L22 35 L38 18"
-              fill="none"
-              stroke="white"
-              strokeWidth="4"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              initial={{ pathLength: 0 }}
-              animate={{ pathLength: 1 }}
-              transition={{ duration: 0.5, delay: 0.22, ease: "easeInOut" }}
-            />
-          </svg>
-        </motion.div>
-        <motion.div
-          initial={{ scale: 0.8, opacity: 0.5 }}
-          animate={{ scale: 1.6, opacity: 0 }}
-          transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-          className="absolute inset-0 bg-black/15 rounded-full pointer-events-none"
-        />
-      </div>
+      <motion.div
+        initial={{ scale: 0 }}
+        animate={{ scale: 1 }}
+        transition={{ type: "spring", stiffness: 320, damping: 22, delay: 0.1 }}
+        className="flex h-20 w-20 items-center justify-center rounded-full bg-rosso"
+      >
+        <svg viewBox="0 0 52 52" className="h-10 w-10" aria-hidden="true">
+          <motion.path
+            d="M14 27 L22 35 L38 18"
+            fill="none"
+            stroke="#FBF7F0"
+            strokeWidth="4"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            initial={{ pathLength: 0 }}
+            animate={{ pathLength: 1 }}
+            transition={{ duration: 0.5, delay: 0.22, ease: "easeInOut" }}
+          />
+        </svg>
+      </motion.div>
 
       <div>
-        <h3 className="text-xl text-black mb-2" style={{ fontWeight: 600 }}>
-          {type === "search" ? "Suchauftrag erfolgreich gesendet!" : "Verkaufsauftrag erfolgreich gesendet!"}
-        </h3>
-        <p className="text-gray-500 text-sm leading-relaxed max-w-sm">
-          Ihre Anfrage ist bei uns eingegangen. Wir kuemmern uns schnellstmoeglich darum und melden uns zeitnah bei Ihnen.
+        <h2 className="text-xl" style={{ fontWeight: 700 }}>
+          {type === "search" ? "Suchauftrag ist raus." : "Verkaufsangebot ist raus."}
+        </h2>
+        <p className="mx-auto mt-2 max-w-sm text-asfalto">
+          Ihre Anfrage ist bei uns eingegangen. Wir melden uns zeitnah – in der
+          Regel noch am selben Werktag.
         </p>
       </div>
 
       <button
         onClick={onReset}
-        className="mt-2 inline-flex items-center gap-2 px-6 py-3 rounded-2xl border border-black/15 text-sm text-black hover:bg-black hover:text-white hover:border-black transition-all active:scale-[0.98]"
+        className="mt-2 inline-flex items-center gap-2 rounded-full border border-linea px-6 py-3 text-sm text-nero transition-all hover:border-nero hover:bg-nero hover:text-crema-chiara active:scale-[0.98]"
       >
         Weiteres Anliegen senden
       </button>
@@ -218,13 +283,7 @@ function SuccessScreen({ type, onReset }: { type: "search" | "sell"; onReset: ()
   );
 }
 
-// ─── MAIN COMPONENT ────────────────────────────────────────────────────────────
-
-const fadeUp = {
-  initial: { opacity: 0, y: 18 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.35, ease: "easeOut" },
-};
+// ─── SEITE ────────────────────────────────────────────────────────────────────
 
 function getRequestTypeFromQuery(search: string): "search" | "sell" {
   const type = new URLSearchParams(search).get("type");
@@ -234,7 +293,7 @@ function getRequestTypeFromQuery(search: string): "search" | "sell" {
 export function Contact() {
   const location = useLocation();
   const [requestType, setRequestType] = useState<"search" | "sell">(() =>
-    getRequestTypeFromQuery(location.search)
+    getRequestTypeFromQuery(location.search),
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -246,15 +305,14 @@ export function Contact() {
     watch,
     formState: { errors, touchedFields },
   } = useForm<FormData>({
-    mode: "onTouched",       // validate on blur first, then on every keystroke after
-    shouldUnregister: true,  // unregister fields that unmount (when switching modes)
+    mode: "onTouched",
+    shouldUnregister: true,
   });
 
   useEffect(() => {
     setRequestType(getRequestTypeFromQuery(location.search));
   }, [location.search]);
 
-  // Reset vehicle fields when switching modes
   useEffect(() => {
     reset((prev) => ({
       firstName: prev.firstName,
@@ -276,13 +334,17 @@ export function Contact() {
             Authorization: `Bearer ${publicAnonKey}`,
           },
           body: JSON.stringify({ ...data, type: requestType }),
-        }
+        },
       );
       if (!response.ok) throw new Error();
 
       const fullName = `${data.firstName} ${data.lastName}`.trim();
       const isSearch = requestType === "search";
-        const adminLink = `${window.location.origin}${window.location.pathname.endsWith("/") ? window.location.pathname : `${window.location.pathname}/`}#/${ADMIN_ROUTE_SEGMENT}`;
+      const adminLink = `${window.location.origin}${
+        window.location.pathname.endsWith("/")
+          ? window.location.pathname
+          : `${window.location.pathname}/`
+      }#/${ADMIN_ROUTE_SEGMENT}`;
       const summary = isSearch
         ? [
             "=== ANFRAGE ===",
@@ -353,18 +415,19 @@ export function Contact() {
 
   const watched = watch();
 
-  const field = (name: keyof FormData) => {
-    const hasError = !!errors[name];
-    const isTouched = !!touchedFields[name];
+  const state = (name: keyof FormData) => {
     const val = watched[name];
-    const isEmpty = !val || String(val).trim() === "";
-    return inputCls(hasError, isTouched, isEmpty);
+    return {
+      error: errors[name]?.message as string | undefined,
+      touched: !!touchedFields[name],
+      filled: !!val && String(val).trim() !== "",
+    };
   };
 
   const requestTypeDescription =
     requestType === "search"
-      ? "Sie beschreiben Ihr Wunschfahrzeug, wir übernehmen die Suche und melden uns mit passenden Angeboten bei Ihnen."
-      : "Sie übermitteln Ihre Fahrzeugdaten, wir prüfen den Markt und unterstützen Sie bei einem schnellen Verkauf.";
+      ? "Sie beschreiben Ihr Wunschfahrzeug, wir übernehmen die Suche und melden uns mit geprüften Angeboten."
+      : "Sie übermitteln Ihre Fahrzeugdaten, wir prüfen den Markt und übernehmen den Verkauf.";
 
   return (
     <>
@@ -374,100 +437,105 @@ export function Contact() {
         keywords="Suchauftrag Fahrzeug, Auto Verkaufsangebot, Kontakt Autohandel, Fahrzeug Ankauf, Auto kaufen lassen"
       />
 
-      <div className="flex-1 min-h-screen bg-white text-black py-12 sm:py-16 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-3xl mx-auto">
-
-          {/* Page Header */}
-          <motion.div {...fadeUp} className="border-b border-black/8 pb-8 mb-10 sm:mb-14">
-            <p className="text-xs tracking-[0.25em] text-gray-400 uppercase mb-3">Kontakt</p>
-            <h1 className="text-3xl sm:text-4xl md:text-5xl text-black" style={{ fontWeight: 300, lineHeight: 1.1 }}>
-              Wir sind für Sie <span style={{ fontWeight: 700 }}>persönlich da.</span>
-            </h1>
-            <p className="text-gray-500 text-sm leading-relaxed mt-4 max-w-xl">
-              Hinterlegen Sie einen Suchauftrag oder bieten Sie uns Ihr aktuelles Fahrzeug an – wir melden uns schnellstmöglich bei Ihnen.
+      <div className="min-h-screen flex-1 bg-crema px-4 py-12 text-nero sm:px-6 sm:py-16 lg:px-8">
+        <div className="mx-auto max-w-3xl">
+          <header className="mb-10 border-b border-linea pb-9 sm:mb-12">
+            <h1 className="titolo-pagina">Wir sind persönlich für Sie da.</h1>
+            <p className="mt-5 max-w-xl text-lg text-asfalto">
+              Hinterlegen Sie einen Suchauftrag oder bieten Sie uns Ihr Fahrzeug
+              an. Beides dauert keine drei Minuten.
             </p>
-          </motion.div>
+          </header>
 
-          {/* Quick Contact Cards */}
-          <motion.div
-            {...fadeUp}
-            transition={{ duration: 0.35, ease: "easeOut", delay: 0.05 }}
-            className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8"
-          >
+          <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
             <a
               href="tel:+4917641651086"
-              className="bg-[#f7f7f7] border border-black/6 rounded-3xl p-5 sm:p-6 hover:shadow-md transition-all group flex items-center gap-4 active:scale-[0.98]"
+              className="finestra-sm group flex items-center gap-4 border border-linea bg-crema-chiara p-5 transition-all hover:border-nero/25 active:scale-[0.99] sm:p-6"
             >
-              <div className="w-12 h-12 rounded-2xl bg-black flex items-center justify-center shrink-0 group-hover:bg-gray-800 transition-colors">
-                <Phone className="w-5 h-5 text-white" />
-              </div>
-              <div>
-                <p className="text-xs text-gray-400 mb-0.5">Direkt anrufen</p>
-                <p className="text-black text-sm" style={{ fontWeight: 600 }}>0176 41651086</p>
-              </div>
+              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-rosso-wash text-rosso transition-colors group-hover:bg-rosso group-hover:text-crema-chiara">
+                <Phone className="h-5 w-5" aria-hidden="true" />
+              </span>
+              <span>
+                <span className="block text-xs text-asfalto">Direkt anrufen</span>
+                <span className="numeri block text-sm text-nero" style={{ fontWeight: 700 }}>
+                  0176 41651086
+                </span>
+              </span>
             </a>
 
             <a
               href="mailto:gcn-farzeughandel@outlook.de"
-              className="bg-[#f7f7f7] border border-black/6 rounded-3xl p-5 sm:p-6 hover:shadow-md transition-all group flex items-center gap-4 active:scale-[0.98]"
+              className="finestra-sm group flex items-center gap-4 border border-linea bg-crema-chiara p-5 transition-all hover:border-nero/25 active:scale-[0.99] sm:p-6"
             >
-              <div className="w-12 h-12 rounded-2xl bg-black flex items-center justify-center shrink-0 group-hover:bg-gray-800 transition-colors">
-                <Mail className="w-5 h-5 text-white" />
-              </div>
-              <div className="min-w-0">
-                <p className="text-xs text-gray-400 mb-0.5">E-Mail schreiben</p>
-                <p className="text-black text-sm truncate" style={{ fontWeight: 600 }}>gcn-farzeughandel@outlook.de</p>
-              </div>
+              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-rosso-wash text-rosso transition-colors group-hover:bg-rosso group-hover:text-crema-chiara">
+                <Mail className="h-5 w-5" aria-hidden="true" />
+              </span>
+              <span className="min-w-0">
+                <span className="block text-xs text-asfalto">E-Mail schreiben</span>
+                <span className="block truncate text-sm text-nero" style={{ fontWeight: 700 }}>
+                  gcn-farzeughandel@outlook.de
+                </span>
+              </span>
             </a>
-          </motion.div>
+          </div>
 
-          {/* Divider */}
-          <motion.div
-            {...fadeUp}
-            transition={{ duration: 0.35, ease: "easeOut", delay: 0.1 }}
-            className="flex items-center gap-4 mb-8"
-          >
-            <div className="flex-1 h-px bg-black/8" />
-            <span className="text-gray-400 text-xs">oder Formular ausfüllen</span>
-            <div className="flex-1 h-px bg-black/8" />
-          </motion.div>
+          <div className="finestra relative mb-8 h-40 overflow-hidden border border-linea sm:h-56">
+            <AnimatePresence mode="sync">
+              <motion.img
+                key={requestType}
+                src={requestType === "search" ? suchauftragImg : uebergabeImg}
+                alt={
+                  requestType === "search"
+                    ? "Illustration: eine Lupe, unter der ein rotes Auto sichtbar wird"
+                    : "Illustration: ein Autoschlüssel wird von einer Hand in eine andere gelegt"
+                }
+                initial={{ opacity: 0, scale: 1.04 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+                className="absolute inset-0 h-full w-full object-cover"
+              />
+            </AnimatePresence>
+          </div>
 
-          {/* Type Toggle */}
-          <motion.div
-            {...fadeUp}
-            transition={{ duration: 0.35, ease: "easeOut", delay: 0.12 }}
-            className="bg-[#f7f7f7] border border-black/8 p-1.5 rounded-2xl flex mb-3 relative"
+          <div
+            role="tablist"
+            aria-label="Art der Anfrage"
+            className="relative mb-3 flex rounded-full border border-linea bg-crema-chiara p-1.5"
           >
-            {/* Sliding pill */}
             <motion.div
               layout
-              layoutId="toggle-pill"
               transition={{ type: "spring", stiffness: 380, damping: 34 }}
-              className={`absolute top-1.5 bottom-1.5 w-[calc(50%-0.375rem)] bg-white rounded-xl shadow-sm border border-black/8 pointer-events-none ${
-                requestType === "search" ? "left-1.5" : "left-[calc(50%+0.375rem)]"
+              aria-hidden="true"
+              className={`pointer-events-none absolute bottom-1.5 top-1.5 w-[calc(50%-0.375rem)] rounded-full bg-rosso ${
+                requestType === "search" ? "left-1.5" : "left-1/2"
               }`}
             />
             <button
               type="button"
+              role="tab"
+              aria-selected={requestType === "search"}
               onClick={() => setRequestType("search")}
-              className={`relative flex-1 py-3 px-4 rounded-xl text-sm transition-colors duration-200 flex justify-center items-center gap-2 z-10 ${
-                requestType === "search" ? "text-black" : "text-gray-400 hover:text-gray-600"
+              className={`relative z-10 flex flex-1 items-center justify-center gap-2 rounded-full px-4 py-3 text-sm transition-colors duration-200 ${
+                requestType === "search" ? "text-crema-chiara" : "text-asfalto hover:text-nero"
               }`}
             >
-              <Search className="w-4 h-4" />
+              <Search className="h-4 w-4" aria-hidden="true" />
               Suchauftrag
             </button>
             <button
               type="button"
+              role="tab"
+              aria-selected={requestType === "sell"}
               onClick={() => setRequestType("sell")}
-              className={`relative flex-1 py-3 px-4 rounded-xl text-sm transition-colors duration-200 flex justify-center items-center gap-2 z-10 ${
-                requestType === "sell" ? "text-black" : "text-gray-400 hover:text-gray-600"
+              className={`relative z-10 flex flex-1 items-center justify-center gap-2 rounded-full px-4 py-3 text-sm transition-colors duration-200 ${
+                requestType === "sell" ? "text-crema-chiara" : "text-asfalto hover:text-nero"
               }`}
             >
-              <Car className="w-4 h-4" />
+              <Car className="h-4 w-4" aria-hidden="true" />
               Verkaufen
             </button>
-          </motion.div>
+          </div>
 
           <AnimatePresence mode="wait">
             <motion.p
@@ -476,13 +544,12 @@ export function Contact() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -4 }}
               transition={{ duration: 0.2, ease: "easeOut" }}
-              className="text-sm text-gray-500 leading-relaxed mb-8 px-1"
+              className="mb-8 px-1 text-sm text-asfalto"
             >
               {requestTypeDescription}
             </motion.p>
           </AnimatePresence>
 
-          {/* Form or Success */}
           <AnimatePresence mode="wait">
             {submitted ? (
               <SuccessScreen
@@ -496,233 +563,226 @@ export function Contact() {
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -12 }}
-                transition={{ duration: 0.3, ease: "easeOut", delay: 0.15 }}
-                className="bg-[#f7f7f7] rounded-3xl p-6 sm:p-10 border border-black/6 shadow-sm"
+                transition={{ duration: 0.3, ease: "easeOut", delay: 0.1 }}
+                className="finestra border border-linea bg-crema-chiara p-6 sm:p-10"
               >
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-8" noValidate>
-
-                  {/* ── Persönliche Daten ─────────────────────────────────── */}
-                  <div>
-                    <h3 className="text-base text-black mb-5" style={{ fontWeight: 600 }}>
+                  <fieldset>
+                    <legend className="mb-5 text-[17px]" style={{ fontWeight: 700 }}>
                       Persönliche Daten
-                    </h3>
-                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-
-                      {/* Vorname */}
-                      <div>
-                        <input
-                          {...register("firstName", rules.firstName)}
-                          type="text"
-                          placeholder="Vorname *"
-                          autoComplete="given-name"
-                          className={field("firstName")}
-                        />
-                        <FieldError message={errors.firstName?.message} />
-                      </div>
-
-                      {/* Nachname */}
-                      <div>
-                        <input
-                          {...register("lastName", rules.lastName)}
-                          type="text"
-                          placeholder="Nachname *"
-                          autoComplete="family-name"
-                          className={field("lastName")}
-                        />
-                        <FieldError message={errors.lastName?.message} />
-                      </div>
-
-                      {/* E-Mail */}
-                      <div className="sm:col-span-2">
-                        <input
-                          {...register("email", rules.email)}
-                          type="email"
-                          placeholder="E-Mail Adresse *"
-                          autoComplete="email"
-                          className={field("email")}
-                        />
-                        <FieldError message={errors.email?.message} />
-                      </div>
-
-                      {/* Telefon */}
-                      <div className="sm:col-span-2">
-                        <input
-                          {...register("phone", rules.phone)}
-                          type="tel"
-                          placeholder="Telefonnummer (optional, z.B. +49 176 12345678)"
-                          autoComplete="tel"
-                          className={field("phone")}
-                        />
-                        <FieldError message={errors.phone?.message} />
-                      </div>
-
+                    </legend>
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                      <Field
+                        id="firstName"
+                        label="Vorname"
+                        required
+                        registration={register("firstName", rules.firstName)}
+                        inputProps={{ type: "text", autoComplete: "given-name" }}
+                        {...state("firstName")}
+                      />
+                      <Field
+                        id="lastName"
+                        label="Nachname"
+                        required
+                        registration={register("lastName", rules.lastName)}
+                        inputProps={{ type: "text", autoComplete: "family-name" }}
+                        {...state("lastName")}
+                      />
+                      <Field
+                        id="email"
+                        label="E-Mail-Adresse"
+                        required
+                        className="sm:col-span-2"
+                        registration={register("email", rules.email)}
+                        inputProps={{ type: "email", autoComplete: "email" }}
+                        {...state("email")}
+                      />
+                      <Field
+                        id="phone"
+                        label="Telefonnummer"
+                        hint="optional"
+                        className="sm:col-span-2"
+                        registration={register("phone", rules.phone)}
+                        inputProps={{
+                          type: "tel",
+                          autoComplete: "tel",
+                          placeholder: "+49 176 12345678",
+                        }}
+                        {...state("phone")}
+                      />
                     </div>
-                  </div>
+                  </fieldset>
 
-                  {/* ── Fahrzeugdaten ─────────────────────────────────────── */}
-                  <div className="pt-4 border-t border-black/8">
-                    <h3 className="text-base text-black mb-5" style={{ fontWeight: 600 }}>
+                  <fieldset className="border-t border-linea pt-6">
+                    <legend className="mb-5 text-[17px]" style={{ fontWeight: 700 }}>
                       {requestType === "search" ? "Fahrzeugwünsche" : "Fahrzeugdaten"}
-                    </h3>
-                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                    </legend>
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                      <Field
+                        id="brand"
+                        label="Marke"
+                        required
+                        registration={register("brand", rules.brand)}
+                        inputProps={{ type: "text", placeholder: "z. B. Volkswagen" }}
+                        {...state("brand")}
+                      />
+                      <Field
+                        id="model"
+                        label="Modell"
+                        required
+                        registration={register("model", rules.model)}
+                        inputProps={{ type: "text", placeholder: "z. B. Golf" }}
+                        {...state("model")}
+                      />
 
-                      {/* Marke */}
-                      <div>
-                        <input
-                          {...register("brand", rules.brand)}
-                          type="text"
-                          placeholder="Marke * (z.B. Porsche)"
-                          className={field("brand")}
-                        />
-                        <FieldError message={errors.brand?.message} />
-                      </div>
-
-                      {/* Modell */}
-                      <div>
-                        <input
-                          {...register("model", rules.model)}
-                          type="text"
-                          placeholder="Modell * (z.B. 911)"
-                          className={field("model")}
-                        />
-                        <FieldError message={errors.model?.message} />
-                      </div>
-
-                      {/* ── SUCHAUFTRAG fields ── */}
                       {requestType === "search" && (
                         <>
-                          <div>
-                            <input
-                              {...register("budget", rules.budget)}
-                              type="text"
-                              inputMode="numeric"
-                              placeholder="Max. Budget in € (z.B. 25000)"
-                              className={field("budget")}
-                            />
-                            <FieldError message={errors.budget?.message} />
-                          </div>
-
-                          <div>
-                            <input
-                              {...register("year", rules.year(false))}
-                              type="text"
-                              inputMode="numeric"
-                              maxLength={4}
-                              placeholder={`Baujahr ab (z.B. 2018)`}
-                              className={field("year")}
-                            />
-                            <FieldError message={errors.year?.message} />
-                          </div>
-
-                          <div>
-                            <input
-                              {...register("maxMileage", rules.numericOptional)}
-                              type="text"
-                              inputMode="numeric"
-                              placeholder="Max. Kilometerstand (z.B. 80000)"
-                              className={field("maxMileage")}
-                            />
-                            <FieldError message={errors.maxMileage?.message} />
-                          </div>
-
-                          <div>
-                            <input
-                              {...register("color")}
-                              type="text"
-                              placeholder="Favorisierte Farben (z.B. Schwarz, Weiß)"
-                              className={field("color")}
-                            />
-                          </div>
+                          <Field
+                            id="budget"
+                            label="Budget in €"
+                            hint="optional"
+                            registration={register("budget", rules.budget)}
+                            inputProps={{
+                              type: "text",
+                              inputMode: "numeric",
+                              placeholder: "25000",
+                            }}
+                            {...state("budget")}
+                          />
+                          <Field
+                            id="year"
+                            label="Baujahr ab"
+                            hint="optional"
+                            registration={register("year", rules.year(false))}
+                            inputProps={{
+                              type: "text",
+                              inputMode: "numeric",
+                              maxLength: 4,
+                              placeholder: "2018",
+                            }}
+                            {...state("year")}
+                          />
+                          <Field
+                            id="maxMileage"
+                            label="Maximaler Kilometerstand"
+                            hint="optional"
+                            registration={register("maxMileage", rules.numericOptional)}
+                            inputProps={{
+                              type: "text",
+                              inputMode: "numeric",
+                              placeholder: "80000",
+                            }}
+                            {...state("maxMileage")}
+                          />
+                          <Field
+                            id="color"
+                            label="Farbwünsche"
+                            hint="optional"
+                            registration={register("color")}
+                            inputProps={{ type: "text", placeholder: "Schwarz, Weiß" }}
+                            {...state("color")}
+                          />
                         </>
                       )}
 
-                      {/* ── VERKAUF fields ── */}
                       {requestType === "sell" && (
                         <>
-                          <div>
-                            <input
-                              {...register("year", rules.year(true))}
-                              type="text"
-                              inputMode="numeric"
-                              maxLength={4}
-                              placeholder={`Baujahr * (z.B. 2019)`}
-                              className={field("year")}
-                            />
-                            <FieldError message={errors.year?.message} />
-                          </div>
-
-                          <div>
-                            <input
-                              {...register("power", rules.numericRequired)}
-                              type="text"
-                              inputMode="numeric"
-                              placeholder="Leistung in PS * (z.B. 150)"
-                              className={field("power")}
-                            />
-                            <FieldError message={errors.power?.message} />
-                          </div>
-
-                          <div>
-                            <input
-                              {...register("mileage", rules.numericRequired)}
-                              type="text"
-                              inputMode="numeric"
-                              placeholder="Kilometerstand * (z.B. 92000)"
-                              className={field("mileage")}
-                            />
-                            <FieldError message={errors.mileage?.message} />
-                          </div>
-
-                          <div>
-                            <input
-                              {...register("price", rules.budget)}
-                              type="text"
-                              inputMode="numeric"
-                              placeholder="Preisvorstellung in € (z.B. 15000)"
-                              className={field("price")}
-                            />
-                            <FieldError message={errors.price?.message} />
-                          </div>
+                          <Field
+                            id="year"
+                            label="Baujahr"
+                            required
+                            registration={register("year", rules.year(true))}
+                            inputProps={{
+                              type: "text",
+                              inputMode: "numeric",
+                              maxLength: 4,
+                              placeholder: "2019",
+                            }}
+                            {...state("year")}
+                          />
+                          <Field
+                            id="power"
+                            label="Leistung in PS"
+                            required
+                            registration={register("power", rules.numericRequired)}
+                            inputProps={{
+                              type: "text",
+                              inputMode: "numeric",
+                              placeholder: "150",
+                            }}
+                            {...state("power")}
+                          />
+                          <Field
+                            id="mileage"
+                            label="Kilometerstand"
+                            required
+                            registration={register("mileage", rules.numericRequired)}
+                            inputProps={{
+                              type: "text",
+                              inputMode: "numeric",
+                              placeholder: "92000",
+                            }}
+                            {...state("mileage")}
+                          />
+                          <Field
+                            id="price"
+                            label="Preisvorstellung in €"
+                            hint="optional"
+                            registration={register("price", rules.budget)}
+                            inputProps={{
+                              type: "text",
+                              inputMode: "numeric",
+                              placeholder: "15000",
+                            }}
+                            {...state("price")}
+                          />
                         </>
                       )}
 
-                      {/* Nachricht */}
-                      <div className="sm:col-span-2">
-                        <textarea
-                          {...register("message")}
-                          rows={4}
-                          className={`${field("message")} resize-none`}
-                          placeholder={
+                      <Field
+                        id="message"
+                        label="Nachricht"
+                        hint="optional"
+                        className="sm:col-span-2"
+                        textarea
+                        registration={register("message")}
+                        inputProps={{
+                          placeholder:
                             requestType === "search"
-                              ? "Weitere Wünsche oder Kommentar (optional)"
-                              : "Weitere Details zum Fahrzeug – Zustand, bekannte Mängel, Besonderheiten... (optional)"
-                          }
-                        />
-                      </div>
-
+                              ? "Weitere Wünsche, Ausstattung, Zeitrahmen"
+                              : "Zustand, bekannte Mängel, Besonderheiten",
+                        }}
+                        {...state("message")}
+                      />
                     </div>
+                  </fieldset>
+
+                  <div>
+                    <button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-rosso px-8 py-4 text-sm text-crema-chiara transition-all hover:bg-rosso-scuro active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <span
+                            className="h-4 w-4 animate-spin rounded-full border-2 border-crema-chiara/30 border-t-crema-chiara"
+                            aria-hidden="true"
+                          />
+                          Wird gesendet
+                        </>
+                      ) : (
+                        <>
+                          {requestType === "search" ? "Suchauftrag senden" : "Angebot senden"}
+                          <Send className="h-4 w-4" aria-hidden="true" />
+                        </>
+                      )}
+                    </button>
+                    <p className="mt-3 text-center text-xs text-asfalto">
+                      Mit <span className="text-rosso">*</span> markierte Felder sind
+                      Pflichtfelder.
+                    </p>
                   </div>
-
-                  {/* Submit */}
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="w-full inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl text-sm text-white bg-black hover:bg-gray-900 disabled:opacity-60 disabled:cursor-not-allowed transition-all active:scale-[0.98]"
-                  >
-                    {isSubmitting ? (
-                      <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                    ) : (
-                      <>
-                        {requestType === "search" ? "Suchauftrag senden" : "Angebot senden"}
-                        <Send className="w-4 h-4" />
-                      </>
-                    )}
-                  </button>
-
-                  <p className="text-center text-gray-400 text-xs">
-                    Mit * markierte Felder sind Pflichtfelder
-                  </p>
-
                 </form>
               </motion.div>
             )}

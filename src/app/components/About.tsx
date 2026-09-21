@@ -1,8 +1,6 @@
-import { Users, ShieldCheck, Handshake, BadgeCheck } from "lucide-react";
-import { motion } from "motion/react";
+import { Users, ShieldCheck, Handshake, BadgeCheck, ArrowRight, Phone } from "lucide-react";
+import { Link } from "react-router";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
-import carPassion1 from "../../assets/4ac31d9b72adda06dd32f483a379f070be76398f.png";
-import carPassion2 from "../../assets/a786cbfb8d2e28889a626c9df9c05677c5df86ee.png";
 import giosueImg from "../../assets/Giosue.jpeg";
 import christophImg from "../../assets/Christoph.jpeg";
 import { SEO } from "./SEO";
@@ -11,22 +9,26 @@ const VALUES = [
   {
     icon: ShieldCheck,
     title: "Transparenz",
-    description: "Keine versteckten Mängel oder Kosten. Wir legen alle Fakten offen auf den Tisch.",
+    description:
+      "Keine versteckten Mängel, keine versteckten Kosten. Alle Fakten liegen offen auf dem Tisch.",
   },
   {
     icon: Users,
     title: "Persönlich",
-    description: "Jeder Kunde ist einzigartig. Wir beraten Sie individuell und auf Augenhöhe.",
+    description:
+      "Jeder Auftrag ist anders. Wir beraten individuell und auf Augenhöhe – ohne Verkaufsdruck.",
   },
   {
     icon: Handshake,
     title: "Fairness",
-    description: "Egal ob Kauf oder Verkauf – wir garantieren marktgerechte und faire Preise.",
+    description:
+      "Ob Kauf oder Verkauf: Wir arbeiten mit marktgerechten Preisen und sagen auch mal ab.",
   },
   {
     icon: BadgeCheck,
-    title: "Garantie (min. 12 Monate)",
-    description: "Jedes vermittelte Fahrzeug wird mit mindestens 12 Monaten Garantie abgesichert – für maximale Sicherheit.",
+    title: "Mindestens 12 Monate Garantie",
+    description:
+      "Jedes vermittelte Fahrzeug wird abgesichert. Auch nach der Übergabe bleiben wir Ansprechpartner.",
   },
 ];
 
@@ -56,144 +58,96 @@ export function About() {
         keywords="Über GCN, Team Fahrzeughandel, Giosue Canobbio, Christopher Neun, Autohändler Team, Gebrauchtwagen Experten"
       />
 
-      <div className="flex-1 min-h-screen bg-white text-black">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
-
-          {/* Page Header */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-50px" }}
-            transition={{ duration: 0.38, ease: "easeOut" }}
-            className="border-b border-black/8 pb-8 mb-12 sm:mb-16"
-          >
-            <p className="text-xs tracking-[0.25em] text-gray-400 uppercase mb-3">Über uns</p>
-            <h1
-              className="text-3xl sm:text-4xl md:text-5xl text-black max-w-2xl"
-              style={{ fontWeight: 300, lineHeight: 1.1 }}
-            >
-              Zwei Experten.{" "}
-              <span style={{ fontWeight: 700 }}>Eine Leidenschaft.</span>
-            </h1>
-            <p className="text-gray-500 text-sm leading-relaxed mt-4 max-w-xl">
-              Wir sind zwei leidenschaftliche Automobil-Experten mit einem klaren Ziel: Den Fahrzeugkauf und -verkauf für Sie transparent, sicher und unkompliziert zu machen.
+      <div className="min-h-screen flex-1 bg-crema text-nero">
+        <div className="mx-auto max-w-[1180px] px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+          <header className="mb-12 border-b border-linea pb-9 sm:mb-16">
+            <h1 className="titolo-pagina max-w-2xl">Zwei Experten, eine Leidenschaft.</h1>
+            <p className="mt-5 max-w-xl text-lg text-asfalto">
+              Wir machen Fahrzeugkauf und -verkauf transparent, sicher und
+              unkompliziert – aus St. Georgen im Schwarzwald, für Kunden in der
+              Region und bundesweit.
             </p>
-          </motion.div>
+          </header>
 
-          {/* Founders */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mb-12 sm:mb-16">
-            {FOUNDERS.map((founder, i) => (
-              <motion.div
+          <div className="mb-12 grid grid-cols-1 gap-5 sm:mb-16 sm:gap-6 md:grid-cols-2">
+            {FOUNDERS.map((founder) => (
+              <article
                 key={founder.name}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-50px" }}
-                transition={{ duration: 0.38, ease: "easeOut", delay: i * 0.09 }}
-                className="bg-[#f7f7f7] rounded-3xl p-7 sm:p-8 border border-black/6 flex flex-col items-center text-center hover:shadow-md transition-shadow"
+                className="finestra flex flex-col border border-linea bg-crema-chiara p-7 sm:p-8"
               >
-                <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden mb-5 bg-gray-200">
+                <div className="finestra-sm mb-5 h-24 w-24 overflow-hidden bg-crema-scura sm:h-28 sm:w-28">
                   <ImageWithFallback
                     src={founder.avatar}
                     alt={founder.name}
-                    className="w-full h-full object-cover"
+                    className="h-full w-full object-cover"
                   />
                 </div>
-                <h3 className="text-lg text-black mb-1" style={{ fontWeight: 600 }}>
-                  {founder.name} ({founder.age})
-                </h3>
-                <p className="text-xs tracking-wide text-gray-400 uppercase mb-4">{founder.role}</p>
-                <p className="text-gray-500 text-sm leading-relaxed">{founder.bio}</p>
-              </motion.div>
+                <h2 className="text-xl" style={{ fontWeight: 700 }}>
+                  {founder.name}{" "}
+                  <span className="numeri text-asfalto">({founder.age})</span>
+                </h2>
+                <p className="mt-1 text-sm text-rosso">{founder.role}</p>
+                <p className="mt-4 text-asfalto">{founder.bio}</p>
+              </article>
             ))}
           </div>
 
-          {/* Values */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-50px" }}
-            transition={{ duration: 0.38, ease: "easeOut" }}
-            className="bg-[#f7f7f7] rounded-3xl p-8 sm:p-12 border border-black/6 mb-12 sm:mb-16"
-          >
-            <div className="border-b border-black/8 pb-6 mb-8">
-              <p className="text-xs tracking-[0.25em] text-gray-400 uppercase mb-3">Unsere Werte</p>
-              <h2
-                className="text-2xl sm:text-3xl text-black"
-                style={{ fontWeight: 300, lineHeight: 1.2 }}
-              >
-                Unsere <span style={{ fontWeight: 700 }}>Philosophie.</span>
-              </h2>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
-              {VALUES.map((val, i) => {
+          <section className="mb-12 sm:mb-16" aria-labelledby="philosophie">
+            <h2 id="philosophie" className="border-b border-linea pb-7">
+              Woran wir uns messen lassen.
+            </h2>
+            <dl className="grid grid-cols-1 gap-x-12 sm:grid-cols-2">
+              {VALUES.map((val) => {
                 const Icon = val.icon;
                 return (
-                  <motion.div
-                    key={val.title}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: "-50px" }}
-                    transition={{ duration: 0.38, ease: "easeOut", delay: i * 0.08 }}
-                    className="flex flex-col items-center text-center gap-4"
-                  >
-                    <div className="w-12 h-12 bg-black rounded-2xl flex items-center justify-center">
-                      <Icon className="w-5 h-5 text-white" />
+                  <div key={val.title} className="flex gap-5 border-b border-linea-chiara py-7">
+                    <span
+                      aria-hidden="true"
+                      className="mt-1 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-rosso-wash text-rosso"
+                    >
+                      <Icon className="h-[18px] w-[18px]" />
+                    </span>
+                    <div>
+                      <dt className="text-[17px] leading-snug" style={{ fontWeight: 700 }}>
+                        {val.title}
+                      </dt>
+                      <dd className="mt-2 text-asfalto">{val.description}</dd>
                     </div>
-                    <h4 className="text-base text-black" style={{ fontWeight: 600 }}>
-                      {val.title}
-                    </h4>
-                    <p className="text-gray-500 text-sm leading-relaxed">{val.description}</p>
-                  </motion.div>
+                  </div>
                 );
               })}
-            </div>
-          </motion.div>
+            </dl>
+          </section>
 
-          {/* Passion Images */}
-          <div>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.38, ease: "easeOut" }}
-              className="border-b border-black/8 pb-6 mb-8"
-            >
-              <p className="text-xs tracking-[0.25em] text-gray-400 uppercase mb-3">Leidenschaft</p>
-              <h2
-                className="text-2xl sm:text-3xl text-black"
-                style={{ fontWeight: 300, lineHeight: 1.2 }}
-              >
-                Faszination <span style={{ fontWeight: 700 }}>Automobil.</span>
-              </h2>
-            </motion.div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-              {[
-                { src: carPassion1, alt: "Schwarzer Ford Focus RS", caption: "Liebe zum Detail" },
-                { src: carPassion2, alt: "Gelber Audi Front", caption: "Faszination Automobil" },
-              ].map((img, i) => (
-                <motion.div
-                  key={img.alt}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-50px" }}
-                  transition={{ duration: 0.38, ease: "easeOut", delay: i * 0.08 }}
-                  className="rounded-3xl overflow-hidden relative aspect-[4/3] group bg-gray-100 border border-black/6"
+          <section className="finestra relative overflow-hidden bg-nero p-8 text-crema-chiara sm:p-12">
+            <div className="flex flex-col items-start justify-between gap-7 md:flex-row md:items-center">
+              <div>
+                <h2 className="max-w-md text-crema-chiara">
+                  Lernen Sie uns kennen.
+                </h2>
+                <p className="mt-4 max-w-md text-crema/80">
+                  Ein kurzes Gespräch genügt, um zu klären, ob wir der richtige
+                  Partner für Ihr Vorhaben sind.
+                </p>
+              </div>
+              <div className="flex w-full shrink-0 flex-col gap-3 sm:flex-row md:w-auto">
+                <a
+                  href="tel:+4917641651086"
+                  className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full bg-rosso px-7 py-4 text-sm text-crema-chiara transition-colors hover:bg-rosso-scuro"
                 >
-                  <img
-                    src={img.src}
-                    alt={img.alt}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6 rounded-3xl">
-                    <p className="text-white text-sm" style={{ fontWeight: 500 }}>
-                      {img.caption}
-                    </p>
-                  </div>
-                </motion.div>
-              ))}
+                  <Phone className="h-4 w-4 shrink-0" aria-hidden="true" />
+                  <span className="numeri">0176 41651086</span>
+                </a>
+                <Link
+                  to="/kontakt"
+                  className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full border border-crema/25 px-7 py-4 text-sm text-crema-chiara transition-colors hover:border-crema/60 hover:bg-crema/10"
+                >
+                  Nachricht schreiben
+                  <ArrowRight className="h-4 w-4 shrink-0" aria-hidden="true" />
+                </Link>
+              </div>
             </div>
-          </div>
-
+          </section>
         </div>
       </div>
     </>

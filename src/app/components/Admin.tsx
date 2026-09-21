@@ -26,7 +26,7 @@ import {
   ChevronUp,
   BarChart3,
 } from "lucide-react";
-import logoImg from "../../assets/87104b765c1a1399e8e4b2a45f3225515652a099.png";
+import logoImg from "../../assets/gcn-logo.svg";
 import { motion, AnimatePresence } from "motion/react";
 import {
   ResponsiveContainer,
@@ -53,8 +53,8 @@ function DataRow({ label, value }: { label: string; value?: string | null }) {
   if (!value) return null;
   return (
     <div>
-      <span className="block text-xs tracking-[0.15em] text-gray-400 uppercase mb-1">{label}</span>
-      <p className="text-black text-sm">{value}</p>
+      <span className="block text-xs tracking-[0.15em] text-asfalto uppercase mb-1">{label}</span>
+      <p className="text-nero text-sm">{value}</p>
     </div>
   );
 }
@@ -200,11 +200,11 @@ function FinanceTooltip({ active, payload, label }: any) {
   const costs = asNumber(payload.find((item: any) => item.dataKey === "kosten")?.value);
 
   return (
-    <div className="rounded-xl border border-black/10 bg-white px-3 py-2 shadow-sm">
-      <p className="text-xs text-gray-500 mb-1">{formatDateKey(String(label || ""))}</p>
-      <p className="text-xs text-gray-700">Umsatz: <span className="text-black" style={{ fontWeight: 600 }}>{formatEuro(revenue)}</span></p>
-      <p className="text-xs text-gray-700">Gewinn: <span className="text-black" style={{ fontWeight: 600 }}>{formatEuro(profit)}</span></p>
-      <p className="text-xs text-gray-700">Kosten: <span className="text-black" style={{ fontWeight: 600 }}>{formatEuro(costs)}</span></p>
+    <div className="rounded-xl border border-linea bg-crema-chiara px-3 py-2 shadow-sm">
+      <p className="text-xs text-asfalto mb-1">{formatDateKey(String(label || ""))}</p>
+      <p className="text-xs text-gray-700">Umsatz: <span className="text-nero" style={{ fontWeight: 600 }}>{formatEuro(revenue)}</span></p>
+      <p className="text-xs text-gray-700">Gewinn: <span className="text-nero" style={{ fontWeight: 600 }}>{formatEuro(profit)}</span></p>
+      <p className="text-xs text-gray-700">Kosten: <span className="text-nero" style={{ fontWeight: 600 }}>{formatEuro(costs)}</span></p>
     </div>
   );
 }
@@ -212,7 +212,7 @@ function FinanceTooltip({ active, payload, label }: any) {
 function FinanceTrendChart({ data }: { data: FinanceChartPoint[] }) {
   if (data.length === 0) {
     return (
-      <div className="h-full w-full flex items-center justify-center text-sm text-gray-400">
+      <div className="h-full w-full flex items-center justify-center text-sm text-asfalto">
         Keine Finanzwerte vorhanden.
       </div>
     );
@@ -301,10 +301,10 @@ function LoginScreen({
   };
 
   const inputCls =
-    "block w-full rounded-2xl border border-black/10 py-3.5 px-5 bg-[#f7f7f7] text-black placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black/10 focus:border-black/20 text-sm transition-all";
+    "block w-full rounded-2xl border border-linea py-3.5 px-5 bg-crema-chiara text-nero placeholder:text-asfalto focus:outline-none focus:ring-2 focus:ring-black/10 focus:border-linea text-sm transition-all";
 
   return (
-    <div className="flex-1 min-h-screen bg-white flex items-center justify-center px-4">
+    <div className="flex-1 min-h-screen bg-crema-chiara flex items-center justify-center px-4">
       <motion.div {...fadeUp} className="w-full max-w-md">
         {/* Logo */}
         <div className="flex justify-center mb-10">
@@ -312,27 +312,27 @@ function LoginScreen({
         </div>
 
         {/* Card */}
-        <div className="bg-[#f7f7f7] border border-black/8 rounded-3xl p-8 sm:p-10">
+        <div className="bg-crema-chiara border border-linea finestra p-8 sm:p-10">
           <div className="mb-8">
-            <p className="text-xs tracking-[0.25em] text-gray-400 uppercase mb-2">Interner Bereich</p>
-            <h1 className="text-2xl text-black" style={{ fontWeight: 300 }}>
+            <p className="text-xs tracking-[0.25em] text-asfalto uppercase mb-2">Interner Bereich</p>
+            <h1 className="text-2xl text-nero" style={{ fontWeight: 300 }}>
               Willkommen zurück.
             </h1>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             {isLocked ? (
-              <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+              <div className="rounded-2xl border border-red-200 bg-rosso-wash px-4 py-3 text-sm text-red-700">
                 Zu viele Fehlversuche. Neuer Login in {formatLockTime(remainingMs)}.
               </div>
             ) : null}
 
             <div>
-              <label className="block text-xs tracking-wide text-gray-500 uppercase mb-2">
+              <label className="block text-xs tracking-wide text-asfalto uppercase mb-2">
                 E-Mail
               </label>
               <div className="relative">
-                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-asfalto pointer-events-none" />
                 <input
                   type="email"
                   required
@@ -345,11 +345,11 @@ function LoginScreen({
             </div>
 
             <div>
-              <label className="block text-xs tracking-wide text-gray-500 uppercase mb-2">
+              <label className="block text-xs tracking-wide text-asfalto uppercase mb-2">
                 Passwort
               </label>
               <div className="relative">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-asfalto pointer-events-none" />
                 <input
                   type="password"
                   required
@@ -365,7 +365,7 @@ function LoginScreen({
             <button
               type="submit"
               disabled={isLoggingIn || isLocked}
-              className="w-full mt-2 inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl text-sm text-white bg-black hover:bg-gray-900 disabled:opacity-50 disabled:cursor-not-allowed transition-all active:scale-[0.98]"
+              className="w-full mt-2 inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl text-sm text-crema-chiara bg-rosso hover:bg-rosso-scuro disabled:opacity-50 disabled:cursor-not-allowed transition-all active:scale-[0.98]"
             >
               {isLoggingIn ? (
                 <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -377,7 +377,7 @@ function LoginScreen({
             </button>
           </form>
 
-          <p className="text-center text-gray-400 text-xs mt-6">
+          <p className="text-center text-asfalto text-xs mt-6">
             Nur für autorisiertes Personal.
           </p>
         </div>
@@ -551,7 +551,7 @@ function SubmissionCard({
       ? "bg-green-50 text-green-700 border-green-200"
       : status === "in_progress"
         ? "bg-amber-50 text-amber-700 border-amber-200"
-        : "bg-gray-50 text-gray-700 border-gray-200";
+        : "bg-crema text-gray-700 border-gray-200";
 
   const visibleDocuments = selectedDocFolder === "Alle"
     ? (sub.documents || [])
@@ -566,30 +566,30 @@ function SubmissionCard({
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.28, ease: "easeOut" }}
-      className="relative bg-white border border-black/8 rounded-3xl p-6 sm:p-8 hover:shadow-md transition-shadow"
+      className="relative bg-crema-chiara border border-linea finestra p-6 sm:p-8 hover:shadow-md transition-shadow"
     >
       {showSectionConnector ? (
-        <div className="absolute top-10 -right-10 h-px w-10 bg-black/10" aria-hidden="true" />
+        <div className="absolute top-10 -right-10 h-px w-10 bg-rosso-wash" aria-hidden="true" />
       ) : null}
 
       {/* Header row */}
-      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6 pb-6 border-b border-black/6">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6 pb-6 border-b border-linea">
         <div className="flex items-center gap-4 min-w-0">
-          <div className="w-11 h-11 rounded-2xl bg-[#f7f7f7] border border-black/6 flex items-center justify-center shrink-0">
+          <div className="w-11 h-11 rounded-2xl bg-crema-chiara border border-linea flex items-center justify-center shrink-0">
             {isSearch ? (
-              <Search className="w-5 h-5 text-gray-600" />
+              <Search className="w-5 h-5 text-asfalto" />
             ) : (
-              <Car className="w-5 h-5 text-gray-600" />
+              <Car className="w-5 h-5 text-asfalto" />
             )}
           </div>
           <div className="min-w-0">
-            <span className="text-xs tracking-[0.2em] text-gray-400 uppercase">
+            <span className="text-xs tracking-[0.2em] text-asfalto uppercase">
               {submissionLabel}
             </span>
             <div className={`inline-flex mt-1 px-2.5 py-1 rounded-full border text-[11px] tracking-wide ${statusBadgeClass}`}>
               {status === "unbearbeitet" ? "Unbearbeitet" : status === "in_progress" ? "In Progress" : "Abgeschlossen"}
             </div>
-            <div className="flex items-center gap-1.5 text-gray-400 text-xs mt-0.5">
+            <div className="flex items-center gap-1.5 text-asfalto text-xs mt-0.5">
               <Calendar className="w-3 h-3" />
               {new Date(sub.createdAt).toLocaleString("de-DE", {
                 day: "2-digit",
@@ -607,14 +607,14 @@ function SubmissionCard({
           <button
             type="button"
             onClick={() => setIsCardExpanded((prev) => !prev)}
-            className="p-2 rounded-xl text-gray-500 hover:text-black hover:bg-black/5 transition-colors"
+            className="p-2 rounded-xl text-asfalto hover:text-nero hover:bg-rosso-wash transition-colors"
             title={isCardExpanded ? "Eintrag einklappen" : "Eintrag ausklappen"}
           >
             {isCardExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
           </button>
           <button
             onClick={() => onDelete(sub.id)}
-            className="p-2 rounded-xl text-gray-300 hover:text-red-500 hover:bg-red-50 transition-colors"
+            className="p-2 rounded-xl text-alluminio hover:text-rosso-scuro hover:bg-rosso-wash transition-colors"
             title="Anfrage löschen"
           >
             <Trash2 className="w-4 h-4" />
@@ -637,26 +637,26 @@ function SubmissionCard({
         {/* Person */}
         <div className="space-y-4">
           <div>
-            <span className="block text-xs tracking-[0.15em] text-gray-400 uppercase mb-2">Kontaktperson</span>
-            <p className="text-black" style={{ fontWeight: 600 }}>
+            <span className="block text-xs tracking-[0.15em] text-asfalto uppercase mb-2">Kontaktperson</span>
+            <p className="text-nero" style={{ fontWeight: 600 }}>
               {sub.firstName || sub["first-name"]} {sub.lastName || sub["last-name"]}
             </p>
           </div>
           <div className="space-y-2">
             <a
               href={`mailto:${sub.email}`}
-              className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-black transition-colors group"
+              className="inline-flex items-center gap-2 text-sm text-asfalto hover:text-nero transition-colors group"
             >
-              <Mail className="w-3.5 h-3.5 text-gray-400" />
+              <Mail className="w-3.5 h-3.5 text-asfalto" />
               {sub.email}
               <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
             </a>
             {sub.phone && (
               <a
                 href={`tel:${sub.phone}`}
-                className="flex items-center gap-2 text-sm text-gray-600 hover:text-black transition-colors group"
+                className="flex items-center gap-2 text-sm text-asfalto hover:text-nero transition-colors group"
               >
-                <Phone className="w-3.5 h-3.5 text-gray-400" />
+                <Phone className="w-3.5 h-3.5 text-asfalto" />
                 {sub.phone}
                 <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
               </a>
@@ -667,8 +667,8 @@ function SubmissionCard({
         {/* Vehicle */}
         <div className="space-y-4">
           <div>
-            <span className="block text-xs tracking-[0.15em] text-gray-400 uppercase mb-2">Fahrzeug</span>
-            <p className="text-black" style={{ fontWeight: 600 }}>
+            <span className="block text-xs tracking-[0.15em] text-asfalto uppercase mb-2">Fahrzeug</span>
+            <p className="text-nero" style={{ fontWeight: 600 }}>
               {sub.brand} {sub.model}
             </p>
           </div>
@@ -705,23 +705,23 @@ function SubmissionCard({
 
         {/* Message */}
         {sub.message && (
-          <div className="md:col-span-2 bg-[#f7f7f7] rounded-2xl p-5 border border-black/6">
-            <span className="flex items-center gap-1.5 text-xs tracking-[0.15em] text-gray-400 uppercase mb-2">
+          <div className="md:col-span-2 bg-crema-chiara rounded-2xl p-5 border border-linea">
+            <span className="flex items-center gap-1.5 text-xs tracking-[0.15em] text-asfalto uppercase mb-2">
               <MessageSquare className="w-3 h-3" />
               Kommentar / Details
             </span>
-            <p className="text-gray-600 text-sm leading-relaxed whitespace-pre-wrap">{sub.message}</p>
+            <p className="text-asfalto text-sm leading-relaxed whitespace-pre-wrap">{sub.message}</p>
           </div>
         )}
 
-        <div className="md:col-span-2 bg-white rounded-2xl p-5 border border-black/10">
+        <div className="md:col-span-2 bg-crema-chiara rounded-2xl p-5 border border-linea">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
-            <span className="text-xs tracking-[0.15em] text-gray-400 uppercase">Bearbeitung</span>
+            <span className="text-xs tracking-[0.15em] text-asfalto uppercase">Bearbeitung</span>
             <div className="flex items-center gap-2">
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value as "unbearbeitet" | "in_progress" | "abgeschlossen")}
-                className="rounded-xl border border-black/12 bg-[#f7f7f7] px-3 py-2 text-sm text-black focus:outline-none focus:ring-2 focus:ring-black/10"
+                className="rounded-xl border border-black/12 bg-crema-chiara px-3 py-2 text-sm text-nero focus:outline-none focus:ring-2 focus:ring-black/10"
               >
                 <option value="unbearbeitet">Unbearbeitet</option>
                 <option value="in_progress">In Progress</option>
@@ -731,7 +731,7 @@ function SubmissionCard({
                 type="button"
                 onClick={handleSaveMeta}
                 disabled={isSavingMeta}
-                className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-black/15 text-sm hover:bg-black hover:text-white transition-colors disabled:opacity-60"
+                className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-linea text-sm hover:bg-rosso hover:text-crema-chiara transition-colors disabled:opacity-60"
               >
                 <Save className="w-3.5 h-3.5" />
                 {isSavingMeta ? "Speichert..." : "Speichern"}
@@ -740,18 +740,18 @@ function SubmissionCard({
           </div>
 
           <div>
-            <span className="block text-xs tracking-[0.15em] text-gray-400 uppercase mb-2">Interne Notizen</span>
+            <span className="block text-xs tracking-[0.15em] text-asfalto uppercase mb-2">Interne Notizen</span>
             <textarea
               value={internalNotes}
               onChange={(e) => setInternalNotes(e.target.value)}
               placeholder="Interne Notizen nur für das Adminpanel..."
-              className="w-full h-36 overflow-y-auto rounded-2xl border border-black/10 bg-[#f7f7f7] p-4 text-sm text-black placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black/10"
+              className="w-full h-36 overflow-y-auto rounded-2xl border border-linea bg-crema-chiara p-4 text-sm text-nero placeholder:text-asfalto focus:outline-none focus:ring-2 focus:ring-black/10"
             />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
             <div>
-              <span className="block text-xs tracking-[0.15em] text-gray-400 uppercase mb-2">Kaufpreis (EUR)</span>
+              <span className="block text-xs tracking-[0.15em] text-asfalto uppercase mb-2">Kaufpreis (EUR)</span>
               <input
                 type="number"
                 step="0.01"
@@ -759,11 +759,11 @@ function SubmissionCard({
                 value={purchasePrice}
                 onChange={(e) => setPurchasePrice(e.target.value)}
                 onBlur={handleSaveMeta}
-                className="w-full rounded-2xl border border-black/10 bg-[#f7f7f7] px-4 py-2.5 text-sm text-black focus:outline-none focus:ring-2 focus:ring-black/10"
+                className="w-full rounded-2xl border border-linea bg-crema-chiara px-4 py-2.5 text-sm text-nero focus:outline-none focus:ring-2 focus:ring-black/10"
               />
             </div>
             <div>
-              <span className="block text-xs tracking-[0.15em] text-gray-400 uppercase mb-2">Verkaufspreis (EUR)</span>
+              <span className="block text-xs tracking-[0.15em] text-asfalto uppercase mb-2">Verkaufspreis (EUR)</span>
               <input
                 type="number"
                 step="0.01"
@@ -771,11 +771,11 @@ function SubmissionCard({
                 value={salePrice}
                 onChange={(e) => setSalePrice(e.target.value)}
                 onBlur={handleSaveMeta}
-                className="w-full rounded-2xl border border-black/10 bg-[#f7f7f7] px-4 py-2.5 text-sm text-black focus:outline-none focus:ring-2 focus:ring-black/10"
+                className="w-full rounded-2xl border border-linea bg-crema-chiara px-4 py-2.5 text-sm text-nero focus:outline-none focus:ring-2 focus:ring-black/10"
               />
             </div>
             <div>
-              <span className="block text-xs tracking-[0.15em] text-gray-400 uppercase mb-2">Kosten (EUR)</span>
+              <span className="block text-xs tracking-[0.15em] text-asfalto uppercase mb-2">Kosten (EUR)</span>
               <input
                 type="number"
                 step="0.01"
@@ -783,20 +783,20 @@ function SubmissionCard({
                 value={costs}
                 onChange={(e) => setCosts(e.target.value)}
                 onBlur={handleSaveMeta}
-                className="w-full rounded-2xl border border-black/10 bg-[#f7f7f7] px-4 py-2.5 text-sm text-black focus:outline-none focus:ring-2 focus:ring-black/10"
+                className="w-full rounded-2xl border border-linea bg-crema-chiara px-4 py-2.5 text-sm text-nero focus:outline-none focus:ring-2 focus:ring-black/10"
               />
             </div>
             <div>
-              <span className="block text-xs tracking-[0.15em] text-gray-400 uppercase mb-2">Gewinn (EUR)</span>
-              <div className={`w-full rounded-2xl border px-4 py-2.5 text-sm font-semibold ${Number(profit) < 0 ? "border-red-200 bg-red-50 text-red-700" : "border-green-200 bg-green-50 text-green-700"}`}>
+              <span className="block text-xs tracking-[0.15em] text-asfalto uppercase mb-2">Gewinn (EUR)</span>
+              <div className={`w-full rounded-2xl border px-4 py-2.5 text-sm font-semibold ${Number(profit) < 0 ? "border-red-200 bg-rosso-wash text-red-700" : "border-green-200 bg-green-50 text-green-700"}`}>
                 {Number.isFinite(Number(profit)) ? formatEuro(Number(profit)) : formatEuro(0)}
               </div>
             </div>
           </div>
         </div>
 
-        <div className="md:col-span-2 bg-white rounded-2xl p-5 border border-black/10">
-          <span className="flex items-center gap-1.5 text-xs tracking-[0.15em] text-gray-400 uppercase mb-3">
+        <div className="md:col-span-2 bg-crema-chiara rounded-2xl p-5 border border-linea">
+          <span className="flex items-center gap-1.5 text-xs tracking-[0.15em] text-asfalto uppercase mb-3">
             <FileText className="w-3.5 h-3.5" />
             Dokumente
           </span>
@@ -807,12 +807,12 @@ function SubmissionCard({
               value={docName}
               onChange={(e) => setDocName(e.target.value)}
               placeholder="Dokumentname (z.B. Kaufvertrag)"
-              className="md:col-span-1 rounded-xl border border-black/10 bg-[#f7f7f7] px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black/10"
+              className="md:col-span-1 rounded-xl border border-linea bg-crema-chiara px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black/10"
             />
             <select
               value={docFolderMode}
               onChange={(e) => setDocFolderMode(e.target.value)}
-              className="rounded-xl border border-black/10 bg-[#f7f7f7] px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black/10"
+              className="rounded-xl border border-linea bg-crema-chiara px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black/10"
             >
               {uploadFolderOptions.map((folder) => (
                 <option key={folder} value={folder}>{folder}</option>
@@ -825,22 +825,22 @@ function SubmissionCard({
                 value={customDocTag}
                 onChange={(e) => setCustomDocTag(e.target.value)}
                 placeholder="Eigenen Tag eingeben"
-                className="rounded-xl border border-black/10 bg-[#f7f7f7] px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black/10"
+                className="rounded-xl border border-linea bg-crema-chiara px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black/10"
               />
             )}
             <input
               type="date"
               value={docDate}
               onChange={(e) => setDocDate(e.target.value)}
-              className="rounded-xl border border-black/10 bg-[#f7f7f7] px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black/10"
+              className="rounded-xl border border-linea bg-crema-chiara px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black/10"
             />
             <div className="md:col-span-1">
               <input
                 type="file"
                 onChange={(e) => setDocFile(e.target.files?.[0] || null)}
-                className="w-full rounded-xl border border-black/10 bg-[#f7f7f7] px-3 py-2 text-sm file:mr-3 file:rounded-lg file:border-0 file:bg-black file:px-3 file:py-1.5 file:text-xs file:text-white"
+                className="w-full rounded-xl border border-linea bg-crema-chiara px-3 py-2 text-sm file:mr-3 file:rounded-lg file:border-0 file:bg-rosso file:px-3 file:py-1.5 file:text-xs file:text-crema-chiara"
               />
-              <p className="mt-1 text-xs text-gray-500 truncate" title={docFile?.name || "Keine Datei ausgewählt"}>
+              <p className="mt-1 text-xs text-asfalto truncate" title={docFile?.name || "Keine Datei ausgewählt"}>
                 {docFile?.name || "Keine Datei ausgewählt"}
               </p>
             </div>
@@ -848,7 +848,7 @@ function SubmissionCard({
               type="button"
               onClick={handleUploadDocument}
               disabled={isUploadingDoc}
-              className="md:col-span-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-black text-white text-sm hover:bg-gray-900 transition-colors disabled:opacity-60"
+              className="md:col-span-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-rosso text-crema-chiara text-sm hover:bg-rosso-scuro transition-colors disabled:opacity-60"
             >
               <Upload className="w-4 h-4" />
               {isUploadingDoc ? "Lädt hoch..." : "Dokument hochladen"}
@@ -856,7 +856,7 @@ function SubmissionCard({
           </div>
 
           <div className="flex items-center justify-between gap-3 mb-3">
-            <p className="text-xs tracking-[0.15em] text-gray-400 uppercase">Tags zum Filtern</p>
+            <p className="text-xs tracking-[0.15em] text-asfalto uppercase">Tags zum Filtern</p>
           </div>
 
           <div className="flex flex-wrap gap-2 mb-4">
@@ -865,7 +865,7 @@ function SubmissionCard({
                 key={tag.label}
                 type="button"
                 onClick={() => setSelectedDocFolder(tag.label)}
-                className={`px-3 py-1.5 rounded-full text-xs border transition-colors ${tag.active ? "bg-black text-white border-black" : "bg-[#f7f7f7] text-gray-600 border-black/10 hover:border-black/20"}`}
+                className={`px-3 py-1.5 rounded-full text-xs border transition-colors ${tag.active ? "bg-rosso text-crema-chiara border-black" : "bg-crema-chiara text-asfalto border-linea hover:border-linea"}`}
               >
                 {tag.label}
               </button>
@@ -873,36 +873,36 @@ function SubmissionCard({
           </div>
 
           {visibleDocuments.length === 0 ? (
-            <p className="text-sm text-gray-400">Noch keine Dokumente hinterlegt.</p>
+            <p className="text-sm text-asfalto">Noch keine Dokumente hinterlegt.</p>
           ) : (
             <div className="space-y-2 max-h-44 overflow-y-auto pr-1">
               {visibleDocuments.map((doc: any) => (
-                <div key={doc.id} className="flex items-center justify-between gap-3 p-3 rounded-xl border border-black/8 bg-[#f7f7f7]">
+                <div key={doc.id} className="flex items-center justify-between gap-3 p-3 rounded-xl border border-linea bg-crema-chiara">
                   <div className="min-w-0">
-                    <p className="text-sm text-black truncate" style={{ fontWeight: 600 }}>{doc.displayName}</p>
+                    <p className="text-sm text-nero truncate" style={{ fontWeight: 600 }}>{doc.displayName}</p>
                     <div className="flex flex-wrap items-center gap-2 mt-1">
-                      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] border border-black/10 bg-white text-gray-700">
+                      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] border border-linea bg-crema-chiara text-gray-700">
                         {doc.folder || "Kundendokumente"}
                       </span>
-                      <span className="text-xs text-gray-400">
+                      <span className="text-xs text-asfalto">
                         {doc.dateSegment || "-"}
                       </span>
                     </div>
-                    <p className="text-xs text-gray-500 truncate">{doc.fileName} • {Math.max(1, Math.round((doc.size || 0) / 1024))} KB</p>
+                    <p className="text-xs text-asfalto truncate">{doc.fileName} • {Math.max(1, Math.round((doc.size || 0) / 1024))} KB</p>
                   </div>
                   <div className="flex items-center gap-2 shrink-0">
                     <a
                       href={doc.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-xs px-2.5 py-1.5 rounded-lg border border-black/15 hover:bg-black hover:text-white transition-colors"
+                      className="text-xs px-2.5 py-1.5 rounded-lg border border-linea hover:bg-rosso hover:text-crema-chiara transition-colors"
                     >
                       Öffnen
                     </a>
                     <button
                       type="button"
                       onClick={() => onDeleteDocument(sub.id, doc.id)}
-                      className="p-1.5 rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors"
+                      className="p-1.5 rounded-lg text-asfalto hover:text-rosso-scuro hover:bg-rosso-wash transition-colors"
                       title="Dokument löschen"
                     >
                       <X className="w-3.5 h-3.5" />
@@ -1268,8 +1268,8 @@ export function Admin() {
   // Loading
   if (isLoading) {
     return (
-      <div className="flex-1 flex items-center justify-center min-h-screen bg-white">
-        <div className="w-7 h-7 border-2 border-black/20 border-t-black rounded-full animate-spin" />
+      <div className="flex-1 flex items-center justify-center min-h-screen bg-crema-chiara">
+        <div className="w-7 h-7 border-2 border-linea border-t-black rounded-full animate-spin" />
       </div>
     );
   }
@@ -1308,26 +1308,26 @@ export function Admin() {
   const orderFinanceChartData = buildDailyFinanceSeries(completedSubmissions).slice(-45);
 
   return (
-    <div className="flex-1 min-h-screen bg-[#f7f7f7] text-black">
+    <div className="flex-1 min-h-screen bg-crema-chiara text-nero">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
 
         {/* Header */}
         <motion.div
           {...fadeUp}
-          className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-10 pb-8 border-b border-black/8"
+          className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-10 pb-8 border-b border-linea"
         >
           <div>
-            <p className="text-xs tracking-[0.25em] text-gray-400 uppercase mb-2">GCN Admin</p>
-            <h1 className="text-3xl text-black" style={{ fontWeight: 300 }}>
+            <p className="text-xs tracking-[0.25em] text-asfalto uppercase mb-2">GCN Admin</p>
+            <h1 className="text-3xl text-nero" style={{ fontWeight: 300 }}>
               Kundenanfragen
             </h1>
           </div>
           <div className="flex items-center gap-3">
-            <span className="text-sm text-gray-400">{session.user?.email}</span>
+            <span className="text-sm text-asfalto">{session.user?.email}</span>
             {/* SECONDARY button */}
             <button
               onClick={handleLogout}
-              className="inline-flex items-center gap-2 text-sm text-black border border-black/15 rounded-2xl px-4 py-2.5 hover:bg-black hover:text-white hover:border-black transition-all"
+              className="inline-flex items-center gap-2 text-sm text-nero border border-linea rounded-2xl px-4 py-2.5 hover:bg-rosso hover:text-crema-chiara hover:border-black transition-all"
             >
               <LogOut className="w-4 h-4" />
               Abmelden
@@ -1335,32 +1335,32 @@ export function Admin() {
           </div>
         </motion.div>
 
-        <motion.div {...fadeUp} className="bg-white border border-black/8 rounded-3xl p-5 sm:p-6 mb-8">
+        <motion.div {...fadeUp} className="bg-crema-chiara border border-linea finestra p-5 sm:p-6 mb-8">
           <div className="flex items-start justify-between gap-3 mb-5">
             <div>
-              <p className="text-xs tracking-[0.2em] text-gray-400 uppercase">Auftragsdashboard</p>
-              <h2 className="text-xl text-black mt-1" style={{ fontWeight: 600 }}>
+              <p className="text-xs tracking-[0.2em] text-asfalto uppercase">Auftragsdashboard</p>
+              <h2 className="text-xl text-nero mt-1" style={{ fontWeight: 600 }}>
                 Such- und Verkaufsaufträge im Überblick
               </h2>
-              <p className="text-sm text-gray-500 mt-2 max-w-2xl">
+              <p className="text-sm text-asfalto mt-2 max-w-2xl">
                 Das Dashboard berücksichtigt nur abgeschlossene Aufträge. Umsatz und Gewinn können Sie für jeden Eintrag im Auftrag selbst hinterlegen.
               </p>
             </div>
             <div className="flex items-center gap-2 shrink-0">
-              <div className="inline-flex items-center gap-2 text-xs text-gray-500 mr-1">
+              <div className="inline-flex items-center gap-2 text-xs text-asfalto mr-1">
                 <BarChart3 className="w-4 h-4" />
                 {ordersWithFinance} Einträge mit Finanzwerten
               </div>
               <button
                 type="button"
                 onClick={() => setIsOrderDashboardCollapsed((prev) => !prev)}
-                className="w-9 h-9 rounded-xl border border-black/10 bg-white flex items-center justify-center"
+                className="w-9 h-9 rounded-xl border border-linea bg-crema-chiara flex items-center justify-center"
                 title={isOrderDashboardCollapsed ? "Dashboard ausklappen" : "Dashboard einklappen"}
               >
                 {isOrderDashboardCollapsed ? (
-                  <ChevronDown className="w-4 h-4 text-gray-600" />
+                  <ChevronDown className="w-4 h-4 text-asfalto" />
                 ) : (
-                  <ChevronUp className="w-4 h-4 text-gray-600" />
+                  <ChevronUp className="w-4 h-4 text-asfalto" />
                 )}
               </button>
             </div>
@@ -1369,58 +1369,58 @@ export function Admin() {
           {isOrderDashboardCollapsed ? null : (
           <>
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-3 mb-5">
-            <div className="rounded-2xl border border-black/8 bg-[#f7f7f7] p-4">
-              <p className="text-xs tracking-[0.12em] text-gray-400 uppercase mb-1">Umsatz gesamt</p>
-              <p className="text-xl text-black" style={{ fontWeight: 600 }}>{formatEuro(orderSaleTotal)}</p>
+            <div className="rounded-2xl border border-linea bg-crema-chiara p-4">
+              <p className="text-xs tracking-[0.12em] text-asfalto uppercase mb-1">Umsatz gesamt</p>
+              <p className="text-xl text-nero" style={{ fontWeight: 600 }}>{formatEuro(orderSaleTotal)}</p>
             </div>
-            <div className="rounded-2xl border border-black/8 bg-[#f7f7f7] p-4">
-              <p className="text-xs tracking-[0.12em] text-gray-400 uppercase mb-1">Gewinn gesamt</p>
+            <div className="rounded-2xl border border-linea bg-crema-chiara p-4">
+              <p className="text-xs tracking-[0.12em] text-asfalto uppercase mb-1">Gewinn gesamt</p>
               <p className={`text-xl ${orderProfitTotal >= 0 ? "text-green-700" : "text-red-600"}`} style={{ fontWeight: 600 }}>
                 {formatEuro(orderProfitTotal)}
               </p>
             </div>
-            <div className="rounded-2xl border border-black/8 bg-[#f7f7f7] p-4">
-              <p className="text-xs tracking-[0.12em] text-gray-400 uppercase mb-1">Verkaufspreis</p>
-              <p className="text-xl text-black" style={{ fontWeight: 600 }}>{formatEuro(orderRequestedSaleTotal)}</p>
+            <div className="rounded-2xl border border-linea bg-crema-chiara p-4">
+              <p className="text-xs tracking-[0.12em] text-asfalto uppercase mb-1">Verkaufspreis</p>
+              <p className="text-xl text-nero" style={{ fontWeight: 600 }}>{formatEuro(orderRequestedSaleTotal)}</p>
             </div>
-            <div className="rounded-2xl border border-black/8 bg-[#f7f7f7] p-4">
-              <p className="text-xs tracking-[0.12em] text-gray-400 uppercase mb-1">Kaufpreis gesamt</p>
-              <p className="text-xl text-black" style={{ fontWeight: 600 }}>{formatEuro(orderPurchaseTotal)}</p>
+            <div className="rounded-2xl border border-linea bg-crema-chiara p-4">
+              <p className="text-xs tracking-[0.12em] text-asfalto uppercase mb-1">Kaufpreis gesamt</p>
+              <p className="text-xl text-nero" style={{ fontWeight: 600 }}>{formatEuro(orderPurchaseTotal)}</p>
             </div>
-            <div className="rounded-2xl border border-black/8 bg-[#f7f7f7] p-4">
-              <p className="text-xs tracking-[0.12em] text-gray-400 uppercase mb-1">Kosten gesamt</p>
-              <p className="text-xl text-black" style={{ fontWeight: 600 }}>{formatEuro(orderCostsTotal)}</p>
+            <div className="rounded-2xl border border-linea bg-crema-chiara p-4">
+              <p className="text-xs tracking-[0.12em] text-asfalto uppercase mb-1">Kosten gesamt</p>
+              <p className="text-xl text-nero" style={{ fontWeight: 600 }}>{formatEuro(orderCostsTotal)}</p>
             </div>
           </div>
 
-          <div className="h-72 w-full rounded-2xl border border-black/8 bg-[#fafafa] p-3">
+          <div className="h-72 w-full rounded-2xl border border-linea bg-[#fafafa] p-3">
             <FinanceTrendChart data={orderFinanceChartData} />
           </div>
           </>
           )}
         </motion.div>
 
-        <motion.div {...fadeUp} className="bg-white border border-black/8 rounded-3xl p-5 sm:p-6 mb-8">
+        <motion.div {...fadeUp} className="bg-crema-chiara border border-linea finestra p-5 sm:p-6 mb-8">
           <div className="flex items-start justify-between gap-3 mb-5">
             <div>
-              <p className="text-xs tracking-[0.2em] text-gray-400 uppercase">Manueller Auftrag</p>
-              <h2 className="text-xl text-black mt-1" style={{ fontWeight: 600 }}>
+              <p className="text-xs tracking-[0.2em] text-asfalto uppercase">Manueller Auftrag</p>
+              <h2 className="text-xl text-nero mt-1" style={{ fontWeight: 600 }}>
                 Auftrag direkt im Adminpanel anlegen
               </h2>
-              <p className="text-sm text-gray-500 mt-2">
+              <p className="text-sm text-asfalto mt-2">
                 Für Anfragen ohne Website-Formular: Typ auswählen und Basisdaten eintragen.
               </p>
             </div>
             <button
               type="button"
               onClick={() => setIsManualCreateCollapsed((prev) => !prev)}
-              className="w-9 h-9 rounded-xl border border-black/10 bg-white flex items-center justify-center shrink-0"
+              className="w-9 h-9 rounded-xl border border-linea bg-crema-chiara flex items-center justify-center shrink-0"
               title={isManualCreateCollapsed ? "Formular ausklappen" : "Formular einklappen"}
             >
               {isManualCreateCollapsed ? (
-                <ChevronDown className="w-4 h-4 text-gray-600" />
+                <ChevronDown className="w-4 h-4 text-asfalto" />
               ) : (
-                <ChevronUp className="w-4 h-4 text-gray-600" />
+                <ChevronUp className="w-4 h-4 text-asfalto" />
               )}
             </button>
           </div>
@@ -1429,11 +1429,11 @@ export function Admin() {
           <>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             <div>
-              <label className="block text-xs tracking-[0.15em] text-gray-400 uppercase mb-2">Typ</label>
+              <label className="block text-xs tracking-[0.15em] text-asfalto uppercase mb-2">Typ</label>
               <select
                 value={manualType}
                 onChange={(e) => setManualType(e.target.value as "search" | "sell" | "inventory_sale")}
-                className="w-full rounded-2xl border border-black/10 px-4 py-2.5 bg-[#f7f7f7] text-sm"
+                className="w-full rounded-2xl border border-linea px-4 py-2.5 bg-crema-chiara text-sm"
               >
                 <option value="inventory_sale">Bestandsverkauf</option>
                 <option value="search">Suchauftrag</option>
@@ -1441,81 +1441,81 @@ export function Admin() {
               </select>
             </div>
             <div>
-              <label className="block text-xs tracking-[0.15em] text-gray-400 uppercase mb-2">Eingangsdatum</label>
+              <label className="block text-xs tracking-[0.15em] text-asfalto uppercase mb-2">Eingangsdatum</label>
               <input
                 type="date"
                 value={manualReceivedDate}
                 onChange={(e) => setManualReceivedDate(e.target.value)}
-                className="w-full rounded-2xl border border-black/10 px-4 py-2.5 bg-[#f7f7f7] text-sm"
+                className="w-full rounded-2xl border border-linea px-4 py-2.5 bg-crema-chiara text-sm"
               />
             </div>
             <div>
-              <label className="block text-xs tracking-[0.15em] text-gray-400 uppercase mb-2">Vorname</label>
-              <input value={manualFirstName} onChange={(e) => setManualFirstName(e.target.value)} className="w-full rounded-2xl border border-black/10 px-4 py-2.5 bg-[#f7f7f7] text-sm" />
+              <label className="block text-xs tracking-[0.15em] text-asfalto uppercase mb-2">Vorname</label>
+              <input value={manualFirstName} onChange={(e) => setManualFirstName(e.target.value)} className="w-full rounded-2xl border border-linea px-4 py-2.5 bg-crema-chiara text-sm" />
             </div>
             <div>
-              <label className="block text-xs tracking-[0.15em] text-gray-400 uppercase mb-2">Nachname</label>
-              <input value={manualLastName} onChange={(e) => setManualLastName(e.target.value)} className="w-full rounded-2xl border border-black/10 px-4 py-2.5 bg-[#f7f7f7] text-sm" />
+              <label className="block text-xs tracking-[0.15em] text-asfalto uppercase mb-2">Nachname</label>
+              <input value={manualLastName} onChange={(e) => setManualLastName(e.target.value)} className="w-full rounded-2xl border border-linea px-4 py-2.5 bg-crema-chiara text-sm" />
             </div>
             <div>
-              <label className="block text-xs tracking-[0.15em] text-gray-400 uppercase mb-2">E-Mail</label>
-              <input value={manualEmail} onChange={(e) => setManualEmail(e.target.value)} className="w-full rounded-2xl border border-black/10 px-4 py-2.5 bg-[#f7f7f7] text-sm" />
+              <label className="block text-xs tracking-[0.15em] text-asfalto uppercase mb-2">E-Mail</label>
+              <input value={manualEmail} onChange={(e) => setManualEmail(e.target.value)} className="w-full rounded-2xl border border-linea px-4 py-2.5 bg-crema-chiara text-sm" />
             </div>
             <div>
-              <label className="block text-xs tracking-[0.15em] text-gray-400 uppercase mb-2">Telefon</label>
-              <input value={manualPhone} onChange={(e) => setManualPhone(e.target.value)} className="w-full rounded-2xl border border-black/10 px-4 py-2.5 bg-[#f7f7f7] text-sm" />
+              <label className="block text-xs tracking-[0.15em] text-asfalto uppercase mb-2">Telefon</label>
+              <input value={manualPhone} onChange={(e) => setManualPhone(e.target.value)} className="w-full rounded-2xl border border-linea px-4 py-2.5 bg-crema-chiara text-sm" />
             </div>
             <div>
-              <label className="block text-xs tracking-[0.15em] text-gray-400 uppercase mb-2">Marke</label>
-              <input value={manualBrand} onChange={(e) => setManualBrand(e.target.value)} className="w-full rounded-2xl border border-black/10 px-4 py-2.5 bg-[#f7f7f7] text-sm" />
+              <label className="block text-xs tracking-[0.15em] text-asfalto uppercase mb-2">Marke</label>
+              <input value={manualBrand} onChange={(e) => setManualBrand(e.target.value)} className="w-full rounded-2xl border border-linea px-4 py-2.5 bg-crema-chiara text-sm" />
             </div>
             <div>
-              <label className="block text-xs tracking-[0.15em] text-gray-400 uppercase mb-2">Modell</label>
-              <input value={manualModel} onChange={(e) => setManualModel(e.target.value)} className="w-full rounded-2xl border border-black/10 px-4 py-2.5 bg-[#f7f7f7] text-sm" />
+              <label className="block text-xs tracking-[0.15em] text-asfalto uppercase mb-2">Modell</label>
+              <input value={manualModel} onChange={(e) => setManualModel(e.target.value)} className="w-full rounded-2xl border border-linea px-4 py-2.5 bg-crema-chiara text-sm" />
             </div>
             <div>
-              <label className="block text-xs tracking-[0.15em] text-gray-400 uppercase mb-2">Baujahr</label>
-              <input value={manualYear} onChange={(e) => setManualYear(e.target.value)} className="w-full rounded-2xl border border-black/10 px-4 py-2.5 bg-[#f7f7f7] text-sm" />
+              <label className="block text-xs tracking-[0.15em] text-asfalto uppercase mb-2">Baujahr</label>
+              <input value={manualYear} onChange={(e) => setManualYear(e.target.value)} className="w-full rounded-2xl border border-linea px-4 py-2.5 bg-crema-chiara text-sm" />
             </div>
             <div>
-              <label className="block text-xs tracking-[0.15em] text-gray-400 uppercase mb-2">Leistung (PS)</label>
-              <input value={manualPower} onChange={(e) => setManualPower(e.target.value)} className="w-full rounded-2xl border border-black/10 px-4 py-2.5 bg-[#f7f7f7] text-sm" />
+              <label className="block text-xs tracking-[0.15em] text-asfalto uppercase mb-2">Leistung (PS)</label>
+              <input value={manualPower} onChange={(e) => setManualPower(e.target.value)} className="w-full rounded-2xl border border-linea px-4 py-2.5 bg-crema-chiara text-sm" />
             </div>
             <div>
-              <label className="block text-xs tracking-[0.15em] text-gray-400 uppercase mb-2">Kilometerstand</label>
-              <input value={manualMileage} onChange={(e) => setManualMileage(e.target.value)} className="w-full rounded-2xl border border-black/10 px-4 py-2.5 bg-[#f7f7f7] text-sm" />
+              <label className="block text-xs tracking-[0.15em] text-asfalto uppercase mb-2">Kilometerstand</label>
+              <input value={manualMileage} onChange={(e) => setManualMileage(e.target.value)} className="w-full rounded-2xl border border-linea px-4 py-2.5 bg-crema-chiara text-sm" />
             </div>
 
             {manualType === "search" ? (
               <>
                 <div>
-                  <label className="block text-xs tracking-[0.15em] text-gray-400 uppercase mb-2">Budget</label>
-                  <input value={manualBudget} onChange={(e) => setManualBudget(e.target.value)} className="w-full rounded-2xl border border-black/10 px-4 py-2.5 bg-[#f7f7f7] text-sm" />
+                  <label className="block text-xs tracking-[0.15em] text-asfalto uppercase mb-2">Budget</label>
+                  <input value={manualBudget} onChange={(e) => setManualBudget(e.target.value)} className="w-full rounded-2xl border border-linea px-4 py-2.5 bg-crema-chiara text-sm" />
                 </div>
                 <div>
-                  <label className="block text-xs tracking-[0.15em] text-gray-400 uppercase mb-2">Max. KM</label>
-                  <input value={manualMaxMileage} onChange={(e) => setManualMaxMileage(e.target.value)} className="w-full rounded-2xl border border-black/10 px-4 py-2.5 bg-[#f7f7f7] text-sm" />
+                  <label className="block text-xs tracking-[0.15em] text-asfalto uppercase mb-2">Max. KM</label>
+                  <input value={manualMaxMileage} onChange={(e) => setManualMaxMileage(e.target.value)} className="w-full rounded-2xl border border-linea px-4 py-2.5 bg-crema-chiara text-sm" />
                 </div>
                 <div>
-                  <label className="block text-xs tracking-[0.15em] text-gray-400 uppercase mb-2">Farbe</label>
-                  <input value={manualColor} onChange={(e) => setManualColor(e.target.value)} className="w-full rounded-2xl border border-black/10 px-4 py-2.5 bg-[#f7f7f7] text-sm" />
+                  <label className="block text-xs tracking-[0.15em] text-asfalto uppercase mb-2">Farbe</label>
+                  <input value={manualColor} onChange={(e) => setManualColor(e.target.value)} className="w-full rounded-2xl border border-linea px-4 py-2.5 bg-crema-chiara text-sm" />
                 </div>
               </>
             ) : (
               <>
                 <div>
-                  <label className="block text-xs tracking-[0.15em] text-gray-400 uppercase mb-2">Verkaufspreis (EUR)</label>
-                  <input value={manualSellPrice} onChange={(e) => setManualSellPrice(e.target.value)} className="w-full rounded-2xl border border-black/10 px-4 py-2.5 bg-[#f7f7f7] text-sm" />
+                  <label className="block text-xs tracking-[0.15em] text-asfalto uppercase mb-2">Verkaufspreis (EUR)</label>
+                  <input value={manualSellPrice} onChange={(e) => setManualSellPrice(e.target.value)} className="w-full rounded-2xl border border-linea px-4 py-2.5 bg-crema-chiara text-sm" />
                 </div>
                 {manualType === "inventory_sale" ? (
                   <>
                     <div>
-                      <label className="block text-xs tracking-[0.15em] text-gray-400 uppercase mb-2">Einkaufspreis (EUR)</label>
-                      <input value={manualPurchasePrice} onChange={(e) => setManualPurchasePrice(e.target.value)} className="w-full rounded-2xl border border-black/10 px-4 py-2.5 bg-[#f7f7f7] text-sm" />
+                      <label className="block text-xs tracking-[0.15em] text-asfalto uppercase mb-2">Einkaufspreis (EUR)</label>
+                      <input value={manualPurchasePrice} onChange={(e) => setManualPurchasePrice(e.target.value)} className="w-full rounded-2xl border border-linea px-4 py-2.5 bg-crema-chiara text-sm" />
                     </div>
                     <div>
-                      <label className="block text-xs tracking-[0.15em] text-gray-400 uppercase mb-2">Kosten (EUR)</label>
-                      <input value={manualCosts} onChange={(e) => setManualCosts(e.target.value)} className="w-full rounded-2xl border border-black/10 px-4 py-2.5 bg-[#f7f7f7] text-sm" />
+                      <label className="block text-xs tracking-[0.15em] text-asfalto uppercase mb-2">Kosten (EUR)</label>
+                      <input value={manualCosts} onChange={(e) => setManualCosts(e.target.value)} className="w-full rounded-2xl border border-linea px-4 py-2.5 bg-crema-chiara text-sm" />
                     </div>
                   </>
                 ) : null}
@@ -1523,11 +1523,11 @@ export function Admin() {
             )}
 
             <div className="sm:col-span-2 lg:col-span-3">
-              <label className="block text-xs tracking-[0.15em] text-gray-400 uppercase mb-2">Notiz</label>
+              <label className="block text-xs tracking-[0.15em] text-asfalto uppercase mb-2">Notiz</label>
               <textarea
                 value={manualMessage}
                 onChange={(e) => setManualMessage(e.target.value)}
-                className="w-full h-24 rounded-2xl border border-black/10 px-4 py-2.5 bg-[#f7f7f7] text-sm"
+                className="w-full h-24 rounded-2xl border border-linea px-4 py-2.5 bg-crema-chiara text-sm"
               />
             </div>
           </div>
@@ -1537,14 +1537,14 @@ export function Admin() {
               type="button"
               onClick={handleCreateSubmission}
               disabled={isCreatingSubmission}
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-black text-white text-sm hover:bg-gray-900 disabled:opacity-60"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-rosso text-crema-chiara text-sm hover:bg-rosso-scuro disabled:opacity-60"
             >
               {isCreatingSubmission ? "Legt an..." : "Auftrag anlegen"}
             </button>
             <button
               type="button"
               onClick={resetManualForm}
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl border border-black/15 text-sm hover:bg-black hover:text-white transition-colors"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl border border-linea text-sm hover:bg-rosso hover:text-crema-chiara transition-colors"
             >
               Zurücksetzen
             </button>
@@ -1567,10 +1567,10 @@ export function Admin() {
           ].map((stat) => (
             <div
               key={stat.label}
-              className="bg-white border border-black/6 rounded-2xl p-4 sm:p-5"
+              className="bg-crema-chiara border border-linea rounded-2xl p-4 sm:p-5"
             >
-              <p className="text-xs tracking-[0.15em] text-gray-400 uppercase mb-1">{stat.label}</p>
-              <p className="text-2xl text-black" style={{ fontWeight: 300 }}>{stat.value}</p>
+              <p className="text-xs tracking-[0.15em] text-asfalto uppercase mb-1">{stat.label}</p>
+              <p className="text-2xl text-nero" style={{ fontWeight: 300 }}>{stat.value}</p>
             </div>
           ))}
         </motion.div>
@@ -1578,20 +1578,20 @@ export function Admin() {
         {/* Content */}
         {isFetching ? (
           <div className="flex justify-center py-24">
-            <div className="w-7 h-7 border-2 border-black/20 border-t-black rounded-full animate-spin" />
+            <div className="w-7 h-7 border-2 border-linea border-t-black rounded-full animate-spin" />
           </div>
         ) : submissions.length === 0 ? (
           <motion.div
             {...fadeUp}
-            className="bg-white border border-black/8 rounded-3xl py-20 px-8 text-center"
+            className="bg-crema-chiara border border-linea finestra py-20 px-8 text-center"
           >
-            <div className="w-14 h-14 rounded-2xl bg-[#f7f7f7] border border-black/6 flex items-center justify-center mx-auto mb-5">
-              <AlertCircle className="w-6 h-6 text-gray-400" />
+            <div className="w-14 h-14 rounded-2xl bg-crema-chiara border border-linea flex items-center justify-center mx-auto mb-5">
+              <AlertCircle className="w-6 h-6 text-asfalto" />
             </div>
-            <h3 className="text-lg text-black mb-2" style={{ fontWeight: 600 }}>
+            <h3 className="text-lg text-nero mb-2" style={{ fontWeight: 600 }}>
               Noch keine Anfragen
             </h3>
-            <p className="text-gray-400 text-sm max-w-xs mx-auto leading-relaxed">
+            <p className="text-asfalto text-sm max-w-xs mx-auto leading-relaxed">
               Sobald Kunden das Kontaktformular nutzen, erscheinen die Anfragen hier.
             </p>
           </motion.div>
@@ -1600,17 +1600,17 @@ export function Admin() {
             <div>
               {isSearchSectionCollapsed ? null : (
                 <motion.div {...fadeUp} className="mb-4">
-                  <label className="block text-xs tracking-[0.15em] text-gray-400 uppercase mb-2">
+                  <label className="block text-xs tracking-[0.15em] text-asfalto uppercase mb-2">
                     Suchaufträge suchen
                   </label>
                   <div className="relative">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-asfalto pointer-events-none" />
                     <input
                       type="text"
                       value={searchFilter}
                       onChange={(e) => setSearchFilter(e.target.value)}
                       placeholder="Vor- oder Nachname eingeben"
-                      className="w-full rounded-2xl border border-black/10 py-3.5 pl-11 pr-4 bg-white text-black placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black/10 focus:border-black/20 text-sm transition-all"
+                      className="w-full rounded-2xl border border-linea py-3.5 pl-11 pr-4 bg-crema text-nero placeholder:text-asfalto focus:outline-none focus:ring-2 focus:ring-black/10 focus:border-linea text-sm transition-all"
                     />
                   </div>
                 </motion.div>
@@ -1618,30 +1618,30 @@ export function Admin() {
 
               <div className="flex items-center justify-between mb-4 px-1">
                 <div>
-                  <p className="text-xs tracking-[0.2em] text-gray-400 uppercase">Suchaufträge</p>
-                  <p className="text-sm text-black mt-1" style={{ fontWeight: 600 }}>
+                  <p className="text-xs tracking-[0.2em] text-asfalto uppercase">Suchaufträge</p>
+                  <p className="text-sm text-nero mt-1" style={{ fontWeight: 600 }}>
                     {searchSubmissions.length} Einträge
                   </p>
                 </div>
                 <button
                   type="button"
                   onClick={() => setIsSearchSectionCollapsed((prev) => !prev)}
-                  className="w-9 h-9 rounded-xl border border-black/10 bg-white flex items-center justify-center"
+                  className="w-9 h-9 rounded-xl border border-linea bg-crema-chiara flex items-center justify-center"
                 >
                   {isSearchSectionCollapsed ? (
-                    <ChevronDown className="w-4 h-4 text-gray-600" />
+                    <ChevronDown className="w-4 h-4 text-asfalto" />
                   ) : (
-                    <ChevronUp className="w-4 h-4 text-gray-600" />
+                    <ChevronUp className="w-4 h-4 text-asfalto" />
                   )}
                 </button>
               </div>
               {isSearchSectionCollapsed ? null : searchSubmissions.length === 0 ? (
-                <div className="bg-white border border-black/8 rounded-3xl p-6">
-                  <p className="text-sm text-gray-400">Keine Suchaufträge vorhanden.</p>
+                <div className="bg-crema-chiara border border-linea finestra p-6">
+                  <p className="text-sm text-asfalto">Keine Suchaufträge vorhanden.</p>
                 </div>
               ) : (
                 <div className="relative lg:pr-14">
-                  <div className="hidden lg:block absolute right-4 top-0 bottom-2 w-px bg-black/10" aria-hidden="true" />
+                  <div className="hidden lg:block absolute right-4 top-0 bottom-2 w-px bg-rosso-wash" aria-hidden="true" />
                   <div className="space-y-4">
                     <AnimatePresence>
                       {searchSubmissions.map((sub) => (
@@ -1664,17 +1664,17 @@ export function Admin() {
             <div>
               {isInventorySectionCollapsed ? null : (
                 <motion.div {...fadeUp} className="mb-4">
-                  <label className="block text-xs tracking-[0.15em] text-gray-400 uppercase mb-2">
+                  <label className="block text-xs tracking-[0.15em] text-asfalto uppercase mb-2">
                     Bestandsverkäufe suchen
                   </label>
                   <div className="relative">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-asfalto pointer-events-none" />
                     <input
                       type="text"
                       value={inventoryFilter}
                       onChange={(e) => setInventoryFilter(e.target.value)}
                       placeholder="Vor- oder Nachname eingeben"
-                      className="w-full rounded-2xl border border-black/10 py-3.5 pl-11 pr-4 bg-white text-black placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black/10 focus:border-black/20 text-sm transition-all"
+                      className="w-full rounded-2xl border border-linea py-3.5 pl-11 pr-4 bg-crema text-nero placeholder:text-asfalto focus:outline-none focus:ring-2 focus:ring-black/10 focus:border-linea text-sm transition-all"
                     />
                   </div>
                 </motion.div>
@@ -1682,30 +1682,30 @@ export function Admin() {
 
               <div className="flex items-center justify-between mb-4 px-1">
                 <div>
-                  <p className="text-xs tracking-[0.2em] text-gray-400 uppercase">Bestandsverkäufe</p>
-                  <p className="text-sm text-black mt-1" style={{ fontWeight: 600 }}>
+                  <p className="text-xs tracking-[0.2em] text-asfalto uppercase">Bestandsverkäufe</p>
+                  <p className="text-sm text-nero mt-1" style={{ fontWeight: 600 }}>
                     {inventorySalesSubmissions.length} Einträge
                   </p>
                 </div>
                 <button
                   type="button"
                   onClick={() => setIsInventorySectionCollapsed((prev) => !prev)}
-                  className="w-9 h-9 rounded-xl border border-black/10 bg-white flex items-center justify-center"
+                  className="w-9 h-9 rounded-xl border border-linea bg-crema-chiara flex items-center justify-center"
                 >
                   {isInventorySectionCollapsed ? (
-                    <ChevronDown className="w-4 h-4 text-gray-600" />
+                    <ChevronDown className="w-4 h-4 text-asfalto" />
                   ) : (
-                    <ChevronUp className="w-4 h-4 text-gray-600" />
+                    <ChevronUp className="w-4 h-4 text-asfalto" />
                   )}
                 </button>
               </div>
               {isInventorySectionCollapsed ? null : inventorySalesSubmissions.length === 0 ? (
-                <div className="bg-white border border-black/8 rounded-3xl p-6">
-                  <p className="text-sm text-gray-400">Keine Bestandsverkäufe vorhanden.</p>
+                <div className="bg-crema-chiara border border-linea finestra p-6">
+                  <p className="text-sm text-asfalto">Keine Bestandsverkäufe vorhanden.</p>
                 </div>
               ) : (
                 <div className="relative lg:pr-14">
-                  <div className="hidden lg:block absolute right-4 top-0 bottom-2 w-px bg-black/10" aria-hidden="true" />
+                  <div className="hidden lg:block absolute right-4 top-0 bottom-2 w-px bg-rosso-wash" aria-hidden="true" />
                   <div className="space-y-4">
                     <AnimatePresence>
                       {inventorySalesSubmissions.map((sub) => (
@@ -1728,17 +1728,17 @@ export function Admin() {
             <div>
               {isSellSectionCollapsed ? null : (
                 <motion.div {...fadeUp} className="mb-4">
-                  <label className="block text-xs tracking-[0.15em] text-gray-400 uppercase mb-2">
+                  <label className="block text-xs tracking-[0.15em] text-asfalto uppercase mb-2">
                     Verkaufsangebote suchen
                   </label>
                   <div className="relative">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-asfalto pointer-events-none" />
                     <input
                       type="text"
                       value={sellFilter}
                       onChange={(e) => setSellFilter(e.target.value)}
                       placeholder="Vor- oder Nachname eingeben"
-                      className="w-full rounded-2xl border border-black/10 py-3.5 pl-11 pr-4 bg-white text-black placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black/10 focus:border-black/20 text-sm transition-all"
+                      className="w-full rounded-2xl border border-linea py-3.5 pl-11 pr-4 bg-crema text-nero placeholder:text-asfalto focus:outline-none focus:ring-2 focus:ring-black/10 focus:border-linea text-sm transition-all"
                     />
                   </div>
                 </motion.div>
@@ -1746,30 +1746,30 @@ export function Admin() {
 
               <div className="flex items-center justify-between mb-4 px-1">
                 <div>
-                  <p className="text-xs tracking-[0.2em] text-gray-400 uppercase">Verkaufsangebote</p>
-                  <p className="text-sm text-black mt-1" style={{ fontWeight: 600 }}>
+                  <p className="text-xs tracking-[0.2em] text-asfalto uppercase">Verkaufsangebote</p>
+                  <p className="text-sm text-nero mt-1" style={{ fontWeight: 600 }}>
                     {sellSubmissions.length} Einträge
                   </p>
                 </div>
                 <button
                   type="button"
                   onClick={() => setIsSellSectionCollapsed((prev) => !prev)}
-                  className="w-9 h-9 rounded-xl border border-black/10 bg-white flex items-center justify-center"
+                  className="w-9 h-9 rounded-xl border border-linea bg-crema-chiara flex items-center justify-center"
                 >
                   {isSellSectionCollapsed ? (
-                    <ChevronDown className="w-4 h-4 text-gray-600" />
+                    <ChevronDown className="w-4 h-4 text-asfalto" />
                   ) : (
-                    <ChevronUp className="w-4 h-4 text-gray-600" />
+                    <ChevronUp className="w-4 h-4 text-asfalto" />
                   )}
                 </button>
               </div>
               {isSellSectionCollapsed ? null : sellSubmissions.length === 0 ? (
-                <div className="bg-white border border-black/8 rounded-3xl p-6">
-                  <p className="text-sm text-gray-400">Keine Verkaufsangebote vorhanden.</p>
+                <div className="bg-crema-chiara border border-linea finestra p-6">
+                  <p className="text-sm text-asfalto">Keine Verkaufsangebote vorhanden.</p>
                 </div>
               ) : (
                 <div className="relative lg:pr-14">
-                  <div className="hidden lg:block absolute right-4 top-0 bottom-2 w-px bg-black/10" aria-hidden="true" />
+                  <div className="hidden lg:block absolute right-4 top-0 bottom-2 w-px bg-rosso-wash" aria-hidden="true" />
                   <div className="space-y-4">
                     <AnimatePresence>
                       {sellSubmissions.map((sub) => (

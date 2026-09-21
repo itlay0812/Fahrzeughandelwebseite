@@ -1,10 +1,7 @@
 import { Link } from "react-router";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
-import { motion } from "motion/react";
 import {
-  Search,
-  CarFront,
   ShieldCheck,
   Clock,
   TrendingUp,
@@ -18,39 +15,44 @@ import {
   Settings2,
   Handshake,
 } from "lucide-react";
-import heroBg from "../../assets/6ca19209d42aea8c15819f803e558f77243107be.png";
-import vwUpImage from "../../assets/a73f31ab97428181cb471f206b6a5d44e6e6087a.png";
+import suchauftragImg from "../../assets/illustrations/suchauftrag.jpg";
+import uebergabeImg from "../../assets/illustrations/uebergabe.jpg";
+import stellplatzImg from "../../assets/illustrations/stellplatz.jpg";
+import vwUpImage from "../../assets/vw-up.jpg";
 import giosueImg from "../../assets/Giosue.jpeg";
 import christophImg from "../../assets/Christoph.jpeg";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { SEO } from "./SEO";
+import { CockpitIntro } from "./CockpitIntro";
+import { LAST_FRAME } from "../intro/ScrollFilm";
+import { HeroContent, HeroVeil } from "./HeroContent";
+import { shouldPlayIntro, useIntro } from "../intro/IntroContext";
 
-// ─── DATA ──────────────────────────────────────────────────────────────────────
+// ─── DATEN ────────────────────────────────────────────────────────────────────
 
 const SERVICES = [
   {
     id: "suchauftrag",
-    label: "01 — Suchauftrag",
-    title: "Wir finden Ihr Wunschfahrzeug.",
+    title: "Suchauftrag",
+    claim: "Wir finden Ihr Wunschfahrzeug.",
     description:
-      "Sie nennen uns Ihre Wünsche – Marke, Modell, Budget, Ausstattung. Wir übernehmen die vollständige Suche über unser Händlernetzwerk sowie private Quellen. Keine Telefonate mit Fremden, keine unnötigen Besichtigungen. Wir prüfen jedes Fahrzeug vorab und präsentieren Ihnen nur vorqualifizierte Angebote.",
+      "Sie nennen uns Marke, Modell, Budget und Ausstattung. Wir suchen über unser Händlernetzwerk und private Quellen, prüfen jedes Fahrzeug vorab und legen Ihnen nur vor, was die Prüfung besteht. Keine Telefonate mit Fremden, keine vergeblichen Besichtigungen.",
     cta: { label: "Suchauftrag erstellen", path: "/kontakt?type=search" },
-    image:
-      "https://images.unsplash.com/photo-1768760819947-f6772ae3f433?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxsdXh1cnklMjBjYXIlMjBkYXJrJTIwY2luZW1hdGljJTIwYXV0b21vdGl2ZXxlbnwxfHx8fDE3NzUxNjIzOTZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+    image: suchauftragImg,
+    alt: "Illustration: eine Lupe, unter der ein rotes Auto sichtbar wird",
   },
   {
     id: "verkauf",
-    label: "02 — Fahrzeugverkauf",
-    title: "Wir verkaufen Ihr Fahrzeug zum Bestwert.",
+    title: "Fahrzeugverkauf",
+    claim: "Wir verkaufen Ihres zum Bestwert.",
     description:
-      "Übergeben Sie uns die Abwicklung Ihres Fahrzeugverkaufs. Wir erstellen professionelle Inserate, führen Verhandlungen in Ihrem Namen und schützen Sie vor unseriösen Interessenten. Von der Bewertung bis zur Schlüsselübergabe – alles aus einer Hand.",
+      "Übergeben Sie uns die Abwicklung: professionelle Inserate, Verhandlungen in Ihrem Namen, Schutz vor unseriösen Interessenten. Von der Bewertung bis zur Schlüsselübergabe bleibt alles in einer Hand – in Ihrer und unserer.",
     cta: { label: "Verkaufsauftrag starten", path: "/kontakt?type=sell" },
-    image:
-      "https://images.unsplash.com/photo-1761264889465-67be9fc1b77e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxsdXh1cnklMjBjYXIlMjBrZXlzJTIwaGFuZG92ZXIlMjBwZXJzb25hbCUyMHNlcnZpY2V8ZW58MXx8fHwxNzc1MTYyNDgzfDA&ixlib=rb-4.1.0&q=80&w=1080",
+    image: uebergabeImg,
+    alt: "Illustration: ein Autoschlüssel wird von einer Hand in eine andere gelegt",
   },
 ];
 
-// Single entry — carousel ready for more cars later
 const INVENTORY = [
   {
     id: "1",
@@ -71,32 +73,28 @@ const INVENTORY = [
 
 const ADVANTAGES = [
   {
-    number: "01",
     icon: Users,
     title: "Persönliche Betreuung",
     description:
-      "Kein Callcenter, kein Wartezimmer. Sie haben einen festen Ansprechpartner, der Ihren Auftrag kennt und Sie durch den gesamten Prozess begleitet.",
+      "Kein Callcenter, keine Warteschleife. Sie haben einen festen Ansprechpartner, der Ihren Auftrag kennt und Sie durch den gesamten Prozess begleitet.",
   },
   {
-    number: "02",
     icon: ShieldCheck,
-    title: "Garantie (min. 12 Monate)",
+    title: "Mindestens 12 Monate Garantie",
     description:
-      "Jedes vermittelte Fahrzeug wird mit mindestens 12 Monaten Garantie abgesichert – für maximale Sicherheit und ein gutes Gefühl nach dem Kauf.",
+      "Jedes vermittelte Fahrzeug wird mit mindestens zwölf Monaten Garantie abgesichert. Auch nach der Übergabe stehen wir gerade.",
   },
   {
-    number: "03",
     icon: Clock,
-    title: "Volle Zeitersparnis",
+    title: "Ihre Zeit bleibt Ihre",
     description:
-      "Keine Besichtigungstouristen, keine endlosen Verhandlungen. Sie lehnen sich zurück – wir erledigen den Rest vollständig für Sie.",
+      "Keine Besichtigungstouristen, keine zähen Verhandlungen am Feierabend. Sie entscheiden – den Rest erledigen wir.",
   },
   {
-    number: "04",
     icon: TrendingUp,
-    title: "Maximale Preiserzielung",
+    title: "Der Preis, der drin ist",
     description:
-      "Durch unser Netzwerk und Markterfahrung erzielen wir beim Verkauf Spitzenpreise und beim Kauf die besten verfügbaren Konditionen.",
+      "Über unser Netzwerk und die tägliche Marktbeobachtung erzielen wir beim Verkauf Spitzenpreise und beim Kauf die besseren Konditionen.",
   },
 ];
 
@@ -121,33 +119,32 @@ const VALUES = [
   {
     icon: ShieldCheck,
     label: "Transparenz",
-    sub: "Klare Kommunikation ohne versteckte Kosten oder Überraschungen.",
+    sub: "Klare Kommunikation, keine versteckten Kosten.",
   },
   {
     icon: Users,
     label: "Persönlich",
-    sub: "Ein fester Ansprechpartner – von der Anfrage bis zur Übergabe.",
+    sub: "Ein fester Ansprechpartner von der Anfrage bis zur Übergabe.",
   },
   {
     icon: Handshake,
     label: "Fairness",
-    sub: "Faire Preise und ehrliche Beratung, immer in Ihrem Interesse.",
+    sub: "Faire Preise und ehrliche Beratung, auch wenn sie gegen den Abschluss spricht.",
   },
 ];
 
-// ─── CAROUSEL ──────────────────────────────────────────────────────────────────
+// ─── BAUSTEINE ────────────────────────────────────────────────────────────────
 
 function InventoryCarousel() {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false, align: "start" });
   const [canPrev, setCanPrev] = useState(false);
   const [canNext, setCanNext] = useState(false);
-  const [selectedIndex, setSelectedIndex] = useState(0);
+  const hasControls = INVENTORY.length > 1;
 
   const onSelect = useCallback(() => {
     if (!emblaApi) return;
     setCanPrev(emblaApi.canScrollPrev());
     setCanNext(emblaApi.canScrollNext());
-    setSelectedIndex(emblaApi.selectedScrollSnap());
   }, [emblaApi]);
 
   useEffect(() => {
@@ -156,115 +153,120 @@ function InventoryCarousel() {
     onSelect();
   }, [emblaApi, onSelect]);
 
+  if (INVENTORY.length === 0) {
+    return (
+      <div className="finestra overflow-hidden border border-linea bg-crema-chiara">
+        <img
+          src={stellplatzImg}
+          alt="Illustrierter leerer Stellplatz mit frischen Reifenspuren"
+          className="h-56 w-full object-cover sm:h-72"
+          loading="lazy"
+        />
+        <div className="p-6 sm:p-8">
+          <h3>Gerade steht nichts bei uns.</h3>
+          <p className="mt-3 max-w-md text-asfalto">
+            Unser Bestand wechselt schnell. Sagen Sie uns, was Sie suchen – wir
+            melden uns, sobald das passende Fahrzeug da ist.
+          </p>
+          <Link
+            to="/kontakt?type=search"
+            className="mt-6 inline-flex items-center gap-2 rounded-full bg-rosso px-6 py-3.5 text-sm text-crema-chiara transition-colors hover:bg-rosso-scuro"
+          >
+            Suchauftrag erstellen
+            <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div>
-      {/* Controls — always visible, ready for more cars */}
-      <div className="flex items-center justify-between mb-6 sm:mb-8">
-        <div className="flex gap-2">
-          {INVENTORY.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => emblaApi?.scrollTo(i)}
-              className={`h-1.5 rounded-full transition-all ${
-                i === selectedIndex ? "w-6 bg-black" : "w-1.5 bg-black/20"
-              }`}
-            />
-          ))}
-        </div>
-        <div className="flex gap-2">
+      {hasControls && (
+        <div className="mb-6 flex justify-end gap-2 sm:mb-8">
           <button
             onClick={() => emblaApi?.scrollPrev()}
             disabled={!canPrev}
-            className={`w-10 h-10 rounded-2xl border flex items-center justify-center transition-all ${
-              canPrev
-                ? "border-black/15 text-black hover:bg-black hover:text-white hover:border-black active:scale-[0.95]"
-                : "border-black/8 text-black/20 cursor-default"
-            }`}
+            aria-label="Vorheriges Fahrzeug"
+            className="flex h-11 w-11 items-center justify-center rounded-full border border-linea text-nero transition-all hover:border-nero hover:bg-nero hover:text-crema-chiara disabled:cursor-default disabled:border-linea-chiara disabled:text-alluminio disabled:hover:bg-transparent"
           >
-            <ArrowLeft className="w-4 h-4" />
+            <ArrowLeft className="h-4 w-4" aria-hidden="true" />
           </button>
           <button
             onClick={() => emblaApi?.scrollNext()}
             disabled={!canNext}
-            className={`w-10 h-10 rounded-2xl border flex items-center justify-center transition-all ${
-              canNext
-                ? "border-black/15 text-black hover:bg-black hover:text-white hover:border-black active:scale-[0.95]"
-                : "border-black/8 text-black/20 cursor-default"
-            }`}
+            aria-label="Nächstes Fahrzeug"
+            className="flex h-11 w-11 items-center justify-center rounded-full border border-linea text-nero transition-all hover:border-nero hover:bg-nero hover:text-crema-chiara disabled:cursor-default disabled:border-linea-chiara disabled:text-alluminio disabled:hover:bg-transparent"
           >
-            <ArrowRight className="w-4 h-4" />
+            <ArrowRight className="h-4 w-4" aria-hidden="true" />
           </button>
         </div>
-      </div>
+      )}
 
-      {/* Embla viewport */}
       <div className="overflow-hidden" ref={emblaRef}>
         <div className="flex gap-4 sm:gap-6">
           {INVENTORY.map((car) => (
-            <div
+            <article
               key={car.id}
-              className="flex-none w-full sm:w-[420px] md:w-[380px] lg:w-[360px]"
+              className="finestra group flex w-full flex-none flex-col overflow-hidden border border-linea bg-crema-chiara transition-shadow hover:shadow-[0_18px_40px_-28px_rgba(26,21,18,0.5)] sm:w-[420px] md:w-[380px]"
             >
-              <div className="bg-white rounded-3xl overflow-hidden border border-black/8 shadow-sm hover:shadow-md transition-shadow flex flex-col group">
-                {/* Image */}
-                <div className="relative aspect-[4/3] overflow-hidden bg-gray-100">
-                  <img
-                    src={car.image}
-                    alt={`${car.brand} ${car.model}`}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                  />
-                  <div className="absolute top-3 left-3">
-                    <span className="bg-white/90 backdrop-blur-sm text-black text-xs px-3 py-1.5 rounded-full border border-black/8">
-                      {car.condition}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Content */}
-                <div className="p-5 sm:p-6 flex-1 flex flex-col">
-                  <div className="flex justify-between items-start mb-4 pb-4 border-b border-black/6">
-                    <div>
-                      <h3 className="text-base text-black" style={{ fontWeight: 600 }}>
-                        {car.brand} {car.model}
-                      </h3>
-                      <p className="text-gray-400 text-sm">{car.power}</p>
-                    </div>
-                    <span className="text-black text-base ml-2 shrink-0" style={{ fontWeight: 600 }}>
-                      {car.price}
-                    </span>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-2.5 text-sm text-gray-500 mb-5">
-                    <div className="flex items-center gap-1.5">
-                      <Calendar className="w-3.5 h-3.5 text-gray-300 shrink-0" />
-                      {car.year}
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <Gauge className="w-3.5 h-3.5 text-gray-300 shrink-0" />
-                      {car.mileage}
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <Settings2 className="w-3.5 h-3.5 text-gray-300 shrink-0" />
-                      {car.transmission}
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <Fuel className="w-3.5 h-3.5 text-gray-300 shrink-0" />
-                      {car.fuel}
-                    </div>
-                  </div>
-
-                  {/* Primary action */}
-                  <a
-                    href={car.mobileLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full py-3 bg-black hover:bg-gray-900 text-white text-sm rounded-2xl transition-colors text-center mt-auto active:scale-[0.98]"
-                  >
-                    Auf Mobile.de ansehen
-                  </a>
-                </div>
+              <div className="relative aspect-[4/3] overflow-hidden bg-crema-scura">
+                <img
+                  src={car.image}
+                  alt={`${car.brand} ${car.model}`}
+                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+                  loading="lazy"
+                />
               </div>
-            </div>
+
+              <div className="flex flex-1 flex-col p-5 sm:p-6">
+                <div className="mb-4 flex items-start justify-between gap-4 border-b border-linea-chiara pb-4">
+                  <div>
+                    <h3>
+                      {car.brand} {car.model}
+                    </h3>
+                    <p className="mt-1 text-sm text-asfalto">
+                      {car.power} · {car.condition}
+                    </p>
+                  </div>
+                  <p className="numeri shrink-0 text-xl" style={{ fontWeight: 700 }}>
+                    {car.price}
+                  </p>
+                </div>
+
+                <dl className="mb-6 grid grid-cols-2 gap-2.5 text-sm text-asfalto">
+                  <div className="flex items-center gap-1.5">
+                    <Calendar className="h-3.5 w-3.5 shrink-0 text-alluminio" aria-hidden="true" />
+                    <dt className="sr-only">Erstzulassung</dt>
+                    <dd className="numeri">{car.year}</dd>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <Gauge className="h-3.5 w-3.5 shrink-0 text-alluminio" aria-hidden="true" />
+                    <dt className="sr-only">Laufleistung</dt>
+                    <dd className="numeri">{car.mileage}</dd>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <Settings2 className="h-3.5 w-3.5 shrink-0 text-alluminio" aria-hidden="true" />
+                    <dt className="sr-only">Getriebe</dt>
+                    <dd>{car.transmission}</dd>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <Fuel className="h-3.5 w-3.5 shrink-0 text-alluminio" aria-hidden="true" />
+                    <dt className="sr-only">Kraftstoff</dt>
+                    <dd>{car.fuel}</dd>
+                  </div>
+                </dl>
+
+                <a
+                  href={car.mobileLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-auto w-full rounded-full bg-nero py-3.5 text-center text-sm text-crema-chiara transition-colors hover:bg-rosso active:scale-[0.99]"
+                >
+                  Auf mobile.de ansehen
+                </a>
+              </div>
+            </article>
           ))}
         </div>
       </div>
@@ -272,339 +274,293 @@ function InventoryCarousel() {
   );
 }
 
-// ─── HELPERS ─────────────────────────────────────────────────────────────────
-
-const fadeUp = (delay = 0) => ({
-  initial: { opacity: 0, y: 22 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, margin: "-60px" },
-  transition: { duration: 0.4, ease: "easeOut", delay },
-});
-
-// ─── COMPONENT ─────────────────────────────────────────────────────────────────
+// ─── SEITE ────────────────────────────────────────────────────────────────────
 
 export function Home() {
+  const { setPhase } = useIntro();
+  const [introOn] = useState(() => shouldPlayIntro());
+  const heroRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    if (introOn) {
+      setPhase("running");
+      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    }
+    return () => setPhase("off");
+  }, [introOn, setPhase]);
+
+  const skipIntro = () => {
+    const section = document.getElementById("intro-sequenz");
+    if (!section) return;
+    /* Ans Ende der Fahrt, nicht dahinter: Dort steht der Hero. */
+    window.scrollTo({
+      top: section.offsetTop + section.offsetHeight - window.innerHeight,
+      behavior: "auto",
+    });
+  };
+
   return (
     <>
       <SEO
         title="Autohandel in St. Georgen im Schwarzwald – GCN Fahrzeughandel GbR"
-        description="Ihr persoenlicher Fahrzeugexperte und Autohandel in St. Georgen im Schwarzwald. Suchauftrag, Fahrzeugverkauf und Bestand fuer Kunden aus St. Georgen, Triberg, Villingen-Schwenningen, Furtwangen und Umgebung."
+        description="Ihr persönlicher Fahrzeugexperte und Autohandel in St. Georgen im Schwarzwald. Suchauftrag, Fahrzeugverkauf und Bestand für Kunden aus St. Georgen, Triberg, Villingen-Schwenningen, Furtwangen und Umgebung."
         keywords="Autohandel St. Georgen, Fahrzeughandel Schwarzwald, Gebrauchtwagen Triberg, Auto verkaufen Villingen-Schwenningen, Auto kaufen Furtwangen, Suchauftrag"
         ogType="website"
       />
 
-      {/* ═══════════════════════════════════════════════════════════════
-          SECTION 1 — HERO
-      ══════════════════════════════════════════════════════════════════ */}
-      <section className="relative min-h-[92vh] flex items-center justify-center overflow-hidden bg-black">
-        <video
-          className="absolute inset-0 w-full h-full object-cover opacity-55"
-          autoPlay muted loop playsInline poster={heroBg}
-        />
-        <div
-          className="absolute inset-0 bg-cover bg-center opacity-55 pointer-events-none"
-          style={{ backgroundImage: `url(${heroBg})` }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/55 to-black/20 pointer-events-none" />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/25 via-transparent to-black/25 pointer-events-none" />
+      {introOn && <CockpitIntro onSkip={skipIntro} />}
 
-        <div className="relative z-10 w-full max-w-4xl mx-auto px-5 sm:px-8 text-center">
-          <motion.p
-            initial={{ opacity: 0, y: 14 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
-            className="text-xs tracking-[0.3em] text-gray-400 uppercase mb-6 sm:mb-8"
-          >
-            GCN Fahrzeughandel GbR · Sankt Georgen im Schwarzwald
-          </motion.p>
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, ease: "easeOut", delay: 0.08 }}
-            className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tight text-white mb-6 sm:mb-8"
-            style={{ fontWeight: 300, lineHeight: 1.08 }}
-          >
-            Ihr persönlicher
-            <br />
-            <span style={{ fontWeight: 700 }}>Fahrzeugexperte.</span>
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.45, ease: "easeOut", delay: 0.16 }}
-            className="text-base sm:text-lg md:text-xl text-gray-300 mb-10 sm:mb-14 max-w-2xl mx-auto"
-            style={{ fontWeight: 300, lineHeight: 1.75 }}
-          >
-            Wir übernehmen Suche und Verkauf Ihres Fahrzeugs – vollständig,
-            diskret und zu besten Konditionen.
-          </motion.p>
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, ease: "easeOut", delay: 0.24 }}
-            className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-2"
-          >
-            {/* PRIMARY — most important action */}
-            <Link
-              to="/kontakt?type=search"
-              className="inline-flex items-center justify-center gap-2.5 bg-white text-black px-8 py-4 rounded-2xl text-sm tracking-wide hover:bg-gray-100 transition-colors active:scale-[0.98] shadow-lg"
-            >
-              <Search className="w-4 h-4 shrink-0" />
-              Auftrag erstellen
-            </Link>
-            {/* SECONDARY — supporting action */}
-            <Link
-              to="/bestand"
-              className="inline-flex items-center justify-center gap-2.5 bg-white/10 text-white border border-white/25 px-8 py-4 rounded-2xl text-sm tracking-wide hover:bg-white/20 hover:border-white/50 transition-all active:scale-[0.98] backdrop-blur-sm"
-            >
-              <CarFront className="w-4 h-4 shrink-0" />
-              Bestand ansehen
-            </Link>
-          </motion.div>
-        </div>
+      {/* ── Hero ────────────────────────────────────────────────────
+          Lief das Intro, steht der Hero bereits als letzter Frame der
+          Fahrt – dann entfällt er hier, sonst sähe man ihn zweimal. */}
+      {!introOn && (
+        <section
+          ref={heroRef}
+          className="relative h-[100svh] min-h-[600px] overflow-hidden bg-crema"
+        >
+          <img
+            src={LAST_FRAME}
+            alt="Illustration: Coupé auf einer Schwarzwaldstraße zwischen Tannen"
+            className="absolute inset-0 h-full w-full object-cover"
+            fetchPriority="high"
+          />
+          <div className="absolute inset-0 z-[60]" aria-hidden="true">
+            <HeroVeil />
+          </div>
+          <div className="absolute inset-0 z-[70]">
+            <HeroContent as="h1" />
+          </div>
+        </section>
+      )}
 
-      </section>
-
-      {/* ═══════════════════════════════════════════════════════════════
-          SECTION 2 — LEISTUNGEN
-      ══════════════════════════════════════════════════════════════════ */}
-      <section className="bg-white text-black">
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 pt-16 sm:pt-24 pb-6">
-          <motion.div {...fadeUp(0)} className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-black/8 pb-8">
-            <div>
-              <p className="text-xs tracking-[0.25em] text-gray-400 uppercase mb-3">Unsere Leistungen</p>
-              <h2 className="text-3xl sm:text-4xl md:text-5xl text-black" style={{ fontWeight: 300, lineHeight: 1.1 }}>
-                Was wir für Sie tun.
-              </h2>
-            </div>
-            <p className="text-gray-400 max-w-sm text-sm leading-relaxed">
-              Zwei klar definierte Dienstleistungen, die Ihnen Zeit, Nerven und Geld sparen.
+      {/* ── Leistungen ────────────────────────────────────────────── */}
+      <section className="bg-crema" aria-labelledby="leistungen">
+        <div className="mx-auto max-w-[1440px] px-4 py-16 sm:px-6 sm:py-24 lg:px-12">
+          <div className="flex flex-col justify-between gap-5 border-b border-linea pb-9 md:flex-row md:items-end">
+            <h2 id="leistungen" className="max-w-xl">
+              Zwei Aufträge, die wir übernehmen.
+            </h2>
+            <p className="max-w-sm text-asfalto">
+              Beide sparen Ihnen dasselbe: Zeit, Nerven und den Preis, den man
+              zahlt, wenn man den Markt nicht täglich beobachtet.
             </p>
-          </motion.div>
-        </div>
+          </div>
 
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 py-8 sm:py-12 pb-16 sm:pb-24">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-            {SERVICES.map((service, i) => (
-              <motion.div
+          <div className="mt-10 grid grid-cols-1 gap-5 md:grid-cols-2 sm:gap-6">
+            {SERVICES.map((service) => (
+              <article
                 key={service.id}
-                {...fadeUp(i * 0.08)}
-                className="bg-[#f7f7f7] rounded-3xl overflow-hidden flex flex-col hover:shadow-md transition-shadow"
+                className="finestra flex flex-col overflow-hidden border border-linea bg-crema-chiara"
               >
-                <div className="aspect-[16/9] overflow-hidden bg-gray-200">
+                <div className="aspect-[16/9] overflow-hidden bg-crema-scura">
                   <img
                     src={service.image}
-                    alt={service.title}
-                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+                    alt={service.alt}
+                    className="h-full w-full object-cover"
+                    loading="lazy"
                   />
                 </div>
-                <div className="p-6 sm:p-8 flex flex-col flex-1">
-                  <p className="text-xs tracking-[0.2em] text-gray-400 uppercase mb-3">{service.label}</p>
-                  <h3 className="text-xl sm:text-2xl md:text-3xl text-black mb-4" style={{ fontWeight: 400, lineHeight: 1.25 }}>
-                    {service.title}
-                  </h3>
-                  <p className="text-gray-500 text-sm leading-relaxed mb-7 flex-1">{service.description}</p>
-                  {/* SECONDARY button */}
+                <div className="flex flex-1 flex-col p-6 sm:p-8">
+                  <h3>{service.title}</h3>
+                  <p className="mt-2 text-lg text-nero">{service.claim}</p>
+                  <p className="mb-8 mt-4 flex-1 text-asfalto">
+                    {service.description}
+                  </p>
                   <Link
                     to={service.cta.path}
-                    className="inline-flex items-center gap-2 text-sm text-black border border-black/15 rounded-2xl px-5 py-3 w-fit hover:bg-black hover:text-white hover:border-black transition-all group"
+                    className="group inline-flex w-fit items-center gap-2 rounded-full border border-nero/20 px-6 py-3.5 text-sm text-nero transition-all hover:border-nero hover:bg-nero hover:text-crema-chiara"
                   >
                     {service.cta.label}
-                    <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                    <ArrowRight
+                      className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
+                      aria-hidden="true"
+                    />
                   </Link>
                 </div>
-              </motion.div>
+              </article>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════════════════════════════
-          SECTION 3 — FAHRZEUGBESTAND (Carousel)
-      ══════════════════════════════════════════════════════════════════ */}
-      <section className="bg-[#f7f7f7] border-t border-black/6 text-black">
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 py-16 sm:py-24">
-          <motion.div {...fadeUp(0)} className="flex flex-col md:flex-row md:items-end justify-between gap-5 mb-8 sm:mb-12 border-b border-black/8 pb-8">
-            <div>
-              <p className="text-xs tracking-[0.25em] text-gray-400 uppercase mb-3">Direktkauf</p>
-              <h2 className="text-3xl sm:text-4xl md:text-5xl text-black" style={{ fontWeight: 300, lineHeight: 1.1 }}>
-                Fahrzeuge im <span style={{ fontWeight: 700 }}>Sofortbestand.</span>
-              </h2>
-            </div>
-            <p className="text-gray-400 max-w-sm text-sm leading-relaxed">
-              Neben unserem Auftragsservice führen wir auch eigene Fahrzeuge im Bestand, die Sie direkt erwerben können.
-            </p>
-          </motion.div>
-
-          <motion.div {...fadeUp(0.06)}>
-            <InventoryCarousel />
-          </motion.div>
-
-          {/* TERTIARY link — lowest visual weight */}
-          <motion.div {...fadeUp(0.1)} className="mt-8 sm:mt-10 text-center">
-            <Link
-              to="/bestand"
-              className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-black transition-colors group"
-            >
-              Gesamten Bestand ansehen
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-            </Link>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ═══════════════════════════════════════════════════════════════
-          SECTION 4 — WARUM GCN (Vorteile)
-      ══════════════════════════════════════════════════════════════════ */}
-      <section className="bg-white border-t border-black/6 text-black">
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 py-16 sm:py-24">
-          <motion.div {...fadeUp(0)} className="border-b border-black/8 pb-8 mb-10 sm:mb-14">
-            <p className="text-xs tracking-[0.25em] text-gray-400 uppercase mb-3">Warum GCN</p>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl text-black max-w-2xl" style={{ fontWeight: 300, lineHeight: 1.1 }}>
-              Vertrauen durch <span style={{ fontWeight: 700 }}>persönliche Betreuung.</span>
+      {/* ── Bestand ───────────────────────────────────────────────── */}
+      <section className="border-t border-linea bg-crema-chiara" aria-labelledby="bestand">
+        <div className="mx-auto max-w-[1440px] px-4 py-16 sm:px-6 sm:py-24 lg:px-12">
+          <div className="mb-10 flex flex-col justify-between gap-5 border-b border-linea pb-9 md:flex-row md:items-end">
+            <h2 id="bestand" className="max-w-xl">
+              Fahrzeuge im Sofortbestand.
             </h2>
-          </motion.div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {ADVANTAGES.map((adv, i) => {
-              const Icon = adv.icon;
-              return (
-                <motion.div
-                  key={adv.number}
-                  {...fadeUp(i * 0.07)}
-                  className="bg-[#f7f7f7] rounded-3xl p-6 sm:p-8 flex flex-col gap-4 sm:gap-5 hover:shadow-md transition-shadow"
-                >
-                  <div className="flex items-start justify-between">
-                    <span className="text-xs text-gray-300 tracking-widest">{adv.number}</span>
-                    <div className="w-9 h-9 rounded-xl bg-black/6 flex items-center justify-center">
-                      <Icon className="w-4 h-4 text-gray-500" />
-                    </div>
-                  </div>
-                  <h3 className="text-base sm:text-lg text-black" style={{ fontWeight: 600, lineHeight: 1.3 }}>
-                    {adv.title}
-                  </h3>
-                  <p className="text-gray-500 text-sm leading-relaxed flex-1">{adv.description}</p>
-                </motion.div>
-              );
-            })}
+            <p className="max-w-sm text-asfalto">
+              Neben dem Auftragsservice führen wir eigene Fahrzeuge, die Sie
+              direkt kaufen können.
+            </p>
           </div>
 
-          {/* BLACK CTA BANNER — entfernt, jetzt in Section 6 ganz unten */}
+          <InventoryCarousel />
+
+          <div className="mt-10 text-center">
+            <Link
+              to="/bestand"
+              className="group inline-flex items-center gap-2 text-sm text-asfalto transition-colors hover:text-nero"
+            >
+              Gesamten Bestand ansehen
+              <ArrowRight
+                className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
+                aria-hidden="true"
+              />
+            </Link>
+          </div>
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════════════════════════════
-          SECTION 5 — WER WIR SIND
-      ══════════════════════════════════════════════════════════════════ */}
-      <section className="bg-[#f7f7f7] border-t border-black/6 text-black">
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 py-16 sm:py-24">
+      {/* ── Warum GCN ─────────────────────────────────────────────── */}
+      <section className="bg-crema" aria-labelledby="warum">
+        <div className="mx-auto max-w-[1440px] px-4 py-16 sm:px-6 sm:py-24 lg:px-12">
+          <h2 id="warum" className="max-w-2xl border-b border-linea pb-9">
+            Vertrauen entsteht durch persönliche Betreuung.
+          </h2>
 
-          {/* Header */}
-          <motion.div {...fadeUp(0)} className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-black/8 pb-8 mb-10 sm:mb-14">
-            <div>
-              <p className="text-xs tracking-[0.25em] text-gray-400 uppercase mb-3">Wer wir sind</p>
-              <h2 className="text-3xl sm:text-4xl md:text-5xl text-black" style={{ fontWeight: 300, lineHeight: 1.1 }}>
-                Zwei Experten.<br /><span style={{ fontWeight: 700 }}>Eine Leidenschaft.</span>
-              </h2>
-            </div>
-            <p className="text-gray-400 max-w-sm text-sm leading-relaxed">
-              Hinter GCN stehen zwei leidenschaftliche Automobil-Experten aus dem Schwarzwald – persönlich, transparent und fair.
+          <dl className="grid grid-cols-1 gap-x-12 sm:grid-cols-2">
+            {ADVANTAGES.map((adv) => {
+              const Icon = adv.icon;
+              return (
+                <div
+                  key={adv.title}
+                  className="flex gap-5 border-b border-linea-chiara py-8"
+                >
+                  <span
+                    aria-hidden="true"
+                    className="mt-1 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-rosso-wash text-rosso"
+                  >
+                    <Icon className="h-[18px] w-[18px]" />
+                  </span>
+                  <div>
+                    <dt className="text-[17px] leading-snug text-nero" style={{ fontWeight: 700 }}>
+                      {adv.title}
+                    </dt>
+                    <dd className="mt-2 text-asfalto">{adv.description}</dd>
+                  </div>
+                </div>
+              );
+            })}
+          </dl>
+        </div>
+      </section>
+
+      {/* ── Wer wir sind ──────────────────────────────────────────── */}
+      <section className="border-t border-linea bg-crema-chiara" aria-labelledby="wer">
+        <div className="mx-auto max-w-[1440px] px-4 py-16 sm:px-6 sm:py-24 lg:px-12">
+          <div className="flex flex-col justify-between gap-5 border-b border-linea pb-9 md:flex-row md:items-end">
+            <h2 id="wer" className="max-w-xl">
+              Zwei Experten, eine Leidenschaft.
+            </h2>
+            <p className="max-w-sm text-asfalto">
+              Hinter GCN stehen zwei Automobil-Experten aus dem Schwarzwald – ohne
+              Verkaufsdruck, dafür mit einer klaren Einschätzung.
             </p>
-          </motion.div>
+          </div>
 
-          {/* Founders */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mb-10 sm:mb-14">
-            {FOUNDERS.map((founder, i) => (
-              <motion.div
+          <div className="mt-10 grid grid-cols-1 gap-5 sm:gap-6 md:grid-cols-2">
+            {FOUNDERS.map((founder) => (
+              <article
                 key={founder.name}
-                {...fadeUp(i * 0.09)}
-                className="bg-white rounded-3xl p-6 sm:p-8 border border-black/6 flex items-center gap-5 sm:gap-7 hover:shadow-md transition-shadow"
+                className="finestra flex items-start gap-5 border border-linea bg-crema p-6 sm:gap-7 sm:p-7"
               >
-                <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl overflow-hidden bg-gray-200 shrink-0">
+                <div className="finestra-sm h-20 w-20 shrink-0 overflow-hidden bg-crema-scura sm:h-24 sm:w-24">
                   <ImageWithFallback
                     src={founder.avatar}
                     alt={founder.name}
-                    className="w-full h-full object-cover"
+                    className="h-full w-full object-cover"
                   />
                 </div>
                 <div className="min-w-0">
-                  <h3 className="text-base text-black mb-0.5" style={{ fontWeight: 600 }}>
-                    {founder.name} ({founder.age})
+                  <h3 className="text-[17px]">
+                    {founder.name}{" "}
+                    <span className="numeri text-asfalto">({founder.age})</span>
                   </h3>
-                  <p className="text-xs tracking-wide text-gray-400 uppercase mb-2">{founder.role}</p>
-                  <p className="text-gray-500 text-sm leading-relaxed">{founder.bio}</p>
+                  <p className="mt-0.5 text-sm text-rosso">{founder.role}</p>
+                  <p className="mt-2 text-sm leading-relaxed text-asfalto">
+                    {founder.bio}
+                  </p>
                 </div>
-              </motion.div>
+              </article>
             ))}
           </div>
 
-          {/* Values row */}
-          <motion.div {...fadeUp(0.06)} className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-10 sm:mb-12">
+          <ul className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3 sm:gap-6">
             {VALUES.map((v) => {
               const Icon = v.icon;
               return (
-                <div
+                <li
                   key={v.label}
-                  className="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-6 flex flex-col gap-3 border border-black/6"
+                  className="finestra flex items-start gap-4 border border-linea bg-crema p-6"
                 >
-                  <div className="w-9 h-9 rounded-xl bg-black flex items-center justify-center shrink-0">
-                    <Icon className="w-4 h-4 text-white" />
-                  </div>
+                  <span
+                    aria-hidden="true"
+                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-rosso-wash text-rosso"
+                  >
+                    <Icon className="h-[18px] w-[18px]" />
+                  </span>
                   <div>
-                    <p className="text-black text-sm mb-1" style={{ fontWeight: 600 }}>{v.label}</p>
-                    <p className="text-gray-400 text-xs leading-relaxed">{v.sub}</p>
+                    <p className="text-nero" style={{ fontWeight: 700 }}>
+                      {v.label}
+                    </p>
+                    <p className="mt-1 text-sm leading-relaxed text-asfalto">
+                      {v.sub}
+                    </p>
                   </div>
-                </div>
+                </li>
               );
             })}
-          </motion.div>
+          </ul>
 
-          {/* TERTIARY link to full about page */}
-          <motion.div {...fadeUp(0.1)} className="text-center mb-0">
+          <div className="mt-10 text-center">
             <Link
               to="/ueber-uns"
-              className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-black transition-colors group"
+              className="group inline-flex items-center gap-2 text-sm text-asfalto transition-colors hover:text-nero"
             >
               Mehr über uns erfahren
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+              <ArrowRight
+                className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
+                aria-hidden="true"
+              />
             </Link>
-          </motion.div>
-
+          </div>
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════════════════════════════
-          SECTION 6 — CTA BANNER (ganz unten)
-      ══════════════════════════════════════════════════════════════════ */}
-      <section className="bg-white border-t border-black/6 text-black">
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 py-16 sm:py-24">
-          <motion.div {...fadeUp(0)} className="bg-black text-white rounded-3xl p-8 sm:p-12 md:p-14 flex flex-col md:flex-row items-start md:items-center justify-between gap-7">
-            <div>
-              <p className="text-xs tracking-[0.2em] text-gray-400 uppercase mb-3">Jetzt starten</p>
-              <h3 className="text-xl sm:text-2xl md:text-3xl text-white max-w-lg" style={{ fontWeight: 300, lineHeight: 1.3 }}>
-                Sprechen Sie mit uns –{" "}
-                <span style={{ fontWeight: 700 }}>unverbindlich & kostenlos.</span>
-              </h3>
+      {/* ── Abschluss ─────────────────────────────────────────────── */}
+      <section className="bg-crema">
+        <div className="mx-auto max-w-[1440px] px-4 py-16 sm:px-6 sm:py-24 lg:px-12">
+          <div className="finestra relative overflow-hidden bg-nero p-8 text-crema-chiara sm:p-12 md:p-14">
+            <div className="flex flex-col items-start justify-between gap-8 md:flex-row md:items-center">
+              <div>
+                <h2 className="max-w-xl text-crema-chiara">
+                  Sprechen Sie mit uns, bevor Sie inserieren.
+                </h2>
+                <p className="mt-4 max-w-md text-crema/80">
+                  Ein Anruf, eine ehrliche Einschätzung – unverbindlich und
+                  kostenlos.
+                </p>
+              </div>
+              <div className="flex w-full shrink-0 flex-col gap-3 sm:flex-row md:w-auto">
+                <a
+                  href="tel:+4917641651086"
+                  className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full bg-rosso px-7 py-4 text-sm text-crema-chiara transition-colors hover:bg-rosso-scuro active:scale-[0.98]"
+                >
+                  <Phone className="h-4 w-4 shrink-0" aria-hidden="true" />
+                  <span className="numeri">0176 41651086</span>
+                </a>
+                <Link
+                  to="/kontakt"
+                  className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full border border-crema/25 px-7 py-4 text-sm text-crema-chiara transition-colors hover:border-crema/60 hover:bg-crema/10 active:scale-[0.98]"
+                >
+                  Nachricht schreiben
+                  <ArrowRight className="h-4 w-4 shrink-0" aria-hidden="true" />
+                </Link>
+              </div>
             </div>
-            <div className="flex flex-col sm:flex-row gap-3 shrink-0 w-full md:w-auto">
-              {/* PRIMARY on dark bg */}
-              <a
-                href="tel:+4917641651086"
-                className="inline-flex items-center justify-center gap-2 bg-white text-black px-7 py-3.5 rounded-2xl text-sm hover:bg-gray-100 transition-colors whitespace-nowrap active:scale-[0.98]"
-              >
-                <Phone className="w-4 h-4 shrink-0" />
-                0176 41651086
-              </a>
-              {/* SECONDARY on dark bg */}
-              <Link
-                to="/kontakt"
-                className="inline-flex items-center justify-center gap-2 border border-white/25 text-white px-7 py-3.5 rounded-2xl text-sm hover:bg-white/10 hover:border-white/50 transition-all whitespace-nowrap active:scale-[0.98]"
-              >
-                Kontakt aufnehmen
-                <ArrowRight className="w-4 h-4 shrink-0" />
-              </Link>
-            </div>
-          </motion.div>
+          </div>
         </div>
       </section>
     </>

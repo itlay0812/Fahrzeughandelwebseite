@@ -9,14 +9,14 @@ const fadeUp = (delay = 0) => ({
 
 function Section({ number, title, children }: { number: string; title: string; children: React.ReactNode }) {
   return (
-    <div className="pt-8 border-t border-black/6">
+    <div className="pt-8 border-t border-linea">
       <div className="flex items-baseline gap-3 mb-4">
-        <span className="text-xs text-gray-300 tracking-widest shrink-0">{number}</span>
-        <h2 className="text-base text-black" style={{ fontWeight: 600 }}>
+        <span className="numeri text-xs text-rosso tracking-widest shrink-0">{number}</span>
+        <h2 className="text-base text-nero" style={{ fontWeight: 600 }}>
           {title}
         </h2>
       </div>
-      <div className="text-gray-500 text-sm leading-relaxed space-y-4 pl-6">{children}</div>
+      <div className="text-asfalto text-sm leading-relaxed space-y-4 pl-6">{children}</div>
     </div>
   );
 }
@@ -24,8 +24,8 @@ function Section({ number, title, children }: { number: string; title: string; c
 function SubSection({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div>
-      <h3 className="text-black text-sm mb-1.5" style={{ fontWeight: 600 }}>{title}</h3>
-      <div className="text-gray-500 text-sm leading-relaxed space-y-2">{children}</div>
+      <h3 className="text-nero text-sm mb-1.5" style={{ fontWeight: 600 }}>{title}</h3>
+      <div className="text-asfalto text-sm leading-relaxed space-y-2">{children}</div>
     </div>
   );
 }
@@ -38,22 +38,20 @@ export function Privacy() {
         description="Datenschutzerklärung der GCN Fahrzeughandel GbR gemäß DSGVO."
       />
 
-      <div className="flex-1 min-h-screen bg-white text-black py-12 sm:py-16 px-4 sm:px-6 lg:px-8">
+      <div className="flex-1 min-h-screen bg-crema text-nero py-12 sm:py-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-2xl mx-auto">
 
           {/* Page Header */}
           <motion.div
             {...fadeUp(0)}
-            className="border-b border-black/8 pb-8 mb-10"
+            className="border-b border-linea pb-8 mb-10"
           >
-            <p className="text-xs tracking-[0.25em] text-gray-400 uppercase mb-3">Rechtliches</p>
             <h1
-              className="text-3xl sm:text-4xl md:text-5xl text-black"
-              style={{ fontWeight: 300, lineHeight: 1.1 }}
+              className="titolo-pagina text-nero"
             >
               Datenschutzerklärung.
             </h1>
-            <p className="text-gray-400 text-sm mt-4 leading-relaxed">
+            <p className="text-asfalto text-sm mt-4 leading-relaxed">
               Informationen gemäß Art. 13, 14 DSGVO zum Umgang mit Ihren personenbezogenen Daten.
             </p>
           </motion.div>
@@ -61,7 +59,7 @@ export function Privacy() {
           {/* Content Card */}
           <motion.div
             {...fadeUp(0.06)}
-            className="bg-[#f7f7f7] border border-black/8 rounded-3xl p-7 sm:p-10 space-y-0"
+            className="bg-crema-chiara border border-linea finestra p-7 sm:p-10 space-y-0"
           >
 
             <Section number="01" title="Datenschutz auf einen Blick">
@@ -93,14 +91,14 @@ export function Privacy() {
 
               <SubSection title="Verantwortliche Stelle">
                 <p>Die verantwortliche Stelle für die Datenverarbeitung auf dieser Website ist:</p>
-                <div className="bg-white border border-black/6 rounded-2xl p-4 mt-2">
-                  <p className="text-black" style={{ fontWeight: 600 }}>GCN Fahrzeughandel GbR</p>
+                <div className="bg-crema-chiara border border-linea rounded-2xl p-4 mt-2">
+                  <p className="text-nero" style={{ fontWeight: 600 }}>GCN Fahrzeughandel GbR</p>
                   <p>Sommeraurstr. 46</p>
                   <p>78112 Sankt Georgen im Schwarzwald</p>
                   <p className="mt-2">Telefon: +49 176 41651086</p>
                   <a
                     href="mailto:gcn-farzeughandel@outlook.de"
-                    className="text-black underline underline-offset-2 hover:opacity-60 transition-opacity"
+                    className="text-nero underline underline-offset-2 hover:opacity-60 transition-opacity"
                   >
                     gcn-farzeughandel@outlook.de
                   </a>
@@ -174,7 +172,7 @@ export function Privacy() {
                 Zur Ausübung Ihrer Rechte wenden Sie sich bitte an:{" "}
                 <a
                   href="mailto:gcn-farzeughandel@outlook.de"
-                  className="text-black underline underline-offset-2 hover:opacity-60 transition-opacity"
+                  className="text-nero underline underline-offset-2 hover:opacity-60 transition-opacity"
                 >
                   gcn-farzeughandel@outlook.de
                 </a>
@@ -190,7 +188,7 @@ export function Privacy() {
           {/* Last updated */}
           <motion.p
             {...fadeUp(0.1)}
-            className="text-center text-gray-400 text-xs mt-6"
+            className="text-center text-asfalto text-xs mt-6"
           >
             Stand: April 2026
           </motion.p>
