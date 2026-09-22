@@ -8,6 +8,7 @@ import { Imprint } from "./components/Imprint";
 import { Privacy } from "./components/Privacy";
 import { Admin } from "./components/Admin";
 import { SetupAdmin } from "./components/SetupAdmin";
+import { NotFound } from "./components/NotFound";
 import { ADMIN_ROUTE_SEGMENT } from "./adminRoute";
 
 export const router = createHashRouter([
@@ -23,6 +24,7 @@ export const router = createHashRouter([
       { path: "datenschutz", Component: Privacy },
       { path: ADMIN_ROUTE_SEGMENT, Component: Admin },
       { path: "setup-admin", Component: SetupAdmin },
+      { path: "*", Component: NotFound },
     ],
   },
 ]);

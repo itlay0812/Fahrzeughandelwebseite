@@ -8,6 +8,8 @@ interface SEOProps {
   ogImage?: string;
   ogType?: string;
   canonical?: string;
+  /** Fehlerseiten gehören nicht in den Index. */
+  robots?: string;
 }
 
 export function SEO({
@@ -16,7 +18,8 @@ export function SEO({
   keywords = "Autohandel St. Georgen, Fahrzeughandel St. Georgen, Gebrauchtwagen kaufen Schwarzwald, Auto verkaufen Triberg, Auto kaufen Villingen-Schwenningen, Furtwangen, Schonach, GCN Fahrzeughandel",
   ogImage,
   ogType = "website",
-  canonical
+  canonical,
+  robots = "index, follow"
 }: SEOProps) {
   const fullTitle = title.includes("GCN") ? title : `${title} | GCN Fahrzeughandel`;
   const siteUrl = typeof window !== 'undefined' ? window.location.origin : '';
@@ -48,7 +51,7 @@ export function SEO({
       <meta name="twitter:image" content={shareImage} />
 
       {/* Additional SEO */}
-      <meta name="robots" content="index, follow" />
+      <meta name="robots" content={robots} />
       <meta name="language" content="German" />
       <meta name="author" content="GCN Fahrzeughandel GbR" />
       

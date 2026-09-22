@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from "motion/react";
 import GisslerBranding from "./GisslerBranding";
 import { useEffect, useState } from "react";
 import { IntroProvider, useIntro } from "../intro/IntroContext";
+import { SpielOverlay } from "../game/SpielOverlay";
 
 const NAV_LINKS = [
   { name: "Startseite", path: "/" },
@@ -25,6 +26,7 @@ export function Layout() {
 function Chrome() {
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [spielOffen, setSpielOffen] = useState(false);
   const { phase, registerLogo } = useIntro();
 
   /* Während der Kamerafahrt gehört der Bildschirm dem Auto. */
@@ -255,7 +257,7 @@ function Chrome() {
       </main>
 
       {/* ── Footer ─────────────────────────────────────────────────── */}
-      <footer className="relative z-10 bg-nero pb-8 pt-14 text-crema">
+      <footer className="relative z-10 bg-nero pb-10 pt-14 text-crema">
         <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-12">
           <div className="mb-12 grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3">
             <div className="flex flex-col gap-5">
@@ -367,8 +369,18 @@ function Chrome() {
               <GisslerBranding href="https://ga-webdesign.de" />
             </div>
           </div>
+
+          <button
+            type="button"
+            onClick={() => setSpielOffen(true)}
+            className="mx-auto mt-6 block text-[10px] uppercase tracking-[0.2em] text-crema/55 transition-colors hover:text-crema-chiara focus-visible:text-crema-chiara active:scale-[0.98]"
+          >
+            Minispiel
+          </button>
         </div>
       </footer>
+
+      <SpielOverlay offen={spielOffen} onClose={() => setSpielOffen(false)} />
     </div>
   );
 }
