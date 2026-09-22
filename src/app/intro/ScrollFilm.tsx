@@ -22,10 +22,12 @@ export function ScrollFilm({
   progress,
   className = "",
   onFirstFrame,
+  onAllFrames,
 }: {
   progress: MotionValue<number>;
   className?: string;
   onFirstFrame?: () => void;
+  onAllFrames?: () => void;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const frames = useRef<Array<HTMLImageElement | null>>([]);
@@ -109,6 +111,7 @@ export function ScrollFilm({
             onFirstFrame?.();
           }
           if (done % 8 === 0 || done === urls.current.length) setLoaded(done);
+          if (done === urls.current.length) onAllFrames?.();
           paint();
           resolve();
         };

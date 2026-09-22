@@ -26,7 +26,12 @@ import { SEO } from "./SEO";
 import { CockpitIntro } from "./CockpitIntro";
 import { LAST_FRAME } from "../intro/ScrollFilm";
 import { HeroContent, HeroVeil } from "./HeroContent";
-import { shouldPlayIntro, useIntro } from "../intro/IntroContext";
+import {
+  prefersFilmOnly,
+  shouldPlayIntro,
+  useIntro,
+} from "../intro/IntroContext";
+import { HeroFilm } from "../intro/HeroFilm";
 
 // ─── DATEN ────────────────────────────────────────────────────────────────────
 
@@ -279,7 +284,13 @@ function InventoryCarousel() {
 
 export function Home() {
   const { setPhase } = useIntro();
-  const [introOn] = useState(() => shouldPlayIntro());
+  /* "scroll" = Scroll-Bühne (Desktop), "film" = selbstlaufende Fahrt im Hero
+     (Handy/Tablet), "off" = nur das Standbild. */
+  const [introMode] = useState<"scroll" | "film" | "off">(() =>
+    !shouldPlayIntro() ? "off" : prefersFilmOnly() ? "film" : "scroll",
+  );
+  const introOn = introMode === "scroll";
+  const [filmDone, setFilmDone] = useState(introMode !== "film");
   const heroRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -319,16 +330,27 @@ export function Home() {
           ref={heroRef}
           className="relative h-[100svh] min-h-[600px] overflow-hidden bg-crema"
         >
-          <img
-            src={LAST_FRAME}
-            alt="Illustration: Coupé auf einer Schwarzwaldstraße zwischen Tannen"
-            className="absolute inset-0 h-full w-full object-cover"
-            fetchPriority="high"
-          />
-          <div className="absolute inset-0 z-[60]" aria-hidden="true">
+          {introMode === "film" ? (
+            <HeroFilm onEnd={() => setFilmDone(true)} />
+          ) : (
+            <img
+              src={LAST_FRAME}
+              alt="Illustration: Coupé auf einer Schwarzwaldstraße zwischen Tannen"
+              className="absolute inset-0 h-full w-full object-cover"
+              fetchPriority="high"
+            />
+          )}
+          <div
+            className="absolute inset-0 z-[60] transition-opacity duration-700"
+            style={{ opacity: filmDone ? 1 : 0 }}
+            aria-hidden="true"
+          >
             <HeroVeil />
           </div>
-          <div className="absolute inset-0 z-[70]">
+          <div
+            className="absolute inset-0 z-[70] transition-opacity duration-700"
+            style={{ opacity: filmDone ? 1 : 0 }}
+          >
             <HeroContent as="h1" />
           </div>
         </section>
