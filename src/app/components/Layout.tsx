@@ -96,13 +96,18 @@ function Chrome() {
                 key={link.path}
                 to={link.path}
                 aria-current={isActive(link.path) ? "page" : undefined}
-                className={`whitespace-nowrap border-b-2 pb-0.5 text-[15px] transition-colors ${
-                  isActive(link.path)
-                    ? "border-rosso text-nero"
-                    : "border-transparent text-asfalto hover:text-nero"
+                className={`group relative whitespace-nowrap py-1 text-[15px] transition-colors ${
+                  isActive(link.path) ? "text-nero" : "text-asfalto hover:text-nero"
                 }`}
               >
                 {link.name}
+                {/* Unterstrich wächst beim Hover von links ein. */}
+                <span
+                  aria-hidden="true"
+                  className={`absolute inset-x-0 -bottom-0.5 h-[2px] origin-left bg-rosso transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                    isActive(link.path) ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+                  }`}
+                />
               </Link>
             ))}
           </nav>
@@ -110,17 +115,17 @@ function Chrome() {
           <div className="ml-auto flex items-center gap-2 sm:gap-3">
             <a
               href="tel:+4917641651086"
-              className="hidden items-center gap-2 rounded-full border border-linea px-4 py-2.5 text-sm text-nero transition-colors hover:border-nero/30 hover:bg-crema sm:inline-flex"
+              className="group hidden items-center gap-2 rounded-full border border-linea px-4 py-2.5 text-sm text-nero transition-colors hover:border-nero hover:bg-nero hover:text-crema-chiara sm:inline-flex"
             >
-              <Phone className="h-4 w-4 shrink-0" aria-hidden="true" />
+              <Phone className="h-4 w-4 shrink-0 transition-transform duration-300 group-hover:-rotate-12" aria-hidden="true" />
               <span className="numeri">0176 41651086</span>
             </a>
             <Link
               to="/kontakt?type=search"
-              className="hidden items-center gap-2 rounded-full bg-rosso px-5 py-2.5 text-sm text-crema-chiara transition-colors hover:bg-rosso-scuro active:scale-[0.98] lg:inline-flex"
+              className="group hidden items-center gap-2 rounded-full bg-rosso px-5 py-2.5 text-sm text-crema-chiara transition-colors hover:bg-rosso-scuro active:scale-[0.98] lg:inline-flex"
             >
               Auftrag erstellen
-              <ArrowRight className="h-4 w-4 shrink-0" aria-hidden="true" />
+              <ArrowRight className="h-4 w-4 shrink-0 transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true" />
             </Link>
 
             <a
@@ -131,7 +136,7 @@ function Chrome() {
               <Phone className="h-4 w-4" aria-hidden="true" />
             </a>
             <button
-              className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-linea text-nero transition-colors hover:bg-crema md:hidden"
+              className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-linea text-nero transition-colors hover:border-nero hover:bg-nero hover:text-crema-chiara md:hidden"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-label={mobileMenuOpen ? "Menü schließen" : "Menü öffnen"}
               aria-expanded={mobileMenuOpen}
