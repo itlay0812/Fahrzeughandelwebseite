@@ -1,4 +1,6 @@
 import { Helmet } from 'react-helmet-async';
+import { useLocation } from 'react-router';
+import { SITE_URL } from '../seiten';
 import ogFallback from '../../assets/illustrations/hero.jpg';
 
 interface SEOProps {
@@ -14,16 +16,20 @@ interface SEOProps {
 
 export function SEO({
   title = "GCN Fahrzeughandel GbR - Autohandel in St. Georgen im Schwarzwald",
-  description = "GCN Fahrzeughandel GbR - Ihr Autohandel in St. Georgen im Schwarzwald. Gebrauchtwagen kaufen und verkaufen mit persoenlicher Beratung in St. Georgen, Triberg, Villingen-Schwenningen, Furtwangen, Schonach und Umgebung.",
+  description = "GCN Fahrzeughandel GbR - Ihr Autohandel in St. Georgen im Schwarzwald. Gebrauchtwagen kaufen und verkaufen mit persönlicher Beratung in St. Georgen, Triberg, Villingen-Schwenningen, Furtwangen, Schonach und Umgebung.",
   keywords = "Autohandel St. Georgen, Fahrzeughandel St. Georgen, Gebrauchtwagen kaufen Schwarzwald, Auto verkaufen Triberg, Auto kaufen Villingen-Schwenningen, Furtwangen, Schonach, GCN Fahrzeughandel",
   ogImage,
   ogType = "website",
   canonical,
   robots = "index, follow"
 }: SEOProps) {
+  const { pathname } = useLocation();
   const fullTitle = title.includes("GCN") ? title : `${title} | GCN Fahrzeughandel`;
   const siteUrl = typeof window !== 'undefined' ? window.location.origin : '';
-  const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
+  const indexierbar = !robots.includes('noindex');
+  const pfad = pathname.length > 1 ? pathname.replace(/\/+$/, '') : pathname;
+  const canonicalUrl = canonical ?? (indexierbar ? `${SITE_URL}${pfad}` : undefined);
+  const currentUrl = canonicalUrl ?? (typeof window !== 'undefined' ? window.location.href : '');
   // Eigenes Bild statt Stockfoto – und absolut, wie es Open Graph verlangt.
   const shareImage = ogImage ?? `${siteUrl}${ogFallback}`;
 
@@ -36,7 +42,7 @@ export function SEO({
       
       {/* Open Graph / Facebook */}
       <meta property="og:type" content={ogType} />
-      <meta property="og:url" content={canonical || currentUrl} />
+      <meta property="og:url" content={currentUrl} />
       <meta property="og:title" content={fullTitle} />
       <meta property="og:description" content={description} />
       <meta property="og:image" content={shareImage} />
@@ -45,7 +51,7 @@ export function SEO({
 
       {/* Twitter */}
       <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:url" content={canonical || currentUrl} />
+      <meta name="twitter:url" content={currentUrl} />
       <meta name="twitter:title" content={fullTitle} />
       <meta name="twitter:description" content={description} />
       <meta name="twitter:image" content={shareImage} />
@@ -55,7 +61,7 @@ export function SEO({
       <meta name="language" content="German" />
       <meta name="author" content="GCN Fahrzeughandel GbR" />
       
-      {canonical && <link rel="canonical" href={canonical} />}
+      {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
       
       {/* Structured Data - Local Business */}
       <script type="application/ld+json">
@@ -68,10 +74,20 @@ export function SEO({
           "email": "gcn-fahrzeughandel@outlook.de",
           "address": {
             "@type": "PostalAddress",
-            "addressCountry": "DE",
-            "addressLocality": "St. Georgen im Schwarzwald"
+            "streetAddress": "Sommeraurstr. 46",
+            "postalCode": "78112",
+            "addressLocality": "St. Georgen im Schwarzwald",
+            "addressRegion": "Baden-Württemberg",
+            "addressCountry": "DE"
           },
-          "url": siteUrl,
+          "url": SITE_URL,
+          "logo": `${SITE_URL}/favicon.png`,
+          "image": shareImage,
+          "founder": [
+            { "@type": "Person", "name": "Giosue Canobbio" },
+            { "@type": "Person", "name": "Christopher Neun" }
+          ],
+          "sameAs": ["https://www.instagram.com/gcn.fahrzeughandel/"],
           "priceRange": "€€",
           "openingHours": "Mo-Fr 09:00-18:00",
           "paymentAccepted": "Cash, Bank Transfer",

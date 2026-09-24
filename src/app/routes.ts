@@ -1,4 +1,4 @@
-import { createHashRouter } from "react-router";
+import { createBrowserRouter } from "react-router";
 import { Layout } from "./components/Layout";
 import { Home } from "./components/Home";
 import { Inventory } from "./components/Inventory";
@@ -11,7 +11,15 @@ import { SetupAdmin } from "./components/SetupAdmin";
 import { NotFound } from "./components/NotFound";
 import { ADMIN_ROUTE_SEGMENT } from "./adminRoute";
 
-export const router = createHashRouter([
+const basename = import.meta.env.BASE_URL.replace(/\/$/, "") || "/";
+
+/* Alte Links aus der Hash-Zeit (/#/kontakt) auf echte Pfade umbiegen. */
+if (window.location.hash.startsWith("#/")) {
+  const ziel = window.location.hash.slice(2);
+  window.history.replaceState(null, "", `${import.meta.env.BASE_URL}${ziel}`);
+}
+
+export const router = createBrowserRouter([
   {
     path: "/",
     Component: Layout,
@@ -27,4 +35,4 @@ export const router = createHashRouter([
       { path: "*", Component: NotFound },
     ],
   },
-]);
+], { basename });

@@ -340,11 +340,7 @@ export function Contact() {
 
       const fullName = `${data.firstName} ${data.lastName}`.trim();
       const isSearch = requestType === "search";
-      const adminLink = `${window.location.origin}${
-        window.location.pathname.endsWith("/")
-          ? window.location.pathname
-          : `${window.location.pathname}/`
-      }#/${ADMIN_ROUTE_SEGMENT}`;
+      const adminLink = `${window.location.origin}${import.meta.env.BASE_URL}${ADMIN_ROUTE_SEGMENT}`;
       const summary = isSearch
         ? [
             "=== ANFRAGE ===",

@@ -129,7 +129,7 @@ export function CarInquiryModal({ car, onClose }: Props) {
       data.availability === "Sonstiges" && data.availabilityCustom
         ? data.availabilityCustom
         : data.availability;
-    const adminLink = `${window.location.origin}${window.location.pathname.endsWith("/") ? window.location.pathname : `${window.location.pathname}/`}#/${ADMIN_ROUTE_SEGMENT}`;
+    const adminLink = `${window.location.origin}${import.meta.env.BASE_URL}${ADMIN_ROUTE_SEGMENT}`;
     try {
       const response = await fetch(
         `https://${projectId}.supabase.co/functions/v1/make-server-004f047d/submissions`,
