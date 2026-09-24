@@ -65,10 +65,10 @@ export function markIntroSeen() {
   introDoneThisLoad = true;
 }
 
-/* Handy und Tablet bekommen die Fahrt als selbstlaufenden Film im Hero statt
-   der Scroll-Bühne: Auf Touch-Geräten fühlt sich das Scroll-Scrubbing zäh an
-   und die 940vh lange Strecke steht dem Inhalt im Weg. */
-export function prefersFilmOnly() {
+/* Handy und Tablet bekommen keine Fahrt, sondern direkt den Hero: Auf
+   Touch-Geräten fühlt sich das Scroll-Scrubbing zäh an und die 940vh lange
+   Strecke steht dem Inhalt im Weg. */
+export function prefersStaticHero() {
   if (typeof window === "undefined") return false;
   return window.matchMedia("(max-width: 1023px), (pointer: coarse)").matches;
 }
