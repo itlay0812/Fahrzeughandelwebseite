@@ -1,14 +1,6 @@
 import { createBrowserRouter } from "react-router";
 import { Layout } from "./components/Layout";
 import { Home } from "./components/Home";
-import { Inventory } from "./components/Inventory";
-import { Contact } from "./components/Contact";
-import { About } from "./components/About";
-import { Imprint } from "./components/Imprint";
-import { Privacy } from "./components/Privacy";
-import { Admin } from "./components/Admin";
-import { SetupAdmin } from "./components/SetupAdmin";
-import { NotFound } from "./components/NotFound";
 import { ADMIN_ROUTE_SEGMENT } from "./adminRoute";
 
 const basename = import.meta.env.BASE_URL.replace(/\/$/, "") || "/";
@@ -25,14 +17,38 @@ export const router = createBrowserRouter([
     Component: Layout,
     children: [
       { index: true, Component: Home },
-      { path: "bestand", Component: Inventory },
-      { path: "kontakt", Component: Contact },
-      { path: "ueber-uns", Component: About },
-      { path: "impressum", Component: Imprint },
-      { path: "datenschutz", Component: Privacy },
-      { path: ADMIN_ROUTE_SEGMENT, Component: Admin },
-      { path: "setup-admin", Component: SetupAdmin },
-      { path: "*", Component: NotFound },
+      {
+        path: "bestand",
+        lazy: async () => ({ Component: (await import("./components/Inventory")).Inventory }),
+      },
+      {
+        path: "kontakt",
+        lazy: async () => ({ Component: (await import("./components/Contact")).Contact }),
+      },
+      {
+        path: "ueber-uns",
+        lazy: async () => ({ Component: (await import("./components/About")).About }),
+      },
+      {
+        path: "impressum",
+        lazy: async () => ({ Component: (await import("./components/Imprint")).Imprint }),
+      },
+      {
+        path: "datenschutz",
+        lazy: async () => ({ Component: (await import("./components/Privacy")).Privacy }),
+      },
+      {
+        path: ADMIN_ROUTE_SEGMENT,
+        lazy: async () => ({ Component: (await import("./components/Admin")).Admin }),
+      },
+      {
+        path: "setup-admin",
+        lazy: async () => ({ Component: (await import("./components/SetupAdmin")).SetupAdmin }),
+      },
+      {
+        path: "*",
+        lazy: async () => ({ Component: (await import("./components/NotFound")).NotFound }),
+      },
     ],
   },
 ], { basename });

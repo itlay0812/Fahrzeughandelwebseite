@@ -25,13 +25,12 @@ export function SEO({
 }: SEOProps) {
   const { pathname } = useLocation();
   const fullTitle = title.includes("GCN") ? title : `${title} | GCN Fahrzeughandel`;
-  const siteUrl = typeof window !== 'undefined' ? window.location.origin : '';
   const indexierbar = !robots.includes('noindex');
   const pfad = pathname.length > 1 ? pathname.replace(/\/+$/, '') : pathname;
   const canonicalUrl = canonical ?? (indexierbar ? `${SITE_URL}${pfad}` : undefined);
   const currentUrl = canonicalUrl ?? (typeof window !== 'undefined' ? window.location.href : '');
   // Eigenes Bild statt Stockfoto – und absolut, wie es Open Graph verlangt.
-  const shareImage = ogImage ?? `${siteUrl}${ogFallback}`;
+  const shareImage = ogImage ?? `${SITE_URL}${ogFallback}`;
 
   return (
     <Helmet>

@@ -1,7 +1,11 @@
-import { useEffect, useRef } from "react";
+import { lazy, Suspense, useEffect, useRef } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { X } from "lucide-react";
-import { Schwarzwaldfahrt } from "./Schwarzwaldfahrt";
+
+/* Das Spiel wird erst geladen, wenn jemand es öffnet. */
+const Schwarzwaldfahrt = lazy(() =>
+  import("./Schwarzwaldfahrt").then((m) => ({ default: m.Schwarzwaldfahrt })),
+);
 
 /* Das Fundstück aus dem Footer öffnet sich hier – klein, ohne Seitenwechsel,
    und mit Escape wieder zu. */
@@ -79,7 +83,9 @@ export function SpielOverlay({
                 </button>
               </div>
 
-              <Schwarzwaldfahrt />
+              <Suspense fallback={null}>
+                <Schwarzwaldfahrt />
+              </Suspense>
             </div>
           </motion.div>
         </>
