@@ -8,8 +8,8 @@ import stellplatzImg from "../../assets/illustrations/stellplatz.jpg";
 import vwUpImage from "../../assets/vw-up.jpg";
 import giosueImg from "../../assets/Giosue.jpeg";
 import christophImg from "../../assets/Christoph.jpeg";
-import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { GoogleBewertungen } from "./GoogleBewertungen";
+import { GruenderSektion, type Wert } from "./Gruender";
 import { Tusche, type TuscheName } from "./Tusche";
 import { PROVISION } from "../firma";
 import { SEO } from "./SEO";
@@ -109,21 +109,21 @@ const FOUNDERS = [
   },
 ];
 
-const VALUES: { icon: TuscheName; label: string; sub: string }[] = [
+const VALUES: Wert[] = [
   {
     icon: "lupe",
     label: "Transparenz",
-    sub: `Provision ${PROVISION}, vorab schriftlich vereinbart. Keine versteckten Kosten.`,
+    text: `Provision ${PROVISION}, vorab schriftlich vereinbart. Keine versteckten Kosten.`,
   },
   {
     icon: "betreuung",
     label: "Persönlich",
-    sub: "Ein fester Ansprechpartner von der Anfrage bis zur Übergabe.",
+    text: "Ein fester Ansprechpartner von der Anfrage bis zur Übergabe.",
   },
   {
     icon: "handschlag",
     label: "Fairness",
-    sub: "Faire Preise und ehrliche Beratung, auch wenn sie gegen den Abschluss spricht.",
+    text: "Faire Preise und ehrliche Beratung, auch wenn sie gegen den Abschluss spricht.",
   },
 ];
 
@@ -437,71 +437,7 @@ export function Home() {
       {/* ── Wer wir sind ──────────────────────────────────────────── */}
       <section className="border-t border-linea bg-crema-chiara" aria-labelledby="wer">
         <div className="mx-auto max-w-[1440px] px-4 py-16 sm:px-6 sm:py-24 lg:px-12">
-          <div className="flex flex-col justify-between gap-5 border-b border-linea pb-9 md:flex-row md:items-end">
-            <h2 id="wer" className="max-w-xl">
-              Zwei Experten, eine Leidenschaft.
-            </h2>
-            <p className="max-w-sm text-asfalto">
-              Hinter GCN stehen zwei Automobil-Experten aus dem Schwarzwald – ohne
-              Verkaufsdruck, dafür mit einer klaren Einschätzung.
-            </p>
-          </div>
-
-          <div className="mt-10 grid grid-cols-1 gap-5 sm:gap-6 md:grid-cols-2">
-            {FOUNDERS.map((founder) => (
-              <article
-                key={founder.name}
-                className="finestra flex items-start gap-5 border border-linea bg-crema p-6 sm:gap-7 sm:p-7"
-              >
-                <div className="finestra-sm h-20 w-20 shrink-0 overflow-hidden bg-crema-scura sm:h-24 sm:w-24">
-                  <ImageWithFallback
-                    src={founder.avatar}
-                    alt={founder.name}
-                    className="h-full w-full object-cover"
-                  />
-                </div>
-                <div className="min-w-0">
-                  <h3 className="text-[17px]">
-                    {founder.name}{" "}
-                    <span className="numeri text-asfalto">({founder.age})</span>
-                  </h3>
-                  <p className="mt-0.5 text-sm text-rosso">{founder.role}</p>
-                  <p className="mt-2 text-sm leading-relaxed text-asfalto">
-                    {founder.bio}
-                  </p>
-                </div>
-              </article>
-            ))}
-          </div>
-
-          <ul className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3 sm:gap-6">
-            {VALUES.map((v) => (
-                <li
-                  key={v.label}
-                  className="finestra flex items-start gap-5 border border-linea bg-crema p-6"
-                >
-                  <Tusche name={v.icon} className="h-12 w-12 text-nero" />
-                  <div>
-                    <p className="text-nero" style={{ fontWeight: 700 }}>
-                      {v.label}
-                    </p>
-                    <p className="mt-1 text-sm leading-relaxed text-asfalto">
-                      {v.sub}
-                    </p>
-                  </div>
-                </li>
-            ))}
-          </ul>
-
-          <div className="mt-10 text-center">
-            <Link
-              to="/ueber-uns"
-              className="group inline-flex items-center gap-2 text-sm text-asfalto transition-colors hover:text-nero"
-            >
-              Mehr über uns erfahren
-              <Tusche name="pfeil" className="h-5 w-5 transition-transform group-hover:translate-x-0.5" />
-            </Link>
-          </div>
+          <GruenderSektion gruender={FOUNDERS} werte={VALUES} mehrLink />
         </div>
       </section>
 

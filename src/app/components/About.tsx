@@ -1,34 +1,35 @@
 import { Link } from "react-router";
-import { ImageWithFallback } from "./figma/ImageWithFallback";
 import giosueImg from "../../assets/Giosue.jpeg";
 import christophImg from "../../assets/Christoph.jpeg";
 import { SEO } from "./SEO";
-import { Tusche, type TuscheName } from "./Tusche";
+import { Tusche } from "./Tusche";
+import { GruenderSektion, type Wert } from "./Gruender";
+import { GoogleBewertungen } from "./GoogleBewertungen";
 import { PROVISION } from "../firma";
 
-const VALUES: { icon: TuscheName; title: string; description: string }[] = [
+const VALUES: Wert[] = [
   {
     icon: "lupe",
-    title: "Transparenz",
-    description:
+    label: "Transparenz",
+    text:
       `Keine versteckten Mängel, keine versteckten Kosten. Unsere Provision beträgt ${PROVISION} und wird vor Auftragsbeginn schriftlich vereinbart.`,
   },
   {
     icon: "betreuung",
-    title: "Persönlich",
-    description:
+    label: "Persönlich",
+    text:
       "Jeder Auftrag ist anders. Wir beraten individuell und auf Augenhöhe – ohne Verkaufsdruck.",
   },
   {
     icon: "handschlag",
-    title: "Fairness",
-    description:
+    label: "Fairness",
+    text:
       "Ob Kauf oder Verkauf: Wir arbeiten mit marktgerechten Preisen und sagen auch mal ab.",
   },
   {
     icon: "garantie",
-    title: "Garantie über ProGarant",
-    description:
+    label: "Garantie über ProGarant",
+    text:
       "Jedes Fahrzeug, das wir verkaufen, ist über eine Gebrauchtwagengarantie von ProGarant abgesichert. Die Garantiebedingungen erhalten Sie vor dem Kauf. Auch nach der Übergabe bleiben wir Ihr Ansprechpartner.",
   },
 ];
@@ -60,58 +61,21 @@ export function About() {
       />
 
       <div className="min-h-screen flex-1 bg-crema text-nero">
-        <div className="mx-auto max-w-[1180px] px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
-          <header className="mb-12 border-b border-linea pb-9 sm:mb-16">
-            <h1 className="titolo-pagina max-w-2xl">Zwei Experten, eine Leidenschaft.</h1>
-            <p className="mt-5 max-w-xl text-lg text-asfalto">
-              Wir kaufen Fahrzeuge nach Ihren Wünschen ein und verkaufen sie mit
-              Garantie weiter – transparent und unkompliziert, aus St. Georgen im
-              Schwarzwald für Kunden in der Region und bundesweit.
-            </p>
-          </header>
+        <section
+          className="mx-auto max-w-[1440px] px-4 py-12 sm:px-6 sm:py-16 lg:px-12"
+          aria-labelledby="wer"
+        >
+          <GruenderSektion
+            gruender={FOUNDERS}
+            werte={VALUES}
+            ueberschrift="h1"
+            einleitung="Wir kaufen Fahrzeuge nach Ihren Wünschen ein und verkaufen sie mit Garantie weiter – transparent und unkompliziert, aus St. Georgen im Schwarzwald für Kunden in der Region und bundesweit."
+          />
+        </section>
 
-          <div className="mb-12 grid grid-cols-1 gap-5 sm:mb-16 sm:gap-6 md:grid-cols-2">
-            {FOUNDERS.map((founder) => (
-              <article
-                key={founder.name}
-                className="finestra flex flex-col border border-linea bg-crema-chiara p-7 sm:p-8"
-              >
-                <div className="finestra-sm mb-5 h-24 w-24 overflow-hidden bg-crema-scura sm:h-28 sm:w-28">
-                  <ImageWithFallback
-                    src={founder.avatar}
-                    alt={founder.name}
-                    className="h-full w-full object-cover"
-                  />
-                </div>
-                <h2 className="text-xl" style={{ fontWeight: 700 }}>
-                  {founder.name}{" "}
-                  <span className="numeri text-asfalto">({founder.age})</span>
-                </h2>
-                <p className="mt-1 text-sm text-rosso">{founder.role}</p>
-                <p className="mt-4 text-asfalto">{founder.bio}</p>
-              </article>
-            ))}
-          </div>
+        <GoogleBewertungen />
 
-          <section className="mb-12 sm:mb-16" aria-labelledby="philosophie">
-            <h2 id="philosophie" className="border-b border-linea pb-7">
-              Woran wir uns messen lassen.
-            </h2>
-            <dl className="grid grid-cols-1 gap-x-12 sm:grid-cols-2">
-              {VALUES.map((val) => (
-                <div key={val.title} className="flex gap-6 border-b border-linea-chiara py-7">
-                  <Tusche name={val.icon} className="h-14 w-14 text-nero" />
-                  <div>
-                    <dt className="text-[17px] leading-snug" style={{ fontWeight: 700 }}>
-                      {val.title}
-                    </dt>
-                    <dd className="mt-2 text-asfalto">{val.description}</dd>
-                  </div>
-                </div>
-              ))}
-            </dl>
-          </section>
-
+        <div className="mx-auto max-w-[1440px] px-4 pb-16 sm:px-6 sm:pb-24 lg:px-12">
           <section className="finestra relative overflow-hidden bg-nero p-8 text-crema-chiara sm:p-12">
             <div className="flex flex-col items-start justify-between gap-7 md:flex-row md:items-center">
               <div>

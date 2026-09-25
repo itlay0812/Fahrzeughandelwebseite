@@ -1,3 +1,4 @@
+import { useLayoutEffect, useRef, useState } from "react";
 import { GOOGLE_BEWERTEN_URL, GOOGLE_PROFIL_URL } from "../firma";
 import { KUNDENSTIMMEN, type Kundenstimme } from "../kundenstimmen";
 import { Tusche } from "./Tusche";
@@ -25,6 +26,20 @@ function Sterne({ wert, dekorativ = false }: { wert: number; dekorativ?: boolean
 
 function Kachel({ stimme }: { stimme: Kundenstimme }) {
   const [klein] = stimme.foto.quellen;
+  /* Lange Bewertungen werden gekürzt, damit die Kacheln gleich hoch bleiben.
+     Der Knopf erscheint nur, wenn der Text wirklich abgeschnitten ist. */
+  const textRef = useRef<HTMLParagraphElement>(null);
+  const [offen, setOffen] = useState(false);
+  const [gekuerzt, setGekuerzt] = useState(false);
+  useLayoutEffect(() => {
+    const el = textRef.current;
+    if (!el || offen) return;
+    const pruefen = () => setGekuerzt(el.scrollHeight > el.clientHeight + 2);
+    pruefen();
+    const beobachter = new ResizeObserver(pruefen);
+    beobachter.observe(el);
+    return () => beobachter.disconnect();
+  }, [offen]);
   return (
     <li className="finestra flex flex-col overflow-hidden border border-linea bg-crema-chiara">
       <div className="relative aspect-[4/3] overflow-hidden border-b border-linea bg-crema-scura">
@@ -44,7 +59,24 @@ function Kachel({ stimme }: { stimme: Kundenstimme }) {
       <figure className="flex flex-1 flex-col p-7 sm:p-8">
         <Sterne wert={stimme.sterne} />
         <blockquote className="mt-5 flex-1">
-          <p className="text-lg leading-relaxed text-nero">„{stimme.text}“</p>
+          <p
+            ref={textRef}
+            id={`stimme-${stimme.name.replace(/\s+/g, "-")}`}
+            className={`whitespace-pre-line text-[17px] leading-relaxed text-nero ${offen ? "" : "line-clamp-6"}`}
+          >
+            „{stimme.text}“
+          </p>
+          {(gekuerzt || offen) && (
+            <button
+              type="button"
+              onClick={() => setOffen(!offen)}
+              aria-expanded={offen}
+              aria-controls={`stimme-${stimme.name.replace(/\s+/g, "-")}`}
+              className="mt-3 text-sm text-rosso underline underline-offset-4 transition-colors hover:text-rosso-scuro"
+            >
+              {offen ? "Weniger anzeigen" : "Ganze Bewertung lesen"}
+            </button>
+          )}
         </blockquote>
         <figcaption className="mt-6 border-t border-linea-chiara pt-5">
           <p className="text-[15px] text-nero" style={{ fontWeight: 600 }}>

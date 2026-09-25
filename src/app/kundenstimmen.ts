@@ -32,7 +32,7 @@ export const KUNDENSTIMMEN: Kundenstimme[] = [
   {
     name: "Antonio Melle",
     fahrzeug: "Toyota Auris Hybrid",
-    text: "",
+    text: "Absolut empfehlenswert!\nIch bin rundum zufrieden mit dem gesamten Ablauf. Das Team von GCN-Fahrzeughandel hat mir mein Wunschauto besorgt und sich um alles zuverlässig und unkompliziert gekümmert. Besonders beeindruckt hat mich der persönliche Service – das Fahrzeug wurde mir sogar bis direkt vor die Haustür geliefert.\n\nVon der ersten Kontaktaufnahme bis zur Übergabe hat einfach alles gepasst. Freundlich, zuverlässig, ehrlich und absolut kundenorientiert – genau so wünscht man sich einen Autohändler.\n\nVielen Dank für den tollen Service! Ich würde jederzeit wieder ein Fahrzeug bei euch kaufen und kann GCN-Fahrzeughandel uneingeschränkt weiterempfehlen. 🚗👍🏼",
     sterne: 5,
     foto: {
       quellen: [
@@ -43,9 +43,9 @@ export const KUNDENSTIMMEN: Kundenstimme[] = [
     },
   },
   {
-    name: "Nico Ballen",
+    name: "Nico Ballin",
     fahrzeug: "Ford Focus RS",
-    text: "",
+    text: "Super Händler, ich habe mein erstes Auto bei ihnen gekauft. Kontakt lief super, Auto war perfekt und es wurde aufbereitet und bis zu mir geliefert! Mein nächstes Auto wird hoffentlich wieder hier gekauft!! 😎",
     sterne: 5,
     foto: {
       quellen: [
@@ -58,7 +58,7 @@ export const KUNDENSTIMMEN: Kundenstimme[] = [
   {
     name: "Firat Savas",
     fahrzeug: "Škoda Octavia",
-    text: "",
+    text: "Super Service, von der Autosuche bis hin zur Übergabe war alles unkompliziert und angenehm, die Kollegen haben meine Wünsche und Anliegen ernst genommen und mir ein wunderschönes Auto gefunden, abgeholt, aufbereitet und ausgeliefert.\nKann ich nur weiterempfehlen!",
     sterne: 5,
     foto: {
       quellen: [
