@@ -98,7 +98,7 @@ export function GoogleBewertungen() {
   const stimmen = KUNDENSTIMMEN.filter((k) => k.text.trim());
 
   return (
-    <section className="bg-crema" aria-labelledby="kundenstimmen">
+    <section className="bg-crema-chiara" aria-labelledby="kundenstimmen">
       <div className="mx-auto max-w-[1440px] px-4 pb-16 pt-4 sm:px-6 sm:pb-24 lg:px-12">
         <h2 id="kundenstimmen" className="max-w-xl border-b border-linea pb-9">
           Das sagen unsere Kunden.

@@ -19,13 +19,13 @@ export type Wert = { icon: TuscheName; label: string; text: string };
  */
 export function GruenderSektion({
   gruender,
-  werte,
+  werte = [],
   ueberschrift = "h2",
   einleitung = "Hinter GCN stehen zwei Automobil-Experten aus dem Schwarzwald – ohne Verkaufsdruck, dafür mit einer klaren Einschätzung.",
   mehrLink = false,
 }: {
   gruender: Gruender[];
-  werte: Wert[];
+  werte?: Wert[];
   ueberschrift?: "h1" | "h2";
   einleitung?: string;
   mehrLink?: boolean;
@@ -96,6 +96,7 @@ export function GruenderSektion({
       </div>
 
       {/* Werte – ohne Kästen, nur durch Luft und eine Linie getrennt */}
+      {werte && werte.length > 0 && (
       <ul
         className={`mt-16 grid grid-cols-1 gap-x-12 gap-y-9 border-t border-linea pt-10 sm:mt-20 sm:grid-cols-2 ${
           werte.length === 4 ? "lg:grid-cols-4 lg:gap-x-10" : "lg:grid-cols-3"
@@ -113,6 +114,7 @@ export function GruenderSektion({
           </li>
         ))}
       </ul>
+      )}
     </>
   );
 }

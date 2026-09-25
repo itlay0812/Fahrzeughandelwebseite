@@ -3,36 +3,9 @@ import giosueImg from "../../assets/Giosue.jpeg";
 import christophImg from "../../assets/Christoph.jpeg";
 import { SEO } from "./SEO";
 import { Tusche } from "./Tusche";
-import { GruenderSektion, type Wert } from "./Gruender";
+import { GruenderSektion } from "./Gruender";
+import { VersprechenSektion } from "./Versprechen";
 import { GoogleBewertungen } from "./GoogleBewertungen";
-import { PROVISION } from "../firma";
-
-const VALUES: Wert[] = [
-  {
-    icon: "lupe",
-    label: "Transparenz",
-    text:
-      `Keine versteckten Mängel, keine versteckten Kosten. Unsere Provision beträgt ${PROVISION} und wird vor Auftragsbeginn schriftlich vereinbart.`,
-  },
-  {
-    icon: "betreuung",
-    label: "Persönlich",
-    text:
-      "Jeder Auftrag ist anders. Wir beraten individuell und auf Augenhöhe – ohne Verkaufsdruck.",
-  },
-  {
-    icon: "handschlag",
-    label: "Fairness",
-    text:
-      "Ob Kauf oder Verkauf: Wir arbeiten mit marktgerechten Preisen und sagen auch mal ab.",
-  },
-  {
-    icon: "garantie",
-    label: "Garantie über ProGarant",
-    text:
-      "Jedes Fahrzeug, das wir verkaufen, ist über eine Gebrauchtwagengarantie von ProGarant abgesichert. Die Garantiebedingungen erhalten Sie vor dem Kauf. Auch nach der Übergabe bleiben wir Ihr Ansprechpartner.",
-  },
-];
 
 const FOUNDERS = [
   {
@@ -67,11 +40,12 @@ export function About() {
         >
           <GruenderSektion
             gruender={FOUNDERS}
-            werte={VALUES}
             ueberschrift="h1"
             einleitung="Wir kaufen Fahrzeuge nach Ihren Wünschen ein und verkaufen sie mit Garantie weiter – transparent und unkompliziert, aus St. Georgen im Schwarzwald für Kunden in der Region und bundesweit."
           />
         </section>
+
+        <VersprechenSektion ausfuehrlich />
 
         <GoogleBewertungen />
 

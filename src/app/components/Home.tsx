@@ -9,9 +9,9 @@ import vwUpImage from "../../assets/vw-up.jpg";
 import giosueImg from "../../assets/Giosue.jpeg";
 import christophImg from "../../assets/Christoph.jpeg";
 import { GoogleBewertungen } from "./GoogleBewertungen";
-import { GruenderSektion, type Wert } from "./Gruender";
-import { Tusche, type TuscheName } from "./Tusche";
-import { PROVISION } from "../firma";
+import { GruenderSektion } from "./Gruender";
+import { VersprechenSektion } from "./Versprechen";
+import { Tusche } from "./Tusche";
 import { SEO } from "./SEO";
 import { CockpitIntro } from "./CockpitIntro";
 import { LAST_FRAME } from "../intro/ScrollFilm";
@@ -65,33 +65,6 @@ const INVENTORY = [
   },
 ];
 
-const ADVANTAGES: { icon: TuscheName; title: string; description: string }[] = [
-  {
-    icon: "betreuung",
-    title: "Persönliche Betreuung",
-    description:
-      "Kein Callcenter, keine Warteschleife. Sie haben einen festen Ansprechpartner, der Ihren Auftrag kennt und Sie durch den gesamten Prozess begleitet.",
-  },
-  {
-    icon: "garantie",
-    title: "Garantie über ProGarant",
-    description:
-      "Jedes Fahrzeug, das wir verkaufen, sichern wir mit einer Gebrauchtwagengarantie von ProGarant ab. Laufzeit, Umfang und Bedingungen erhalten Sie vor dem Kauf schriftlich. Ihre gesetzlichen Rechte bleiben davon unberührt.",
-  },
-  {
-    icon: "uhr",
-    title: "Ihre Zeit bleibt Ihre",
-    description:
-      "Keine Besichtigungstouristen, keine zähen Verhandlungen am Feierabend. Sie entscheiden – den Rest erledigen wir.",
-  },
-  {
-    icon: "preis",
-    title: "Marktgerechte Preise",
-    description:
-      "Wir beobachten den Markt täglich und kennen die aktuellen Preise. So setzen wir beim Verkauf einen realistischen Preis an und verhandeln beim Kauf faire Konditionen.",
-  },
-];
-
 const FOUNDERS = [
   {
     name: "Giosuè Canobbio",
@@ -106,24 +79,6 @@ const FOUNDERS = [
     role: "Mitgründer & Gesellschafter",
     bio: "Kaufmann für Versicherungen & Finanzen, dualer Student – strukturiert, verlässlich und klar in der Kommunikation.",
     avatar: christophImg,
-  },
-];
-
-const VALUES: Wert[] = [
-  {
-    icon: "lupe",
-    label: "Transparenz",
-    text: `Provision ${PROVISION}, vorab schriftlich vereinbart. Keine versteckten Kosten.`,
-  },
-  {
-    icon: "betreuung",
-    label: "Persönlich",
-    text: "Ein fester Ansprechpartner von der Anfrage bis zur Übergabe.",
-  },
-  {
-    icon: "handschlag",
-    label: "Fairness",
-    text: "Faire Preise und ehrliche Beratung, auch wenn sie gegen den Abschluss spricht.",
   },
 ];
 
@@ -405,39 +360,16 @@ export function Home() {
       </section>
       */}
 
-      {/* ── Warum GCN ─────────────────────────────────────────────── */}
-      <section className="bg-crema" aria-labelledby="warum">
-        <div className="mx-auto max-w-[1440px] px-4 py-16 sm:px-6 sm:py-24 lg:px-12">
-          <h2 id="warum" className="max-w-2xl border-b border-linea pb-9">
-            Unser Versprechen an Sie.
-          </h2>
+      {/* ── Unser Versprechen ──────────────────────────────────────── */}
+      <VersprechenSektion />
 
-          <dl className="grid grid-cols-1 gap-x-12 sm:grid-cols-2">
-            {ADVANTAGES.map((adv) => (
-                <div
-                  key={adv.title}
-                  className="flex gap-6 border-b border-linea-chiara py-8"
-                >
-                  <Tusche name={adv.icon} className="h-14 w-14 text-nero" />
-                  <div>
-                    <dt className="text-[17px] leading-snug text-nero" style={{ fontWeight: 700 }}>
-                      {adv.title}
-                    </dt>
-                    <dd className="mt-2 text-asfalto">{adv.description}</dd>
-                  </div>
-                </div>
-            ))}
-          </dl>
-        </div>
-      </section>
-
-      {/* ── Kundenstimmen: gehört thematisch zu „Vertrauen“ ───────── */}
+      {/* ── Kundenstimmen: gehören thematisch zum Versprechen ─────── */}
       <GoogleBewertungen />
 
       {/* ── Wer wir sind ──────────────────────────────────────────── */}
-      <section className="border-t border-linea bg-crema-chiara" aria-labelledby="wer">
+      <section className="bg-crema" aria-labelledby="wer">
         <div className="mx-auto max-w-[1440px] px-4 py-16 sm:px-6 sm:py-24 lg:px-12">
-          <GruenderSektion gruender={FOUNDERS} werte={VALUES} mehrLink />
+          <GruenderSektion gruender={FOUNDERS} mehrLink />
         </div>
       </section>
 
