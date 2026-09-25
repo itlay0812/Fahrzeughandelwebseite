@@ -1,6 +1,6 @@
 /* Das Bildmaterial der Schwarzwaldstraße – reine Pfade, keine Dateien: Das
    Spiel soll kein einziges Kilobyte nachladen. Alle Farben kommen aus der
-   Palette der Seite, damit die Proberunde zur Marke gehört und nicht zu
+   Palette der Seite, damit das Minispiel zur Marke gehört und nicht zu
    einem fremden Spielautomaten. */
 
 export const FARBE = {
@@ -156,34 +156,6 @@ export function lochZeichnen(ctx: Ctx, x: number, y: number) {
   ctx.beginPath();
   ctx.ellipse(x, y + 1, 15, 7.5, 0, 0, Math.PI * 2);
   ctx.fill();
-  ctx.restore();
-}
-
-/** Der Autoschlüssel: das Ziel jedes Auftrags, hier als Bonus auf der Straße. */
-export function schluesselZeichnen(ctx: Ctx, x: number, y: number, t: number) {
-  ctx.save();
-  ctx.translate(x, y);
-  ctx.rotate(Math.sin(t * 3) * 0.25);
-
-  ctx.fillStyle = "rgba(200,16,46,0.16)";
-  ctx.beginPath();
-  ctx.arc(0, 0, 13, 0, Math.PI * 2);
-  ctx.fill();
-
-  ctx.strokeStyle = FARBE.rosso;
-  ctx.lineWidth = 3;
-  ctx.lineCap = "round";
-  ctx.beginPath();
-  ctx.arc(0, -4, 4.5, 0, Math.PI * 2);
-  ctx.stroke();
-  ctx.beginPath();
-  ctx.moveTo(0, 0.5);
-  ctx.lineTo(0, 9);
-  ctx.moveTo(0, 6);
-  ctx.lineTo(4, 6);
-  ctx.moveTo(0, 9);
-  ctx.lineTo(3.5, 9);
-  ctx.stroke();
   ctx.restore();
 }
 

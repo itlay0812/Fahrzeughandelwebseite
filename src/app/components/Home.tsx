@@ -1,20 +1,7 @@
 import { Link } from "react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
-import {
-  ShieldCheck,
-  Clock,
-  TrendingUp,
-  ArrowRight,
-  ArrowLeft,
-  Phone,
-  Users,
-  Calendar,
-  Gauge,
-  Fuel,
-  Settings2,
-  Handshake,
-} from "lucide-react";
+import { Calendar, Gauge, Fuel, Settings2 } from "lucide-react";
 import suchauftragImg from "../../assets/illustrations/suchauftrag.jpg";
 import uebergabeImg from "../../assets/illustrations/uebergabe.jpg";
 import stellplatzImg from "../../assets/illustrations/stellplatz.jpg";
@@ -22,6 +9,9 @@ import vwUpImage from "../../assets/vw-up.jpg";
 import giosueImg from "../../assets/Giosue.jpeg";
 import christophImg from "../../assets/Christoph.jpeg";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
+import { GoogleBewertungen } from "./GoogleBewertungen";
+import { Tusche, type TuscheName } from "./Tusche";
+import { PROVISION } from "../firma";
 import { SEO } from "./SEO";
 import { CockpitIntro } from "./CockpitIntro";
 import { LAST_FRAME } from "../intro/ScrollFilm";
@@ -40,7 +30,7 @@ const SERVICES = [
     title: "Suchauftrag",
     claim: "Wir finden Ihr Wunschfahrzeug.",
     description:
-      "Sie nennen uns Marke, Modell, Budget und Ausstattung. Wir suchen über unser Händlernetzwerk und private Quellen, prüfen jedes Fahrzeug vorab und legen Ihnen nur vor, was die Prüfung besteht. Keine Telefonate mit Fremden, keine vergeblichen Besichtigungen.",
+      "Sie nennen uns Marke, Modell, Budget und Ausstattung. Wir suchen über unser Händlernetzwerk und private Quellen, prüfen jedes Fahrzeug vorab, kaufen es ein und verkaufen es Ihnen mit Garantie über ProGarant. Keine Telefonate mit Fremden, keine vergeblichen Besichtigungen.",
     cta: { label: "Suchauftrag erstellen", path: "/kontakt?type=search" },
     image: suchauftragImg,
     alt: "Illustration: eine Lupe, unter der ein rotes Auto sichtbar wird",
@@ -48,7 +38,7 @@ const SERVICES = [
   {
     id: "verkauf",
     title: "Fahrzeugverkauf",
-    claim: "Wir verkaufen Ihres zum Bestwert.",
+    claim: "Wir verkaufen Ihr Fahrzeug zu einem fairen Marktpreis.",
     description:
       "Übergeben Sie uns die Abwicklung: professionelle Inserate, Verhandlungen in Ihrem Namen, Schutz vor unseriösen Interessenten. Von der Bewertung bis zur Schlüsselübergabe bleibt alles in einer Hand – in Ihrer und unserer.",
     cta: { label: "Verkaufsauftrag starten", path: "/kontakt?type=sell" },
@@ -75,63 +65,63 @@ const INVENTORY = [
   },
 ];
 
-const ADVANTAGES = [
+const ADVANTAGES: { icon: TuscheName; title: string; description: string }[] = [
   {
-    icon: Users,
+    icon: "betreuung",
     title: "Persönliche Betreuung",
     description:
       "Kein Callcenter, keine Warteschleife. Sie haben einen festen Ansprechpartner, der Ihren Auftrag kennt und Sie durch den gesamten Prozess begleitet.",
   },
   {
-    icon: ShieldCheck,
-    title: "Mindestens 12 Monate Garantie",
+    icon: "garantie",
+    title: "Garantie über ProGarant",
     description:
-      "Jedes vermittelte Fahrzeug wird mit mindestens zwölf Monaten Garantie abgesichert. Auch nach der Übergabe stehen wir gerade.",
+      "Jedes Fahrzeug, das wir verkaufen, sichern wir mit einer Gebrauchtwagengarantie von ProGarant ab. Laufzeit, Umfang und Bedingungen erhalten Sie vor dem Kauf schriftlich. Ihre gesetzlichen Rechte bleiben davon unberührt.",
   },
   {
-    icon: Clock,
+    icon: "uhr",
     title: "Ihre Zeit bleibt Ihre",
     description:
       "Keine Besichtigungstouristen, keine zähen Verhandlungen am Feierabend. Sie entscheiden – den Rest erledigen wir.",
   },
   {
-    icon: TrendingUp,
-    title: "Der Preis, der drin ist",
+    icon: "preis",
+    title: "Marktgerechte Preise",
     description:
-      "Über unser Netzwerk und die tägliche Marktbeobachtung erzielen wir beim Verkauf Spitzenpreise und beim Kauf die besseren Konditionen.",
+      "Wir beobachten den Markt täglich und kennen die aktuellen Preise. So setzen wir beim Verkauf einen realistischen Preis an und verhandeln beim Kauf faire Konditionen.",
   },
 ];
 
 const FOUNDERS = [
   {
-    name: "Giosue Canobbio",
+    name: "Giosuè Canobbio",
     age: 22,
-    role: "Mitgründer & Geschäftsführer",
+    role: "Mitgründer & Gesellschafter",
     bio: "Dualer Student im Studiengang Finanzdienstleistungen – verbindet Kundenberatung mit langjähriger Automobil-Leidenschaft.",
     avatar: giosueImg,
   },
   {
     name: "Christopher Neun",
     age: 28,
-    role: "Mitgründer & Geschäftsführer",
+    role: "Mitgründer & Gesellschafter",
     bio: "Kaufmann für Versicherungen & Finanzen, dualer Student – strukturiert, verlässlich und klar in der Kommunikation.",
     avatar: christophImg,
   },
 ];
 
-const VALUES = [
+const VALUES: { icon: TuscheName; label: string; sub: string }[] = [
   {
-    icon: ShieldCheck,
+    icon: "lupe",
     label: "Transparenz",
-    sub: "Klare Kommunikation, keine versteckten Kosten.",
+    sub: `Provision ${PROVISION}, vorab schriftlich vereinbart. Keine versteckten Kosten.`,
   },
   {
-    icon: Users,
+    icon: "betreuung",
     label: "Persönlich",
     sub: "Ein fester Ansprechpartner von der Anfrage bis zur Übergabe.",
   },
   {
-    icon: Handshake,
+    icon: "handschlag",
     label: "Fairness",
     sub: "Faire Preise und ehrliche Beratung, auch wenn sie gegen den Abschluss spricht.",
   },
@@ -174,10 +164,10 @@ function InventoryCarousel() {
           </p>
           <Link
             to="/kontakt?type=search"
-            className="mt-6 inline-flex items-center gap-2 rounded-full bg-rosso px-6 py-3.5 text-sm text-crema-chiara transition-colors hover:bg-rosso-scuro"
+            className="group mt-6 inline-flex items-center gap-2 rounded-full bg-rosso px-6 py-3.5 text-sm text-crema-chiara transition-colors hover:bg-rosso-scuro"
           >
             Suchauftrag erstellen
-            <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            <Tusche name="pfeil" className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
           </Link>
         </div>
       </div>
@@ -194,7 +184,7 @@ function InventoryCarousel() {
             aria-label="Vorheriges Fahrzeug"
             className="flex h-11 w-11 items-center justify-center rounded-full border border-linea text-nero transition-all hover:border-nero hover:bg-nero hover:text-crema-chiara disabled:cursor-default disabled:border-linea-chiara disabled:text-alluminio disabled:hover:bg-transparent"
           >
-            <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+            <Tusche name="pfeil" className="h-5 w-5 rotate-180" />
           </button>
           <button
             onClick={() => emblaApi?.scrollNext()}
@@ -202,7 +192,7 @@ function InventoryCarousel() {
             aria-label="Nächstes Fahrzeug"
             className="flex h-11 w-11 items-center justify-center rounded-full border border-linea text-nero transition-all hover:border-nero hover:bg-nero hover:text-crema-chiara disabled:cursor-default disabled:border-linea-chiara disabled:text-alluminio disabled:hover:bg-transparent"
           >
-            <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            <Tusche name="pfeil" className="h-5 w-5" />
           </button>
         </div>
       )}
@@ -265,10 +255,10 @@ function InventoryCarousel() {
                   href={car.mobileLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-auto inline-flex w-full items-center justify-center gap-1.5 rounded-full border border-linea py-3.5 text-center text-sm text-asfalto transition-all hover:border-nero hover:bg-nero hover:text-crema-chiara"
+                  className="group mt-auto inline-flex w-full items-center justify-center gap-1.5 rounded-full border border-linea py-3.5 text-center text-sm text-asfalto transition-all hover:border-nero hover:bg-nero hover:text-crema-chiara"
                 >
                   Auf mobile.de ansehen
-                  <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+                  <Tusche name="pfeil" className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
                 </a>
               </div>
             </article>
@@ -377,10 +367,7 @@ export function Home() {
                     className="group inline-flex w-fit items-center gap-2 rounded-full border border-nero/20 px-6 py-3.5 text-sm text-nero transition-all hover:border-nero hover:bg-nero hover:text-crema-chiara"
                   >
                     {service.cta.label}
-                    <ArrowRight
-                      className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
-                      aria-hidden="true"
-                    />
+                    <Tusche name="pfeil" className="h-5 w-5 transition-transform group-hover:translate-x-0.5" />
                   </Link>
                 </div>
               </article>
@@ -411,10 +398,7 @@ export function Home() {
               className="group inline-flex items-center gap-2 text-sm text-asfalto transition-colors hover:text-nero"
             >
               Gesamten Bestand ansehen
-              <ArrowRight
-                className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
-                aria-hidden="true"
-              />
+              <Tusche name="pfeil" className="h-5 w-5 transition-transform group-hover:translate-x-0.5" />
             </Link>
           </div>
         </div>
@@ -429,19 +413,12 @@ export function Home() {
           </h2>
 
           <dl className="grid grid-cols-1 gap-x-12 sm:grid-cols-2">
-            {ADVANTAGES.map((adv) => {
-              const Icon = adv.icon;
-              return (
+            {ADVANTAGES.map((adv) => (
                 <div
                   key={adv.title}
-                  className="flex gap-5 border-b border-linea-chiara py-8"
+                  className="flex gap-6 border-b border-linea-chiara py-8"
                 >
-                  <span
-                    aria-hidden="true"
-                    className="mt-1 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-rosso-wash text-rosso"
-                  >
-                    <Icon className="h-[18px] w-[18px]" />
-                  </span>
+                  <Tusche name={adv.icon} className="h-14 w-14 text-nero" />
                   <div>
                     <dt className="text-[17px] leading-snug text-nero" style={{ fontWeight: 700 }}>
                       {adv.title}
@@ -449,11 +426,13 @@ export function Home() {
                     <dd className="mt-2 text-asfalto">{adv.description}</dd>
                   </div>
                 </div>
-              );
-            })}
+            ))}
           </dl>
         </div>
       </section>
+
+      {/* ── Kundenstimmen: gehört thematisch zu „Vertrauen“ ───────── */}
+      <GoogleBewertungen />
 
       {/* ── Wer wir sind ──────────────────────────────────────────── */}
       <section className="border-t border-linea bg-crema-chiara" aria-labelledby="wer">
@@ -496,19 +475,12 @@ export function Home() {
           </div>
 
           <ul className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3 sm:gap-6">
-            {VALUES.map((v) => {
-              const Icon = v.icon;
-              return (
+            {VALUES.map((v) => (
                 <li
                   key={v.label}
-                  className="finestra flex items-start gap-4 border border-linea bg-crema p-6"
+                  className="finestra flex items-start gap-5 border border-linea bg-crema p-6"
                 >
-                  <span
-                    aria-hidden="true"
-                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-rosso-wash text-rosso"
-                  >
-                    <Icon className="h-[18px] w-[18px]" />
-                  </span>
+                  <Tusche name={v.icon} className="h-12 w-12 text-nero" />
                   <div>
                     <p className="text-nero" style={{ fontWeight: 700 }}>
                       {v.label}
@@ -518,8 +490,7 @@ export function Home() {
                     </p>
                   </div>
                 </li>
-              );
-            })}
+            ))}
           </ul>
 
           <div className="mt-10 text-center">
@@ -528,10 +499,7 @@ export function Home() {
               className="group inline-flex items-center gap-2 text-sm text-asfalto transition-colors hover:text-nero"
             >
               Mehr über uns erfahren
-              <ArrowRight
-                className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
-                aria-hidden="true"
-              />
+              <Tusche name="pfeil" className="h-5 w-5 transition-transform group-hover:translate-x-0.5" />
             </Link>
           </div>
         </div>
@@ -554,17 +522,17 @@ export function Home() {
               <div className="flex w-full shrink-0 flex-col gap-3 sm:flex-row md:w-auto">
                 <a
                   href="tel:+4917641651086"
-                  className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full bg-rosso px-7 py-4 text-sm text-crema-chiara transition-colors hover:bg-rosso-scuro active:scale-[0.98]"
+                  className="group inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full bg-rosso px-7 py-4 text-sm text-crema-chiara transition-colors hover:bg-rosso-scuro active:scale-[0.98]"
                 >
-                  <Phone className="h-4 w-4 shrink-0" aria-hidden="true" />
+                  <Tusche name="telefon" className="h-5 w-5 transition-transform duration-300 group-hover:-rotate-12" />
                   <span className="numeri">0176 41651086</span>
                 </a>
                 <Link
                   to="/kontakt"
-                  className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full border border-crema/25 px-7 py-4 text-sm text-crema-chiara transition-colors hover:border-crema/60 hover:bg-crema/10 active:scale-[0.98]"
+                  className="group inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full border border-crema/25 px-7 py-4 text-sm text-crema-chiara transition-colors hover:border-crema/60 hover:bg-crema/10 active:scale-[0.98]"
                 >
                   Nachricht schreiben
-                  <ArrowRight className="h-4 w-4 shrink-0" aria-hidden="true" />
+                  <Tusche name="pfeil" className="h-5 w-5 shrink-0 transition-transform duration-300 group-hover:translate-x-1" />
                 </Link>
               </div>
             </div>

@@ -15,6 +15,8 @@ const FRAME_URLS = Object.entries(
   .map(([, url]) => url);
 
 export const FRAME_COUNT = FRAME_URLS.length;
+/** Das Bild, mit dem die Fahrt beginnt – der Ladebildschirm zeigt es unscharf. */
+export const FIRST_FRAME = FRAME_URLS[0];
 /** Das Standbild, auf dem die Fahrt endet – der Hero zeigt genau dieses. */
 export const LAST_FRAME = FRAME_URLS[FRAME_URLS.length - 1];
 
@@ -23,11 +25,14 @@ export function ScrollFilm({
   className = "",
   onFirstFrame,
   onAllFrames,
+  onProgress,
 }: {
   progress: MotionValue<number>;
   className?: string;
   onFirstFrame?: () => void;
   onAllFrames?: () => void;
+  /** Anteil der erledigten Bilder (0–1), fehlgeschlagene zählen mit. */
+  onProgress?: (anteil: number) => void;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const frames = useRef<Array<HTMLImageElement | null>>([]);
@@ -97,6 +102,11 @@ export function ScrollFilm({
     let cancelled = false;
     frames.current = new Array(urls.current.length).fill(null);
     let done = 0;
+    let erledigt = 0;
+    const melden = () => {
+      erledigt += 1;
+      onProgress?.(erledigt / urls.current.length);
+    };
 
     const load = (i: number) =>
       new Promise<void>((resolve) => {
@@ -113,9 +123,13 @@ export function ScrollFilm({
           if (done % 8 === 0 || done === urls.current.length) setLoaded(done);
           if (done === urls.current.length) onAllFrames?.();
           paint();
+          melden();
           resolve();
         };
-        img.onerror = () => resolve();
+        img.onerror = () => {
+          if (!cancelled) melden();
+          resolve();
+        };
         img.src = urls.current[i];
       });
 

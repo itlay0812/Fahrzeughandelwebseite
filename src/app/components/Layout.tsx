@@ -1,18 +1,27 @@
 import { Outlet, Link, useLocation } from "react-router";
 import logoSvg from "../../assets/gcn-logo.svg";
 import logoSvgHell from "../../assets/gcn-logo-hell.svg";
-import { Mail, Phone, Instagram, Menu, X, MapPin, ArrowRight } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import GisslerBranding from "./GisslerBranding";
 import { useEffect, useState } from "react";
 import { IntroProvider, useIntro } from "../intro/IntroContext";
 import { SpielOverlay } from "../game/SpielOverlay";
+import { EMAIL, GOOGLE_PROFIL_URL, INSTAGRAM_URL } from "../firma";
+import { Tusche } from "./Tusche";
 
 const NAV_LINKS = [
   { name: "Startseite", path: "/" },
   // { name: "Fahrzeugbestand", path: "/bestand" },
   { name: "Suchauftrag & Verkauf", path: "/kontakt" },
   { name: "Über uns", path: "/ueber-uns" },
+];
+
+const RECHTLICHES = [
+  { name: "Impressum", path: "/impressum" },
+  { name: "Datenschutz", path: "/datenschutz" },
+  { name: "AGB", path: "/agb" },
+  { name: "Widerrufsbelehrung", path: "/widerruf" },
 ];
 
 export function Layout() {
@@ -117,23 +126,23 @@ function Chrome() {
               href="tel:+4917641651086"
               className="group hidden items-center gap-2 rounded-full border border-linea px-4 py-2.5 text-sm text-nero transition-colors hover:border-nero hover:bg-nero hover:text-crema-chiara sm:inline-flex"
             >
-              <Phone className="h-4 w-4 shrink-0 transition-transform duration-300 group-hover:-rotate-12" aria-hidden="true" />
+              <Tusche name="telefon" className="h-5 w-5 shrink-0 transition-transform duration-300 group-hover:-rotate-12" />
               <span className="numeri">0176 41651086</span>
             </a>
             <Link
               to="/kontakt?type=search"
-              className="group hidden items-center gap-2 rounded-full bg-rosso px-5 py-2.5 text-sm text-crema-chiara transition-colors hover:bg-rosso-scuro active:scale-[0.98] lg:inline-flex"
+              className="group hidden items-center gap-2 rounded-full bg-rosso px-5 py-2.5 text-sm text-crema-chiara transition-colors hover:bg-rosso-scuro active:scale-[0.98] xl:inline-flex"
             >
               Auftrag erstellen
-              <ArrowRight className="h-4 w-4 shrink-0 transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true" />
+              <Tusche name="pfeil" className="h-5 w-5 shrink-0 transition-transform duration-300 group-hover:translate-x-1" />
             </Link>
 
             <a
               href="tel:+4917641651086"
-              className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-rosso text-crema-chiara transition-colors hover:bg-rosso-scuro sm:hidden"
+              className="group inline-flex h-11 w-11 items-center justify-center rounded-full bg-rosso text-crema-chiara transition-colors hover:bg-rosso-scuro sm:hidden"
               aria-label="GCN anrufen"
             >
-              <Phone className="h-4 w-4" aria-hidden="true" />
+              <Tusche name="telefon" className="h-5 w-5 transition-transform duration-300 group-hover:-rotate-12" />
             </a>
             <button
               className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-linea text-nero transition-colors hover:border-nero hover:bg-nero hover:text-crema-chiara md:hidden"
@@ -223,29 +232,25 @@ function Chrome() {
                 <Link
                   to="/kontakt?type=search"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="inline-flex items-center justify-center gap-2 rounded-full bg-rosso px-6 py-4 text-sm text-crema-chiara"
+                  className="group inline-flex items-center justify-center gap-2 rounded-full bg-rosso px-6 py-4 text-sm text-crema-chiara"
                 >
                   Auftrag erstellen
-                  <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                  <Tusche name="pfeil" className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
                 </Link>
                 <div className="flex flex-col gap-3 text-sm">
                   <a
                     href="tel:+4917641651086"
-                    className="flex items-center gap-3 text-nero"
+                    className="group flex items-center gap-3 text-nero"
                   >
-                    <span className="flex h-9 w-9 items-center justify-center rounded-full bg-rosso-wash text-rosso">
-                      <Phone className="h-4 w-4" aria-hidden="true" />
-                    </span>
+                    <Tusche name="telefon" className="h-7 w-7 text-nero transition-transform duration-300 group-hover:-rotate-12" />
                     <span className="numeri">0176 41651086</span>
                   </a>
                   <a
-                    href="mailto:gcn-farzeughandel@outlook.de"
+                    href={`mailto:${EMAIL}`}
                     className="flex items-center gap-3 text-nero"
                   >
-                    <span className="flex h-9 w-9 items-center justify-center rounded-full bg-rosso-wash text-rosso">
-                      <Mail className="h-4 w-4" aria-hidden="true" />
-                    </span>
-                    gcn-farzeughandel@outlook.de
+                    <Tusche name="brief" className="h-7 w-7 text-nero" />
+                    {EMAIL}
                   </a>
                 </div>
               </motion.div>
@@ -277,7 +282,7 @@ function Chrome() {
               <div>
                 <p className="text-sm text-crema-chiara">GCN Fahrzeughandel GbR</p>
                 <div className="mt-1 flex items-center gap-1.5 text-sm text-crema/75">
-                  <MapPin className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                  <Tusche name="standort" className="h-5 w-5 shrink-0" />
                   <span>Sankt Georgen im Schwarzwald</span>
                 </div>
               </div>
@@ -299,18 +304,15 @@ function Chrome() {
                     {link.name}
                   </Link>
                 ))}
-                <Link
-                  to="/impressum"
-                  className="w-fit text-sm text-crema/80 transition-colors hover:text-crema-chiara"
-                >
-                  Impressum
-                </Link>
-                <Link
-                  to="/datenschutz"
-                  className="w-fit text-sm text-crema/80 transition-colors hover:text-crema-chiara"
-                >
-                  Datenschutz
-                </Link>
+                {RECHTLICHES.map((link) => (
+                  <Link
+                    key={link.path}
+                    to={link.path}
+                    className="w-fit text-sm text-crema/80 transition-colors hover:text-crema-chiara"
+                  >
+                    {link.name}
+                  </Link>
+                ))}
               </nav>
             </div>
 
@@ -321,30 +323,33 @@ function Chrome() {
                   href="tel:+4917641651086"
                   className="group flex w-fit items-center gap-3 text-sm text-crema/80 transition-colors hover:text-crema-chiara"
                 >
-                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-crema/10 transition-colors group-hover:bg-rosso">
-                    <Phone className="h-3.5 w-3.5" aria-hidden="true" />
-                  </span>
+                  <Tusche name="telefon" className="h-7 w-7 transition-transform duration-300 group-hover:-rotate-12" />
                   <span className="numeri">+49 176 41651086</span>
                 </a>
                 <a
-                  href="mailto:gcn-farzeughandel@outlook.de"
+                  href={`mailto:${EMAIL}`}
                   className="group flex w-fit items-center gap-3 text-sm text-crema/80 transition-colors hover:text-crema-chiara"
                 >
-                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-crema/10 transition-colors group-hover:bg-rosso">
-                    <Mail className="h-3.5 w-3.5" aria-hidden="true" />
-                  </span>
-                  gcn-farzeughandel@outlook.de
+                  <Tusche name="brief" className="h-7 w-7" />
+                  {EMAIL}
                 </a>
                 <a
-                  href="https://www.instagram.com/gcn.fahrzeughandel/"
+                  href={INSTAGRAM_URL}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="group flex w-fit items-center gap-3 text-sm text-crema/80 transition-colors hover:text-crema-chiara"
                 >
-                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-crema/10 transition-colors group-hover:bg-rosso">
-                    <Instagram className="h-3.5 w-3.5" aria-hidden="true" />
-                  </span>
+                  <Tusche name="kamera" className="h-7 w-7" />
                   @gcn.fahrzeughandel
+                </a>
+                <a
+                  href={GOOGLE_PROFIL_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group flex w-fit items-center gap-3 text-sm text-crema/80 transition-colors hover:text-crema-chiara"
+                >
+                  <Tusche name="stern" className="h-7 w-7" />
+                  Google-Profil
                 </a>
               </div>
             </div>
@@ -355,19 +360,16 @@ function Chrome() {
               © {new Date().getFullYear()} GCN Fahrzeughandel GbR. Alle Rechte
               vorbehalten.
             </p>
-            <div className="flex items-center gap-6">
-              <Link
-                to="/impressum"
-                className="text-xs text-crema/75 transition-colors hover:text-crema-chiara"
-              >
-                Impressum
-              </Link>
-              <Link
-                to="/datenschutz"
-                className="text-xs text-crema/75 transition-colors hover:text-crema-chiara"
-              >
-                Datenschutz
-              </Link>
+            <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
+              {RECHTLICHES.map((link) => (
+                <Link
+                  key={link.path}
+                  to={link.path}
+                  className="text-xs text-crema/75 transition-colors hover:text-crema-chiara"
+                >
+                  {link.name}
+                </Link>
+              ))}
             </div>
             <div className="flex items-center gap-2 text-xs text-crema/75">
               <span>Erstellt von</span>
@@ -380,7 +382,7 @@ function Chrome() {
             onClick={() => setSpielOffen(true)}
             className="mx-auto mt-6 block text-[10px] uppercase tracking-[0.2em] text-crema/55 transition-colors hover:text-crema-chiara focus-visible:text-crema-chiara active:scale-[0.98]"
           >
-            Minispiel
+            GCN-Minispiel
           </button>
         </div>
       </footer>

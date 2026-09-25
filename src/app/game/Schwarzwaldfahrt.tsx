@@ -1,17 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, Play, RotateCcw } from "lucide-react";
-import {
-  FARBE,
-  autoZeichnen,
-  lochZeichnen,
-  rehZeichnen,
-  schluesselZeichnen,
-  tanneZeichnen,
-} from "./zeichnen";
+import { Tusche } from "../components/Tusche";
+import { FARBE, autoZeichnen, lochZeichnen, rehZeichnen, tanneZeichnen } from "./zeichnen";
 
 /* ── Die Schwarzwaldstraße ──────────────────────────────────────────────────
-   Eine Proberunde zum Zeitvertreib: Der rote Wagen fährt die Landstraße hoch,
-   Rehe, Schlaglöcher und Gegenverkehr wollen ihm ans Blech.
+   Das GCN-Minispiel: Der rote Wagen fährt die Landstraße hoch, Rehe,
+   Schlaglöcher und Gegenverkehr wollen ihm an die Karosserie. Es zählt nur,
+   wie weit man kommt.
 
    Gerechnet wird in einem festen Koordinatensystem (320 × 480). Der Canvas
    skaliert es auf seine tatsächliche Größe – so fährt sich das Spiel auf dem
@@ -30,14 +25,12 @@ const TEMPO_ZUWACHS = 24; // px/s pro Sekunde
 const METER_JE_PIXEL = 0.32;
 const LEBEN = 3;
 const SCHUTZ_DAUER = 1.5; // Sekunden Unverwundbarkeit nach einem Treffer
-const SCHLUESSEL_BONUS = 150; // Meter
 const GEGENVERKEHR = 1.28; // Tempozuschlag für entgegenkommende Wagen
 
 const BESTWERT_KEY = "gcn:schwarzwaldfahrt:bestwert";
 
 type Art = "reh" | "loch" | "gegenverkehr";
 type Hindernis = { art: Art; spur: number; y: number; weg: boolean };
-type Schluessel = { spur: number; y: number };
 type Funke = { x: number; y: number; t: number };
 type Phase = "bereit" | "fahrt" | "ende";
 
@@ -51,11 +44,9 @@ type Welt = {
   schutz: number;
   strich: number;
   hindernisse: Hindernis[];
-  schluessel: Schluessel[];
   funken: Funke[];
   baeume: { x: number; y: number; s: number }[];
   bisHindernis: number;
-  bisSchluessel: number;
   freieSpur: number;
 };
 
@@ -96,11 +87,9 @@ function neueWelt(): Welt {
     schutz: 0,
     strich: 0,
     hindernisse: [],
-    schluessel: [],
     funken: [],
     baeume,
     bisHindernis: 1.5,
-    bisSchluessel: 2.6,
     freieSpur: 1,
   };
 }
@@ -118,7 +107,14 @@ function bestwertLesen() {
   }
 }
 
-export function Schwarzwaldfahrt({ className = "" }: { className?: string }) {
+export function Schwarzwaldfahrt({
+  className = "",
+  hoehe = "100dvh",
+}: {
+  className?: string;
+  /** Höchste Höhe des Spielfelds (CSS-Wert) – so passt das Spiel ohne Scrollen ins Fenster. */
+  hoehe?: string;
+}) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const buehneRef = useRef<HTMLDivElement>(null);
   const kmRef = useRef<HTMLSpanElement>(null);
@@ -169,8 +165,6 @@ export function Schwarzwaldfahrt({ className = "" }: { className?: string }) {
       }
     }
 
-    for (const s of w.schluessel) schluesselZeichnen(ctx, SPUREN[s.spur], s.y, w.zeit);
-
     for (const h of w.hindernisse) {
       const x = SPUREN[h.spur];
       if (h.art === "reh") rehZeichnen(ctx, x, h.y);
@@ -220,7 +214,6 @@ export function Schwarzwaldfahrt({ className = "" }: { className?: string }) {
          als dieser Zuschlag geht nicht: Sonst holt eine Welle die vorige ein
          und stellt zwei Sperren gleichzeitig vor den Wagen. */
       for (const h of w.hindernisse) h.y += h.art === "gegenverkehr" ? weg * GEGENVERKEHR : weg;
-      for (const s of w.schluessel) s.y += weg;
       for (const f of w.funken) f.t += dt;
 
       // Kollisionen
@@ -254,17 +247,7 @@ export function Schwarzwaldfahrt({ className = "" }: { className?: string }) {
         }
       }
 
-      for (let i = w.schluessel.length - 1; i >= 0; i--) {
-        const s = w.schluessel[i];
-        if (Math.abs(SPUREN[s.spur] - w.x) < 26 && Math.abs(s.y - AUTO_Y) < 34) {
-          w.meter += SCHLUESSEL_BONUS;
-          w.funken.push({ x: SPUREN[s.spur], y: s.y, t: 0 });
-          w.schluessel.splice(i, 1);
-        }
-      }
-
       w.hindernisse = w.hindernisse.filter((h) => h.y < H + 70 && !h.weg);
-      w.schluessel = w.schluessel.filter((s) => s.y < H + 40);
       w.funken = w.funken.filter((f) => f.t < 0.42);
 
       // Nachschub
@@ -293,12 +276,6 @@ export function Schwarzwaldfahrt({ className = "" }: { className?: string }) {
            Gegenverkehrswelle bei Höchsttempo noch rund vier Zehntel nach ihrer
            Vorgängerin ankommt – genug für einen Spurwechsel. */
         w.bisHindernis = (250 + Math.random() * 130) / w.tempo;
-      }
-
-      w.bisSchluessel -= dt;
-      if (w.bisSchluessel <= 0) {
-        w.schluessel.push({ spur: w.freieSpur, y: -40 });
-        w.bisSchluessel = 3.4 + Math.random() * 3.6;
       }
     },
     [setPhase],
@@ -368,8 +345,8 @@ export function Schwarzwaldfahrt({ className = "" }: { className?: string }) {
 
   useEffect(() => {
     const onTaste = (e: KeyboardEvent) => {
-      /* Tasten nur abfangen, wenn sie dem Spiel gelten – sonst nimmt die
-         Proberunde der Seite das Scrollen weg. */
+      /* Tasten nur abfangen, wenn sie dem Spiel gelten – sonst nimmt das
+         Spiel der Seite das Scrollen weg. */
       const gilt =
         phaseRef.current === "fahrt" ||
         (buehneRef.current?.contains(document.activeElement) ?? false);
@@ -414,14 +391,17 @@ export function Schwarzwaldfahrt({ className = "" }: { className?: string }) {
           </p>
         </div>
         <div className="text-right">
-          <p className="text-[11px] uppercase tracking-[0.18em] text-asfalto">Blech</p>
-          <div className="mt-1.5 flex justify-end gap-1.5" aria-label={`${leben} von ${LEBEN} Leben`}>
+          <p className="text-[11px] uppercase tracking-[0.18em] text-asfalto">Karosserie</p>
+          <div
+            className="mt-1 flex justify-end gap-1"
+            role="img"
+            aria-label={`Karosserie: noch ${leben} von ${LEBEN}`}
+          >
             {Array.from({ length: LEBEN }, (_, i) => (
-              <span
+              <Tusche
                 key={i}
-                className={`h-2.5 w-2.5 rounded-full transition-colors ${
-                  i < leben ? "bg-rosso" : "bg-nero/15"
-                }`}
+                name="auto"
+                className={`h-4 w-9 transition-colors ${i < leben ? "text-rosso" : "text-nero/15"}`}
               />
             ))}
           </div>
@@ -433,7 +413,8 @@ export function Schwarzwaldfahrt({ className = "" }: { className?: string }) {
         tabIndex={0}
         role="application"
         aria-label="Die Schwarzwaldstraße – Minispiel. Mit den Pfeiltasten ausweichen, Leertaste startet."
-        className="finestra relative overflow-hidden border border-linea bg-crema-scura outline-none focus-visible:ring-2 focus-visible:ring-rosso"
+        className="finestra relative mx-auto overflow-hidden border border-linea bg-crema-scura outline-none focus-visible:ring-2 focus-visible:ring-rosso"
+        style={{ width: `min(100%, calc(${hoehe} * ${W / H}))` }}
       >
         <canvas
           ref={canvasRef}
@@ -456,8 +437,8 @@ export function Schwarzwaldfahrt({ className = "" }: { className?: string }) {
                     Die Schwarzwaldstraße
                   </p>
                   <p className="mx-auto mt-2 max-w-[17rem] text-sm leading-relaxed text-crema/80">
-                    Rehen, Schlaglöchern und Gegenverkehr ausweichen. Schlüssel
-                    bringen Extrakilometer.
+                    Rehen, Schlaglöchern und Gegenverkehr ausweichen – und so
+                    lange wie möglich durchhalten.
                   </p>
                 </div>
                 <button

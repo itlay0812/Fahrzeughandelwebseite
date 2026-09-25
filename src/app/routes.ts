@@ -38,6 +38,14 @@ export const router = createBrowserRouter([
         lazy: async () => ({ Component: (await import("./components/Privacy")).Privacy }),
       },
       {
+        path: "agb",
+        lazy: async () => ({ Component: (await import("./components/Agb")).Agb }),
+      },
+      {
+        path: "widerruf",
+        lazy: async () => ({ Component: (await import("./components/Widerruf")).Widerruf }),
+      },
+      {
         path: ADMIN_ROUTE_SEGMENT,
         lazy: async () => ({ Component: (await import("./components/Admin")).Admin }),
       },

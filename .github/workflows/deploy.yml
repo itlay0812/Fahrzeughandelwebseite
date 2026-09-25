@@ -4,6 +4,10 @@ on:
   push:
     branches: ["main"]
   workflow_dispatch:
+  # Täglicher Build: frischt den gesicherten Stand der Google-Bewertungen auf
+  # (bewertungen.json, Ersatz falls Supabase ausfällt).
+  schedule:
+    - cron: "30 3 * * *"
 
 permissions:
   contents: read

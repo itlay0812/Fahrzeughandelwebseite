@@ -1,15 +1,17 @@
 import { useEffect, useState } from "react";
 import { useForm, type UseFormRegisterReturn } from "react-hook-form";
 import { toast } from "sonner";
-import { Send, Car, Search, Phone, Mail, AlertCircle, Check } from "lucide-react";
+import { Send, AlertCircle, Check } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
-import { useLocation } from "react-router";
+import { Link, useLocation } from "react-router";
 import { projectId, publicAnonKey } from "/utils/supabase/info";
 import { sendInquiryEmail } from "/utils/emailjs";
 import suchauftragImg from "../../assets/illustrations/suchauftrag.jpg";
 import uebergabeImg from "../../assets/illustrations/uebergabe.jpg";
 import { SEO } from "./SEO";
+import { Tusche } from "./Tusche";
 import { ADMIN_ROUTE_SEGMENT } from "../adminRoute";
+import { EMAIL } from "../firma";
 
 // ─── TYPEN ────────────────────────────────────────────────────────────────────
 
@@ -448,9 +450,7 @@ export function Contact() {
               href="tel:+4917641651086"
               className="finestra-sm group flex items-center gap-4 border border-linea bg-crema-chiara p-5 transition-all hover:border-nero/25 active:scale-[0.99] sm:p-6"
             >
-              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-rosso-wash text-rosso transition-colors group-hover:bg-rosso group-hover:text-crema-chiara">
-                <Phone className="h-5 w-5" aria-hidden="true" />
-              </span>
+              <Tusche name="telefon" className="h-9 w-9 text-nero transition-colors group-hover:text-rosso" />
               <span>
                 <span className="block text-xs text-asfalto">Direkt anrufen</span>
                 <span className="numeri block text-sm text-nero" style={{ fontWeight: 700 }}>
@@ -460,16 +460,14 @@ export function Contact() {
             </a>
 
             <a
-              href="mailto:gcn-farzeughandel@outlook.de"
+              href={`mailto:${EMAIL}`}
               className="finestra-sm group flex items-center gap-4 border border-linea bg-crema-chiara p-5 transition-all hover:border-nero/25 active:scale-[0.99] sm:p-6"
             >
-              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-rosso-wash text-rosso transition-colors group-hover:bg-rosso group-hover:text-crema-chiara">
-                <Mail className="h-5 w-5" aria-hidden="true" />
-              </span>
+              <Tusche name="brief" className="h-9 w-9 text-nero transition-colors group-hover:text-rosso" />
               <span className="min-w-0">
                 <span className="block text-xs text-asfalto">E-Mail schreiben</span>
                 <span className="block truncate text-sm text-nero" style={{ fontWeight: 700 }}>
-                  gcn-farzeughandel@outlook.de
+                  {EMAIL}
                 </span>
               </span>
             </a>
@@ -516,7 +514,7 @@ export function Contact() {
                 requestType === "search" ? "text-crema-chiara" : "text-asfalto hover:text-nero"
               }`}
             >
-              <Search className="h-4 w-4" aria-hidden="true" />
+              <Tusche name="lupe" className="h-5 w-5" />
               Suchauftrag
             </button>
             <button
@@ -528,7 +526,7 @@ export function Contact() {
                 requestType === "sell" ? "text-crema-chiara" : "text-asfalto hover:text-nero"
               }`}
             >
-              <Car className="h-4 w-4" aria-hidden="true" />
+              <Tusche name="schluessel" className="h-6 w-6" />
               Verkaufen
             </button>
           </div>
@@ -777,6 +775,17 @@ export function Contact() {
                     <p className="mt-3 text-center text-xs text-asfalto">
                       Mit <span className="text-rosso">*</span> markierte Felder sind
                       Pflichtfelder.
+                    </p>
+                    <p className="mx-auto mt-2 max-w-md text-center text-xs leading-relaxed text-asfalto">
+                      Wir verwenden Ihre Angaben nur, um Ihre Anfrage zu bearbeiten. Mehr dazu
+                      in der{" "}
+                      <Link
+                        to="/datenschutz"
+                        className="text-nero underline underline-offset-2 hover:opacity-60"
+                      >
+                        Datenschutzerklärung
+                      </Link>
+                      .
                     </p>
                   </div>
                 </form>

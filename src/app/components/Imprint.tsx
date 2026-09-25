@@ -1,6 +1,7 @@
 import { motion } from "motion/react";
-import { MapPin, Phone, Mail, Instagram } from "lucide-react";
 import { SEO } from "./SEO";
+import { Tusche } from "./Tusche";
+import { EMAIL, INSTAGRAM_URL, TELEFON_INTERNATIONAL, TELEFON_LINK, UST_ID, W_ID } from "../firma";
 
 const fadeUp = (delay = 0) => ({
   initial: { opacity: 0, y: 18 },
@@ -51,82 +52,68 @@ export function Imprint() {
             className="bg-crema-chiara border border-linea finestra p-7 sm:p-10 space-y-8"
           >
 
-            <Section title="Angaben gemäß § 5 TMG">
+            <Section title="Angaben gemäß § 5 DDG">
               <p style={{ fontWeight: 600 }} className="text-nero">GCN Fahrzeughandel GbR</p>
               <p>Sommeraurstr. 46</p>
               <p>78112 Sankt Georgen im Schwarzwald</p>
               <p>Deutschland</p>
             </Section>
 
-            <Section title="Vertreten durch">
-              <p>Giosue Canobbio</p>
+            <Section title="Vertreten durch die Gesellschafter">
+              <p>Giosuè Canobbio</p>
               <p>Christopher Neun</p>
             </Section>
 
             <Section title="Kontakt">
               <div className="flex flex-col gap-2.5 mt-1">
                 <a
-                  href="tel:+4917641651086"
+                  href={TELEFON_LINK}
                   className="inline-flex items-center gap-2.5 text-asfalto hover:text-nero transition-colors group"
                 >
-                  <div className="w-7 h-7 rounded-lg bg-rosso-wash flex items-center justify-center shrink-0">
-                    <Phone className="w-3.5 h-3.5 text-asfalto" />
-                  </div>
-                  +49 176 41651086
+                  <Tusche name="telefon" className="h-6 w-6 text-nero" />
+                  {TELEFON_INTERNATIONAL}
                 </a>
                 <a
-                  href="mailto:gcn-farzeughandel@outlook.de"
+                  href={`mailto:${EMAIL}`}
                   className="inline-flex items-center gap-2.5 text-asfalto hover:text-nero transition-colors group"
                 >
-                  <div className="w-7 h-7 rounded-lg bg-rosso-wash flex items-center justify-center shrink-0">
-                    <Mail className="w-3.5 h-3.5 text-asfalto" />
-                  </div>
-                  gcn-farzeughandel@outlook.de
+                  <Tusche name="brief" className="h-6 w-6 text-nero" />
+                  {EMAIL}
                 </a>
                 <a
-                  href="https://www.instagram.com/gcn.fahrzeughandel/"
+                  href={INSTAGRAM_URL}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2.5 text-asfalto hover:text-nero transition-colors group"
                 >
-                  <div className="w-7 h-7 rounded-lg bg-rosso-wash flex items-center justify-center shrink-0">
-                    <Instagram className="w-3.5 h-3.5 text-asfalto" />
-                  </div>
+                  <Tusche name="kamera" className="h-6 w-6 text-nero" />
                   @gcn.fahrzeughandel
                 </a>
               </div>
             </Section>
 
-            <Section title="Steuernummer">
-              <p>Steuer-Nr.: 22191 13691</p>
-              <p>Zuständiges Finanzamt: Finanzamt Villingen-Schwenningen</p>
-            </Section>
+            {(UST_ID || W_ID) && (
+              <Section title="Steuerliche Angaben">
+                {UST_ID && (
+                  <p>Umsatzsteuer-Identifikationsnummer gemäß § 27a Umsatzsteuergesetz: {UST_ID}</p>
+                )}
+                {W_ID && <p>Wirtschafts-Identifikationsnummer gemäß § 139c Abgabenordnung: {W_ID}</p>}
+              </Section>
+            )}
 
-            <Section title="EU-Streitschlichtung">
+            <Section title="Verbraucherstreitbeilegung">
               <p>
-                Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS)
-                bereit:{" "}
-                <a
-                  href="https://ec.europa.eu/consumers/odr/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-nero underline underline-offset-2 hover:opacity-60 transition-opacity"
-                >
-                  ec.europa.eu/consumers/odr
-                </a>
-                .
-              </p>
-              <p className="mt-2">
-                Unsere E-Mail-Adresse finden Sie oben im Impressum.
+                Wir sind nicht bereit und nicht verpflichtet, an Streitbeilegungsverfahren vor
+                einer Verbraucherschlichtungsstelle teilzunehmen (§ 36 VSBG).
               </p>
             </Section>
 
-            <Section title="Haftungsausschluss">
+            <Section title="Haftung für Inhalte">
               <p>
                 Die Inhalte unserer Seiten wurden mit größter Sorgfalt erstellt. Für die
                 Richtigkeit, Vollständigkeit und Aktualität der Inhalte können wir jedoch keine
-                Gewähr übernehmen. Als Diensteanbieter sind wir gemäß § 7 Abs. 1 TMG für eigene
-                Inhalte auf diesen Seiten nach den allgemeinen Gesetzen verantwortlich.
+                Gewähr übernehmen. Für eigene Inhalte auf diesen Seiten sind wir nach den
+                allgemeinen Gesetzen verantwortlich.
               </p>
             </Section>
 

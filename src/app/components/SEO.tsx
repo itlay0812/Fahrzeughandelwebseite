@@ -1,6 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { useLocation } from 'react-router';
 import { SITE_URL } from '../seiten';
+import { EMAIL, GOOGLE_PROFIL_URL, INSTAGRAM_URL } from '../firma';
 import ogFallback from '../../assets/illustrations/hero.jpg';
 
 interface SEOProps {
@@ -68,9 +69,9 @@ export function SEO({
           "@context": "https://schema.org",
           "@type": "AutoDealer",
           "name": "GCN Fahrzeughandel GbR",
-          "description": "Autohandel in St. Georgen im Schwarzwald - Ankauf und Verkauf von Gebrauchtwagen in der Region.",
+          "description": "Autohandel in St. Georgen im Schwarzwald - Gebrauchtwagen nach Kundenwunsch, mit Garantie über ProGarant.",
           "telephone": "+49-176-41651086",
-          "email": "gcn-fahrzeughandel@outlook.de",
+          "email": EMAIL,
           "address": {
             "@type": "PostalAddress",
             "streetAddress": "Sommeraurstr. 46",
@@ -83,10 +84,10 @@ export function SEO({
           "logo": `${SITE_URL}/favicon.png`,
           "image": shareImage,
           "founder": [
-            { "@type": "Person", "name": "Giosue Canobbio" },
+            { "@type": "Person", "name": "Giosuè Canobbio" },
             { "@type": "Person", "name": "Christopher Neun" }
           ],
-          "sameAs": ["https://www.instagram.com/gcn.fahrzeughandel/"],
+          "sameAs": [INSTAGRAM_URL, GOOGLE_PROFIL_URL],
           "priceRange": "€€",
           "openingHours": "Mo-Fr 09:00-18:00",
           "paymentAccepted": "Cash, Bank Transfer",

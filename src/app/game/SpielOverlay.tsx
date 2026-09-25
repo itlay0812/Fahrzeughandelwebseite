@@ -7,8 +7,8 @@ const Schwarzwaldfahrt = lazy(() =>
   import("./Schwarzwaldfahrt").then((m) => ({ default: m.Schwarzwaldfahrt })),
 );
 
-/* Das Fundstück aus dem Footer öffnet sich hier – klein, ohne Seitenwechsel,
-   und mit Escape wieder zu. */
+/* Das GCN-Minispiel aus dem Footer öffnet sich hier – ohne Seitenwechsel,
+   immer komplett sichtbar, mit Escape wieder zu. */
 export function SpielOverlay({
   offen,
   onClose,
@@ -54,7 +54,7 @@ export function SpielOverlay({
             transition={{ type: "spring", stiffness: 340, damping: 30 }}
             role="dialog"
             aria-modal="true"
-            aria-label="Die Schwarzwaldstraße – Minispiel"
+            aria-label="GCN-Minispiel"
             className="fixed inset-0 z-[111] flex items-center justify-center p-4"
             onClick={onClose}
           >
@@ -62,29 +62,21 @@ export function SpielOverlay({
               ref={panelRef}
               tabIndex={-1}
               onClick={(e) => e.stopPropagation()}
-              className="finestra max-h-[92dvh] w-full max-w-[24rem] overflow-y-auto border border-linea bg-crema-chiara p-5 shadow-2xl outline-none sm:p-6"
+              className="finestra relative w-full max-w-[24rem] border border-linea bg-crema-chiara p-4 shadow-2xl outline-none sm:p-5"
             >
-              <div className="mb-4 flex items-start justify-between gap-4">
-                <div>
-                  <p className="text-[11px] uppercase tracking-[0.18em] text-asfalto">
-                    Gefunden
-                  </p>
-                  <h2 className="mt-0.5 text-lg text-nero" style={{ fontWeight: 700 }}>
-                    Eine Proberunde
-                  </h2>
-                </div>
-                <button
-                  type="button"
-                  onClick={onClose}
-                  aria-label="Schließen"
-                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-linea text-asfalto transition-colors hover:border-nero hover:bg-nero hover:text-crema-chiara"
-                >
-                  <X className="h-4 w-4" aria-hidden="true" />
-                </button>
-              </div>
+              <button
+                type="button"
+                onClick={onClose}
+                aria-label="Minispiel schließen"
+                className="absolute -right-3 -top-3 z-10 flex h-10 w-10 items-center justify-center rounded-full border border-linea bg-crema-chiara text-asfalto shadow-md transition-colors hover:border-nero hover:bg-nero hover:text-crema-chiara"
+              >
+                <X className="h-4 w-4" aria-hidden="true" />
+              </button>
 
+              {/* Das Spielfeld bekommt die Höhe, die nach Rahmen, Anzeige und
+                  Lenkung übrig bleibt – so passt alles ohne Scrollen ins Fenster. */}
               <Suspense fallback={null}>
-                <Schwarzwaldfahrt />
+                <Schwarzwaldfahrt hoehe="calc(100dvh - 12.5rem)" />
               </Suspense>
             </div>
           </motion.div>

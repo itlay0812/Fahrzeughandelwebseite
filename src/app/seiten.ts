@@ -8,4 +8,6 @@ export const OEFFENTLICHE_SEITEN = [
   "/ueber-uns",
   "/impressum",
   "/datenschutz",
+  "/agb",
+  "/widerruf",
 ];

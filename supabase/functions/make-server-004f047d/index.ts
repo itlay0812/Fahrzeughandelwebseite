@@ -209,6 +209,81 @@ app.get("/make-server-004f047d/health", (c) => {
   return c.json({ status: "ok" });
 });
 
+// Google-Bewertungen über die Places API (New). Der Schlüssel bleibt hier auf
+// dem Server, und der Browser der Besucher spricht nie direkt mit Google.
+// Jede erfolgreiche Antwort wird als „letzter Stand“ gespeichert: Fällt Google
+// aus oder fehlt der Schlüssel, liefert der Endpunkt diesen Stand.
+const DEFAULT_GOOGLE_PLACE_ID = "ChIJg8AcmL1VVicRSDl-gzJRod0";
+const BEWERTUNGEN_KEY = "google-bewertungen:letzter-stand";
+
+async function letzterStand(c: any, reason: string) {
+  try {
+    const gespeichert = await kv.get(BEWERTUNGEN_KEY);
+    if (gespeichert) return c.json({ ...gespeichert, ok: true, ausSpeicher: true });
+  } catch (error) {
+    console.error("[bewertungen] letzter Stand nicht lesbar", error);
+  }
+  return c.json({ ok: false, reason });
+}
+
+app.get("/make-server-004f047d/bewertungen", async (c) => {
+  c.header("Cache-Control", "no-store");
+  const apiKey = Deno.env.get("GOOGLE_PLACES_API_KEY");
+  const placeId = Deno.env.get("GOOGLE_PLACE_ID") || DEFAULT_GOOGLE_PLACE_ID;
+
+  // Immer 200 mit ok-Flag: Die Seite fällt dann still auf ihren Ersatz zurück.
+  if (!apiKey) return letzterStand(c, "not-configured");
+
+  try {
+    const response = await fetch(
+      `https://places.googleapis.com/v1/places/${encodeURIComponent(placeId)}?languageCode=de`,
+      {
+        headers: {
+          "X-Goog-Api-Key": apiKey,
+          "X-Goog-FieldMask": "rating,userRatingCount,googleMapsUri,reviews",
+        },
+        signal: AbortSignal.timeout(5000),
+      },
+    );
+    if (!response.ok) throw new Error(`Places API antwortet mit ${response.status}`);
+    const data = await response.json();
+
+    // Profilfotos bewusst weglassen: Sie kämen direkt von Google-Servern.
+    // Angezeigt werden nur geschriebene 5-Sterne-Bewertungen; Durchschnitt
+    // und Anzahl zählen weiterhin alle Bewertungen.
+    const reviews = (Array.isArray(data.reviews) ? data.reviews : [])
+      .map((r: any) => ({
+        autor: r.authorAttribution?.displayName ?? "Google-Nutzer",
+        autorUrl: r.authorAttribution?.uri ?? null,
+        sterne: typeof r.rating === "number" ? r.rating : null,
+        text: (r.text?.text ?? r.originalText?.text ?? "").trim(),
+        datum: typeof r.publishTime === "string" ? r.publishTime : null,
+        zeit: r.relativePublishTimeDescription ?? "",
+        url: r.googleMapsUri ?? null,
+      }))
+      .filter((r: { sterne: number | null; text: string }) => r.sterne === 5 && r.text.length > 0);
+
+    const stand = {
+      sterne: typeof data.rating === "number" ? data.rating : null,
+      anzahl: typeof data.userRatingCount === "number" ? data.userRatingCount : 0,
+      profilUrl: typeof data.googleMapsUri === "string" ? data.googleMapsUri : null,
+      reviews,
+      abgerufen: new Date().toISOString(),
+    };
+
+    try {
+      await kv.set(BEWERTUNGEN_KEY, stand);
+    } catch (error) {
+      console.error("[bewertungen] letzter Stand nicht gespeichert", error);
+    }
+
+    return c.json({ ok: true, ...stand });
+  } catch (error) {
+    console.error("[bewertungen]", error);
+    return letzterStand(c, "upstream");
+  }
+});
+
 // Admin user creation endpoint
 app.post("/make-server-004f047d/signup", async (c) => {
   try {

@@ -1,6 +1,9 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import {
+  AnimatePresence,
   motion,
+  useMotionValue,
   useMotionValueEvent,
   useScroll,
   useTransform,
@@ -9,6 +12,7 @@ import {
 import { ChevronDown } from "lucide-react";
 import { markIntroSeen, useIntro } from "../intro/IntroContext";
 import { ScrollFilm } from "../intro/ScrollFilm";
+import { Ladefahrt } from "../intro/Ladefahrt";
 import { HeroContent, HeroVeil } from "./HeroContent";
 
 /* Die Fahrt in Scroll-Anteilen – sie folgt dem Film:
@@ -43,8 +47,8 @@ const BEATS: Beat[] = [
     heading: "Zwei Aufträge, die wir übernehmen.",
     points: [
       "Suchauftrag: Wir finden und prüfen Ihr Wunschfahrzeug.",
-      "Verkaufsauftrag: Wir verkaufen Ihres zum Bestwert.",
-      "Jedes vermittelte Fahrzeug: mindestens 12 Monate Garantie.",
+      "Verkaufsauftrag: Wir verkaufen Ihr Fahrzeug zum fairen Marktpreis.",
+      "Jedes Fahrzeug aus unserem Verkauf: Garantie über ProGarant.",
     ],
     range: [0.6, 0.66, 0.76, 0.82],
   },
@@ -59,6 +63,27 @@ function useBeat(progress: MotionValue<number>, range: Beat["range"]) {
 export function CockpitIntro({ onSkip }: { onSkip: () => void }) {
   const sectionRef = useRef<HTMLElement>(null);
   const { setPhase } = useIntro();
+
+  /* Ladebildschirm: Wer vor dem Laden aller Bilder scrollt, sieht die Fahrt
+     ruckeln. Kommen die Bilder aus dem Cache, bleibt er ganz weg. */
+  const ladung = useMotionValue(0);
+  const [lader, setLader] = useState<"warten" | "an" | "aus">("warten");
+
+  useEffect(() => {
+    const id = window.setTimeout(() => setLader(ladung.get() < 1 ? "an" : "aus"), 180);
+    return () => window.clearTimeout(id);
+  }, [ladung]);
+
+  useEffect(() => {
+    if (lader !== "an") return;
+    const html = document.documentElement;
+    const vorher = html.style.overflow;
+    html.style.overflow = "hidden";
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    return () => {
+      html.style.overflow = vorher;
+    };
+  }, [lader]);
 
   /* Fortschritt über die Bühne selbst rechnen: useScroll mit target liefert
      hier den Fortschritt des gesamten Dokuments. Die Geometrie wird gecacht,
@@ -134,7 +159,7 @@ export function CockpitIntro({ onSkip }: { onSkip: () => void }) {
       }}
     >
       <div className="sticky top-0 h-[100svh] w-full overflow-hidden bg-crema">
-        <ScrollFilm progress={filmProgress} />
+        <ScrollFilm progress={filmProgress} onProgress={(anteil) => ladung.set(anteil)} />
 
         {/* Schleier: hält den Text auf jedem Bild lesbar */}
         <motion.div
@@ -237,6 +262,15 @@ export function CockpitIntro({ onSkip }: { onSkip: () => void }) {
           </button>
         </motion.div>
       </div>
+
+      {createPortal(
+        <AnimatePresence>
+          {lader === "an" && (
+            <Ladefahrt key="ladefahrt" fortschritt={ladung} onFertig={() => setLader("aus")} />
+          )}
+        </AnimatePresence>,
+        document.body,
+      )}
     </section>
   );
 }

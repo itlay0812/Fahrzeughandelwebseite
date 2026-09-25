@@ -1,7 +1,7 @@
 import { Link } from "react-router";
 import { motion } from "motion/react";
-import { ArrowRight, Home, Phone } from "lucide-react";
 import { SEO } from "./SEO";
+import { Tusche } from "./Tusche";
 import { Schwarzwaldfahrt } from "../game/Schwarzwaldfahrt";
 
 const fadeUp = (delay = 0) => ({
@@ -38,7 +38,7 @@ export function NotFound() {
                 to="/"
                 className="inline-flex items-center justify-center gap-2 rounded-full bg-rosso px-7 py-4 text-sm text-crema-chiara transition-colors hover:bg-rosso-scuro active:scale-[0.98]"
               >
-                <Home className="h-4 w-4" aria-hidden="true" />
+                <Tusche name="haus" className="h-5 w-5" />
                 Zur Startseite
               </Link>
               <Link
@@ -46,10 +46,7 @@ export function NotFound() {
                 className="group inline-flex items-center justify-center gap-2 rounded-full border border-nero/20 px-7 py-4 text-sm text-nero transition-all hover:border-nero hover:bg-nero hover:text-crema-chiara"
               >
                 Suchauftrag & Verkauf
-                <ArrowRight
-                  className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
-                  aria-hidden="true"
-                />
+                <Tusche name="pfeil" className="h-5 w-5 transition-transform group-hover:translate-x-0.5" />
               </Link>
             </div>
 
@@ -61,9 +58,7 @@ export function NotFound() {
                 href="tel:+4917641651086"
                 className="group mt-3 inline-flex items-center gap-3 text-sm text-nero transition-colors hover:text-rosso"
               >
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-rosso-wash text-rosso transition-colors group-hover:bg-rosso group-hover:text-crema-chiara">
-                  <Phone className="h-4 w-4" aria-hidden="true" />
-                </span>
+                <Tusche name="telefon" className="h-8 w-8 text-nero transition-colors group-hover:text-rosso" />
                 <span className="numeri">+49 176 41651086</span>
               </a>
             </div>

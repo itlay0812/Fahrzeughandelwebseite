@@ -3,6 +3,7 @@ import path from 'path'
 import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
 import { statischeSeiten } from './plugins/statische-seiten'
+import { bewertungenStand } from './plugins/bewertungen-stand'
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
@@ -23,6 +24,7 @@ export default defineConfig(({ mode }) => {
       react(),
       tailwindcss(),
       statischeSeiten(),
+      bewertungenStand(),
     ],
     resolve: {
       alias: {

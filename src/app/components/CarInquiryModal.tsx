@@ -1,12 +1,13 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { motion, AnimatePresence } from "motion/react";
-import { X, Phone, Mail, Clock, Send, CheckCircle, AlertCircle, User } from "lucide-react";
+import { X, Send, CheckCircle, AlertCircle, User } from "lucide-react";
 import { toast } from "sonner";
 import { projectId, publicAnonKey } from "/utils/supabase/info";
 import { sendInquiryEmail } from "/utils/emailjs";
 import { useState } from "react";
 import { ADMIN_ROUTE_SEGMENT } from "../adminRoute";
+import { Tusche } from "./Tusche";
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -317,7 +318,7 @@ export function CarInquiryModal({ car, onClose }: Props) {
                       {/* E-Mail */}
                       <div>
                         <div className="relative">
-                          <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-alluminio pointer-events-none" />
+                          <Tusche name="brief" className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-alluminio pointer-events-none" />
                           <input
                             {...register("email", {
                               required: "E-Mail ist erforderlich",
@@ -338,7 +339,7 @@ export function CarInquiryModal({ car, onClose }: Props) {
                       {/* Telefon */}
                       <div>
                         <div className="relative">
-                          <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-alluminio pointer-events-none" />
+                          <Tusche name="telefon" className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-alluminio pointer-events-none" />
                           <input
                             {...register("phone", {
                               required: "Telefonnummer ist erforderlich",
@@ -359,7 +360,7 @@ export function CarInquiryModal({ car, onClose }: Props) {
                       {/* Erreichbarkeit */}
                       <div>
                         <div className="relative">
-                          <Clock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-alluminio pointer-events-none" />
+                          <Tusche name="uhr" className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-alluminio pointer-events-none" />
                           <select
                             {...register("availability", { required: "Bitte Erreichbarkeit wählen" })}
                             className={`${field("availability")} pl-11 appearance-none cursor-pointer`}
@@ -421,7 +422,16 @@ export function CarInquiryModal({ car, onClose }: Props) {
                       </button>
 
                       <p className="text-center text-asfalto text-xs pb-2">
-                        Mit * markierte Felder sind Pflichtfelder
+                        Mit * markierte Felder sind Pflichtfelder. Wir verwenden Ihre Angaben
+                        nur, um Ihre Anfrage zu bearbeiten. Mehr dazu in der{" "}
+                        <a
+                          href={`${import.meta.env.BASE_URL}datenschutz`}
+                          target="_blank"
+                          className="text-nero underline underline-offset-2 hover:opacity-60"
+                        >
+                          Datenschutzerklärung
+                        </a>
+                        .
                       </p>
                     </motion.form>
                   )}

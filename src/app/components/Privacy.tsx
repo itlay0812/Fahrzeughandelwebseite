@@ -1,199 +1,244 @@
-import { motion } from "motion/react";
-import { SEO } from "./SEO";
+import { EMAIL, TELEFON_INTERNATIONAL } from "../firma";
+import { Abschnitt, AnschriftKasten, LINK_KLASSE, Rechtsseite, Unterabschnitt } from "./Rechtsseite";
 
-const fadeUp = (delay = 0) => ({
-  initial: { opacity: 0, y: 18 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.35, ease: "easeOut", delay },
-});
-
-function Section({ number, title, children }: { number: string; title: string; children: React.ReactNode }) {
+function Extern({ href, children }: { href: string; children: React.ReactNode }) {
   return (
-    <div className="pt-8 border-t border-linea">
-      <div className="flex items-baseline gap-3 mb-4">
-        <span className="numeri text-xs text-rosso tracking-widest shrink-0">{number}</span>
-        <h2 className="text-base text-nero" style={{ fontWeight: 600 }}>
-          {title}
-        </h2>
-      </div>
-      <div className="text-asfalto text-sm leading-relaxed space-y-4 pl-6">{children}</div>
-    </div>
-  );
-}
-
-function SubSection({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <div>
-      <h3 className="text-nero text-sm mb-1.5" style={{ fontWeight: 600 }}>{title}</h3>
-      <div className="text-asfalto text-sm leading-relaxed space-y-2">{children}</div>
-    </div>
+    <a href={href} target="_blank" rel="noopener noreferrer" className={LINK_KLASSE}>
+      {children}
+    </a>
   );
 }
 
 export function Privacy() {
   return (
-    <>
-      <SEO
-        title="Datenschutz – GCN Fahrzeughandel GbR"
-        description="Datenschutzerklärung der GCN Fahrzeughandel GbR gemäß DSGVO."
-      />
+    <Rechtsseite
+      titel="Datenschutzerklärung."
+      seoTitel="Datenschutz – GCN Fahrzeughandel GbR"
+      seoBeschreibung="Datenschutzerklärung der GCN Fahrzeughandel GbR gemäß DSGVO."
+      einleitung="Informationen gemäß Art. 13 und 14 DSGVO zum Umgang mit Ihren personenbezogenen Daten."
+      stand="September 2026"
+    >
+      <Abschnitt nummer="01" titel="Verantwortlicher">
+        <p>Verantwortlich für die Datenverarbeitung auf dieser Website ist:</p>
+        <AnschriftKasten>
+          <p className="mt-2">Vertreten durch die Gesellschafter Giosuè Canobbio und Christopher Neun</p>
+          <p className="mt-2">Telefon: {TELEFON_INTERNATIONAL}</p>
+          <a href={`mailto:${EMAIL}`} className={LINK_KLASSE}>
+            {EMAIL}
+          </a>
+        </AnschriftKasten>
+        <p>
+          Einen Datenschutzbeauftragten haben wir nicht benannt, weil wir dazu gesetzlich nicht
+          verpflichtet sind.
+        </p>
+      </Abschnitt>
 
-      <div className="flex-1 min-h-screen bg-crema text-nero py-12 sm:py-16 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-2xl mx-auto">
+      <Abschnitt nummer="02" titel="Hosting und Server-Log-Dateien">
+        <Unterabschnitt titel="Hoster">
+          <p>
+            Diese Website wird über GitHub Pages bereitgestellt. Anbieter ist die GitHub, Inc.,
+            88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, USA. Die Website enthält nur
+            statische Dateien. Es werden keine Cookies gesetzt und keine Analyse- oder
+            Tracking-Werkzeuge eingesetzt.
+          </p>
+        </Unterabschnitt>
+        <Unterabschnitt titel="Server-Log-Dateien">
+          <p>
+            Beim Aufruf der Website übermittelt Ihr Browser automatisch Daten an den Server von
+            GitHub. Dazu gehören insbesondere:
+          </p>
+          <ul className="list-disc pl-5 space-y-1">
+            <li>IP-Adresse</li>
+            <li>Datum und Uhrzeit der Anfrage</li>
+            <li>aufgerufene Seite bzw. Datei</li>
+            <li>Referrer-URL</li>
+            <li>Browsertyp, Browserversion und Betriebssystem</li>
+          </ul>
+          <p>
+            Diese Daten sind technisch erforderlich, um die Website auszuliefern, und werden nach
+            Angaben von GitHub zur Gewährleistung der Sicherheit protokolliert. Rechtsgrundlage ist
+            Art. 6 Abs. 1 lit. f DSGVO. Unser berechtigtes Interesse liegt in einer sicheren und
+            stabilen Bereitstellung der Website.
+          </p>
+          <p>
+            <strong className="text-nero" style={{ fontWeight: 600 }}>Speicherdauer:</strong> Wir
+            selbst haben keinen Zugriff auf diese Log-Dateien und werten sie nicht aus. GitHub
+            speichert sie nur so lange, wie es für Sicherheitszwecke erforderlich ist, und nennt
+            dafür keine feste Frist. Einzelheiten finden Sie in der{" "}
+            <Extern href="https://docs.github.com/de/site-policy/privacy-policies/github-general-privacy-statement">
+              Datenschutzerklärung von GitHub
+            </Extern>
+            .
+          </p>
+          <p>
+            GitHub ist unter dem EU-US Data Privacy Framework zertifiziert. Die Übermittlung in die
+            USA stützt sich auf den Angemessenheitsbeschluss der EU-Kommission (Art. 45 DSGVO).
+          </p>
+        </Unterabschnitt>
+      </Abschnitt>
 
-          {/* Page Header */}
-          <motion.div
-            {...fadeUp(0)}
-            className="border-b border-linea pb-8 mb-10"
-          >
-            <h1
-              className="titolo-pagina text-nero"
-            >
-              Datenschutzerklärung.
-            </h1>
-            <p className="text-asfalto text-sm mt-4 leading-relaxed">
-              Informationen gemäß Art. 13, 14 DSGVO zum Umgang mit Ihren personenbezogenen Daten.
+      <Abschnitt nummer="03" titel="Kontaktformular (Suchauftrag und Verkaufsangebot)">
+        <p>
+          Wenn Sie uns über das Formular einen Suchauftrag oder ein Verkaufsangebot senden,
+          verarbeiten wir Ihre Angaben: Name, E-Mail-Adresse, optional Telefonnummer, die
+          Fahrzeugangaben und Ihre Nachricht. Wir nutzen diese Daten ausschließlich, um Ihre
+          Anfrage zu bearbeiten und uns bei Ihnen zu melden.
+        </p>
+        <p>
+          Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO, weil die Anfrage der Anbahnung eines
+          Vertrags dient. Soweit das im Einzelfall nicht zutrifft, stützen wir uns auf unser
+          berechtigtes Interesse an der Beantwortung von Anfragen (Art. 6 Abs. 1 lit. f DSGVO).
+        </p>
+        <Unterabschnitt titel="Eingesetzte Dienstleister">
+          <p>
+            <strong className="text-nero" style={{ fontWeight: 600 }}>Supabase:</strong> Die
+            Formulardaten werden in einer Datenbank der Supabase, Inc. (USA) gespeichert, damit wir
+            Anfragen intern bearbeiten können. Mit Supabase besteht ein Vertrag zur
+            Auftragsverarbeitung. Soweit Daten in die USA übermittelt werden, geschieht das auf
+            Grundlage der EU-Standardvertragsklauseln (Art. 46 Abs. 2 lit. c DSGVO).
+          </p>
+          <p>
+            <strong className="text-nero" style={{ fontWeight: 600 }}>EmailJS:</strong> Über den
+            Dienst EmailJS (EmailJS Pte. Ltd., Singapur) erhalten wir eine E-Mail-Benachrichtigung
+            mit dem Inhalt Ihrer Anfrage. Dafür werden die Formulardaten an EmailJS übermittelt.
+            Die Übermittlung erfolgt auf Grundlage der EU-Standardvertragsklauseln (Art. 46 Abs. 2
+            lit. c DSGVO).
+          </p>
+        </Unterabschnitt>
+        <Unterabschnitt titel="Speicherdauer">
+          <p>
+            Wir löschen Ihre Anfrage, sobald sie abschließend bearbeitet ist, spätestens sechs
+            Monate nach dem letzten Kontakt. Kommt ein Vertrag zustande, bewahren wir die dafür
+            nötigen Unterlagen so lange auf, wie es handels- und steuerrechtlich vorgeschrieben ist
+            (bis zu zehn Jahre, § 257 HGB, § 147 AO).
+          </p>
+        </Unterabschnitt>
+      </Abschnitt>
+
+      <Abschnitt nummer="04" titel="Kontakt per E-Mail (Microsoft Outlook)">
+        <p>
+          Für unser E-Mail-Postfach nutzen wir Microsoft Outlook. Anbieter ist die Microsoft
+          Ireland Operations Limited, One Microsoft Place, South County Business Park,
+          Leopardstown, Dublin 18, Irland. Wenn Sie uns eine E-Mail schreiben und wenn uns eine
+          Formularbenachrichtigung erreicht, werden Ihre Angaben auf Servern von Microsoft
+          gespeichert. Dabei kann es zu einer Übermittlung in die USA kommen. Microsoft ist unter
+          dem EU-US Data Privacy Framework zertifiziert (Art. 45 DSGVO).
+        </p>
+        <p>
+          Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO, soweit es um einen Vertrag oder dessen
+          Anbahnung geht, im Übrigen Art. 6 Abs. 1 lit. f DSGVO. Für die Speicherdauer gilt das
+          unter Abschnitt 03 Gesagte.{" "}
+          <Extern href="https://privacy.microsoft.com/de-de/privacystatement">
+            Datenschutzerklärung von Microsoft
+          </Extern>
+        </p>
+      </Abschnitt>
+
+      <Abschnitt nummer="05" titel="Google-Bewertungen">
+        <p>
+          Auf der Startseite zeigen wir Bewertungen aus unserem Google-Unternehmensprofil an.
+          Unser Server ruft sie über die Google Places API bei der Google Ireland Limited, Gordon
+          House, Barrow Street, Dublin 4, Irland, ab und reicht sie an Ihren Browser weiter. Ihr
+          Browser baut dabei keine Verbindung zu Google auf. Ihre IP-Adresse wird also nicht an
+          Google übermittelt, und es werden keine Bilder von Google-Servern nachgeladen.
+        </p>
+        <p>
+          Damit die Bewertungen auch bei einer Störung angezeigt werden können, speichern wir den
+          zuletzt abgerufenen Stand (Name der Verfasserin oder des Verfassers, Link zum
+          Google-Profil, Sterne, Text und Datum) in unserer Datenbank bei Supabase und als Datei
+          auf dem Webserver. Jeder neue Abruf überschreibt diesen Stand. Wird eine Bewertung bei
+          Google gelöscht, verschwindet sie damit spätestens nach einem Tag auch hier.
+        </p>
+        <p>
+          Erst wenn Sie auf den Namen einer Rezensentin oder eines Rezensenten oder auf den Link zu
+          unserem Google-Profil klicken, öffnet sich eine Seite von Google. Dort gilt die{" "}
+          <Extern href="https://policies.google.com/privacy?hl=de">
+            Datenschutzerklärung von Google
+          </Extern>
+          . Rechtsgrundlage für die Anzeige ist unser berechtigtes Interesse, echte
+          Kundenmeinungen zu zeigen (Art. 6 Abs. 1 lit. f DSGVO).
+        </p>
+      </Abschnitt>
+
+      <Abschnitt nummer="06" titel="Instagram und andere externe Links">
+        <p>
+          Auf unserer Website verlinken wir auf unser Instagram-Profil. Es handelt sich um einen
+          einfachen Link, kein eingebettetes Plugin. Beim Besuch unserer Website werden deshalb
+          keine Daten an Instagram übertragen. Erst wenn Sie den Link anklicken, gelangen Sie zu
+          Instagram, einem Dienst der Meta Platforms Ireland Limited, Merrion Road, Dublin 4,
+          Irland. Dort gilt die{" "}
+          <Extern href="https://privacycenter.instagram.com/policy">
+            Datenschutzerklärung von Instagram
+          </Extern>
+          . Dasselbe gilt für Links zu mobile.de und anderen externen Seiten.
+        </p>
+      </Abschnitt>
+
+      <Abschnitt nummer="07" titel="Speicherung im Browser">
+        <p>
+          Schriften werden von unserem eigenen Server geladen, nicht von Google Fonts. Wenn Sie das
+          Minispiel im Footer spielen, speichert Ihr Browser Ihren besten Punktestand lokal
+          (localStorage). Dieser Wert verlässt Ihr Gerät nicht und lässt sich über die
+          Browsereinstellungen jederzeit löschen.
+        </p>
+      </Abschnitt>
+
+      <Abschnitt nummer="08" titel="Ihre Rechte">
+        <p>Sie haben uns gegenüber folgende Rechte hinsichtlich Ihrer personenbezogenen Daten:</p>
+        <ul className="list-disc pl-5 space-y-1">
+          <li>Auskunft (Art. 15 DSGVO)</li>
+          <li>Berichtigung (Art. 16 DSGVO)</li>
+          <li>Löschung (Art. 17 DSGVO)</li>
+          <li>Einschränkung der Verarbeitung (Art. 18 DSGVO)</li>
+          <li>Datenübertragbarkeit (Art. 20 DSGVO)</li>
+        </ul>
+        <Unterabschnitt titel="Widerruf Ihrer Einwilligung">
+          <p>
+            Haben Sie in eine Verarbeitung eingewilligt, können Sie diese Einwilligung jederzeit
+            mit Wirkung für die Zukunft widerrufen (Art. 7 Abs. 3 DSGVO). Eine formlose Nachricht
+            an{" "}
+            <a href={`mailto:${EMAIL}`} className={LINK_KLASSE}>
+              {EMAIL}
+            </a>{" "}
+            genügt. Die Rechtmäßigkeit der bis dahin erfolgten Verarbeitung bleibt unberührt.
+          </p>
+        </Unterabschnitt>
+        <Unterabschnitt titel="Widerspruchsrecht">
+          <p>
+            Verarbeiten wir Daten auf Grundlage unseres berechtigten Interesses (Art. 6 Abs. 1
+            lit. f DSGVO), können Sie aus Gründen, die sich aus Ihrer besonderen Situation ergeben,
+            jederzeit widersprechen (Art. 21 DSGVO). Wir verarbeiten die Daten dann nicht mehr, es
+            sei denn, wir können zwingende schutzwürdige Gründe nachweisen, die Ihre Interessen
+            überwiegen, oder die Verarbeitung dient der Geltendmachung, Ausübung oder Verteidigung
+            von Rechtsansprüchen.
+          </p>
+        </Unterabschnitt>
+        <Unterabschnitt titel="Beschwerderecht bei der Aufsichtsbehörde">
+          <p>
+            Sie haben das Recht, sich bei einer Datenschutz-Aufsichtsbehörde zu beschweren
+            (Art. 77 DSGVO). Für uns zuständig ist:
+          </p>
+          <div className="bg-crema border border-linea rounded-2xl p-4 mt-2">
+            <p className="text-nero" style={{ fontWeight: 600 }}>
+              Der Landesbeauftragte für den Datenschutz und die Informationsfreiheit
+              Baden-Württemberg
             </p>
-          </motion.div>
+            <p>Lautenschlagerstraße 20</p>
+            <p>70173 Stuttgart</p>
+            <Extern href="https://www.baden-wuerttemberg.datenschutz.de">
+              www.baden-wuerttemberg.datenschutz.de
+            </Extern>
+          </div>
+        </Unterabschnitt>
+      </Abschnitt>
 
-          {/* Content Card */}
-          <motion.div
-            {...fadeUp(0.06)}
-            className="bg-crema-chiara border border-linea finestra p-7 sm:p-10 space-y-0"
-          >
-
-            <Section number="01" title="Datenschutz auf einen Blick">
-              <SubSection title="Allgemeine Hinweise">
-                <p>
-                  Die folgenden Hinweise geben einen einfachen Überblick darüber, was mit Ihren
-                  personenbezogenen Daten passiert, wenn Sie diese Website besuchen.
-                  Personenbezogene Daten sind alle Daten, mit denen Sie persönlich identifiziert
-                  werden können.
-                </p>
-              </SubSection>
-
-              <SubSection title="Datenerfassung auf dieser Website">
-                <p>
-                  Die Datenverarbeitung auf dieser Website erfolgt durch den Websitebetreiber.
-                  Dessen Kontaktdaten können Sie dem Impressum entnehmen.
-                </p>
-              </SubSection>
-            </Section>
-
-            <Section number="02" title="Allgemeine Hinweise und Pflichtinformationen">
-              <SubSection title="Datenschutz">
-                <p>
-                  Die Betreiber dieser Seiten nehmen den Schutz Ihrer persönlichen Daten sehr
-                  ernst. Wir behandeln Ihre personenbezogenen Daten vertraulich und entsprechend
-                  der gesetzlichen Datenschutzvorschriften sowie dieser Datenschutzerklärung.
-                </p>
-              </SubSection>
-
-              <SubSection title="Verantwortliche Stelle">
-                <p>Die verantwortliche Stelle für die Datenverarbeitung auf dieser Website ist:</p>
-                <div className="bg-crema-chiara border border-linea rounded-2xl p-4 mt-2">
-                  <p className="text-nero" style={{ fontWeight: 600 }}>GCN Fahrzeughandel GbR</p>
-                  <p>Sommeraurstr. 46</p>
-                  <p>78112 Sankt Georgen im Schwarzwald</p>
-                  <p className="mt-2">Telefon: +49 176 41651086</p>
-                  <a
-                    href="mailto:gcn-farzeughandel@outlook.de"
-                    className="text-nero underline underline-offset-2 hover:opacity-60 transition-opacity"
-                  >
-                    gcn-farzeughandel@outlook.de
-                  </a>
-                </div>
-              </SubSection>
-
-              <SubSection title="Speicherdauer">
-                <p>
-                  Soweit innerhalb dieser Datenschutzerklärung keine speziellere Speicherdauer
-                  genannt wurde, verbleiben Ihre personenbezogenen Daten bei uns, bis der Zweck
-                  für die Datenverarbeitung entfällt. Wenn Sie ein berechtigtes Löschersuchen
-                  geltend machen oder eine Einwilligung zur Datenverarbeitung widerrufen, werden
-                  Ihre Daten gelöscht, sofern wir keine anderen rechtlich zulässigen Gründe für
-                  die Speicherung haben.
-                </p>
-              </SubSection>
-            </Section>
-
-            <Section number="03" title="Datenerfassung auf dieser Website">
-              <SubSection title="Server-Log-Dateien">
-                <p>
-                  Der Provider der Seiten erhebt und speichert automatisch Informationen in
-                  Server-Log-Dateien, die Ihr Browser automatisch übermittelt:
-                </p>
-                <ul className="list-disc pl-5 space-y-1 mt-2">
-                  <li>Browsertyp und Browserversion</li>
-                  <li>Verwendetes Betriebssystem</li>
-                  <li>Referrer URL</li>
-                  <li>Hostname des zugreifenden Rechners</li>
-                  <li>Uhrzeit der Serveranfrage</li>
-                  <li>IP-Adresse</li>
-                </ul>
-                <p className="mt-2">
-                  Eine Zusammenführung dieser Daten mit anderen Datenquellen wird nicht
-                  vorgenommen.
-                </p>
-              </SubSection>
-
-              <SubSection title="Kontaktformular">
-                <p>
-                  Wenn Sie uns per Kontaktformular Anfragen zukommen lassen, werden Ihre Angaben
-                  aus dem Anfrageformular inklusive der von Ihnen dort angegebenen Kontaktdaten
-                  zwecks Bearbeitung der Anfrage und für den Fall von Anschlussfragen bei uns
-                  gespeichert. Diese Daten geben wir nicht ohne Ihre Einwilligung weiter.
-                </p>
-                <p>
-                  Die Verarbeitung dieser Daten erfolgt auf Grundlage von Art. 6 Abs. 1 lit. b
-                  DSGVO, sofern Ihre Anfrage mit der Erfüllung eines Vertrags zusammenhängt oder
-                  zur Durchführung vorvertraglicher Maßnahmen erforderlich ist. In allen übrigen
-                  Fällen beruht die Verarbeitung auf unserem berechtigten Interesse an der
-                  effektiven Bearbeitung der an uns gerichteten Anfragen (Art. 6 Abs. 1 lit. f
-                  DSGVO).
-                </p>
-              </SubSection>
-            </Section>
-
-            <Section number="04" title="Ihre Rechte">
-              <p>
-                Sie haben gegenüber uns folgende Rechte hinsichtlich der Sie betreffenden
-                personenbezogenen Daten:
-              </p>
-              <ul className="list-disc pl-5 space-y-1 mt-2">
-                <li>Recht auf Auskunft (Art. 15 DSGVO)</li>
-                <li>Recht auf Berichtigung (Art. 16 DSGVO)</li>
-                <li>Recht auf Löschung (Art. 17 DSGVO)</li>
-                <li>Recht auf Einschränkung der Verarbeitung (Art. 18 DSGVO)</li>
-                <li>Recht auf Datenübertragbarkeit (Art. 20 DSGVO)</li>
-                <li>Recht auf Widerspruch (Art. 21 DSGVO)</li>
-              </ul>
-              <p className="mt-2">
-                Zur Ausübung Ihrer Rechte wenden Sie sich bitte an:{" "}
-                <a
-                  href="mailto:gcn-farzeughandel@outlook.de"
-                  className="text-nero underline underline-offset-2 hover:opacity-60 transition-opacity"
-                >
-                  gcn-farzeughandel@outlook.de
-                </a>
-              </p>
-              <p>
-                Außerdem haben Sie das Recht, sich bei einer Datenschutz-Aufsichtsbehörde über
-                die Verarbeitung Ihrer personenbezogenen Daten zu beschweren.
-              </p>
-            </Section>
-
-          </motion.div>
-
-          {/* Last updated */}
-          <motion.p
-            {...fadeUp(0.1)}
-            className="text-center text-asfalto text-xs mt-6"
-          >
-            Stand: April 2026
-          </motion.p>
-        </div>
-      </div>
-    </>
+      <Abschnitt nummer="09" titel="SSL-/TLS-Verschlüsselung">
+        <p>
+          Diese Website nutzt aus Sicherheitsgründen eine TLS-Verschlüsselung. Eine verschlüsselte
+          Verbindung erkennen Sie an „https://“ in der Adresszeile Ihres Browsers. Daten, die Sie
+          über das Formular senden, können dann nicht von Dritten mitgelesen werden.
+        </p>
+      </Abschnitt>
+    </Rechtsseite>
   );
 }
