@@ -247,9 +247,9 @@ function Chrome() {
                   </a>
                   <a
                     href={`mailto:${EMAIL}`}
-                    className="flex items-center gap-3 text-nero"
+                    className="group flex items-center gap-3 text-nero"
                   >
-                    <Tusche name="brief" className="h-7 w-7 text-nero" />
+                    <Tusche name="brief" className="h-7 w-7 text-nero transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:-rotate-6" />
                     {EMAIL}
                   </a>
                 </div>
@@ -330,7 +330,7 @@ function Chrome() {
                   href={`mailto:${EMAIL}`}
                   className="group flex w-fit items-center gap-3 text-sm text-crema/80 transition-colors hover:text-crema-chiara"
                 >
-                  <Tusche name="brief" className="h-7 w-7" />
+                  <Tusche name="brief" className="h-7 w-7 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:-rotate-6" />
                   {EMAIL}
                 </a>
                 <a
@@ -339,7 +339,7 @@ function Chrome() {
                   rel="noopener noreferrer"
                   className="group flex w-fit items-center gap-3 text-sm text-crema/80 transition-colors hover:text-crema-chiara"
                 >
-                  <Tusche name="kamera" className="h-7 w-7" />
+                  <Tusche name="kamera" className="h-7 w-7 transition-transform duration-300 group-hover:rotate-6 group-hover:scale-110" />
                   @gcn.fahrzeughandel
                 </a>
                 <a
@@ -348,7 +348,7 @@ function Chrome() {
                   rel="noopener noreferrer"
                   className="group flex w-fit items-center gap-3 text-sm text-crema/80 transition-colors hover:text-crema-chiara"
                 >
-                  <Tusche name="stern" className="h-7 w-7" />
+                  <Tusche name="stern" className="h-7 w-7 transition-transform duration-300 group-hover:rotate-[20deg] group-hover:scale-110" />
                   Google-Profil
                 </a>
               </div>
