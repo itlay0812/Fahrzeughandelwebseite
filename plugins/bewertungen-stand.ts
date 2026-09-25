@@ -38,7 +38,13 @@ export function bewertungenStand(): Plugin {
           /* Nächste Quelle versuchen. */
         }
       }
-      console.log('\n– Kein Bewertungen-Stand verfügbar, Ersatzdatei entfällt.')
+      /* Ohne Stand trotzdem eine Datei ablegen: Die Seite zeigt dann den
+         Leerzustand, und die Browser-Konsole meldet keinen 404. */
+      fs.writeFileSync(
+        path.join(outDir, 'bewertungen.json'),
+        JSON.stringify({ ok: false, reason: 'kein-stand' }),
+      )
+      console.log('\n– Kein Bewertungen-Stand verfügbar, leere Ersatzdatei abgelegt.')
     },
   }
 }
