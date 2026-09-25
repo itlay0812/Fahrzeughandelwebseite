@@ -32,8 +32,8 @@ export function Agb() {
     <Rechtsseite
       titel="Allgemeine Geschäftsbedingungen."
       seoTitel="AGB – GCN Fahrzeughandel GbR"
-      seoBeschreibung="Allgemeine Geschäftsbedingungen der GCN Fahrzeughandel GbR für den Verkauf gebrauchter Fahrzeuge, die Vermittlung von Kundenfahrzeugen und Exportgeschäfte."
-      einleitung="Diese AGB gelten für den Verkauf gebrauchter Kraftfahrzeuge an Verbraucher und Unternehmer, für die Vermittlung von Kundenfahrzeugen und für Exportgeschäfte von GCN Fahrzeughandel (im Folgenden „Verkäufer“ bzw. „GCN“)."
+      seoBeschreibung="Allgemeine Geschäftsbedingungen der GCN Fahrzeughandel GbR für den Verkauf gebrauchter Fahrzeuge, die Vermittlung von Kundenfahrzeugen, Suchaufträge und Exportgeschäfte."
+      einleitung="Diese AGB gelten für den Verkauf gebrauchter Kraftfahrzeuge an Verbraucher und Unternehmer, für die Vermittlung von Kundenfahrzeugen, für Suchaufträge und für Exportgeschäfte von GCN Fahrzeughandel (im Folgenden „Verkäufer“ bzw. „GCN“)."
       stand="September 2026"
     >
       {/* ── Teil A ─────────────────────────────────────────────────────── */}
@@ -44,7 +44,7 @@ export function Agb() {
           <li>
             Diese AGB gelten für alle Verträge zwischen GCN und seinen Kunden über den Kauf
             gebrauchter Fahrzeuge (Teil A und B), die Vermittlung von Fahrzeugen im Auftrag des
-            Kunden (Teil C) und den Verkauf zur Ausfuhr (Teil D).
+            Kunden (Teil C), den Suchauftrag (Teil D) und den Verkauf zur Ausfuhr (Teil E).
           </li>
           <li>
             Verbraucher ist jede natürliche Person, die ein Rechtsgeschäft zu Zwecken abschließt,
@@ -344,9 +344,38 @@ export function Agb() {
       </Abschnitt>
 
       {/* ── Teil D ─────────────────────────────────────────────────────── */}
-      <Teil buchstabe="D" titel="Exportgeschäfte" />
+      <Teil buchstabe="D" titel="Suchauftrag" />
 
-      <Abschnitt ebene="h3" nummer="§ 14" titel="Verkauf zur Ausfuhr">
+      <Abschnitt ebene="h3" nummer="§ 14" titel="Suchauftrag">
+        <Absaetze>
+          <li>
+            Mit einem Suchauftrag beauftragt der Kunde GCN, ein Fahrzeug nach seinen Vorgaben zu
+            suchen (z. B. Marke, Modell, Budget, Ausstattung, Laufleistung). GCN prüft gefundene
+            Fahrzeuge, kauft sie ein und bietet sie dem Kunden zum Kauf an.
+          </li>
+          <li>
+            Für den Suchauftrag selbst fallen keine Kosten an, soweit nichts anderes schriftlich
+            vereinbart ist.
+          </li>
+          <li>
+            Der Suchauftrag läuft drei Monate. Beide Seiten können ihn jederzeit ohne Angabe von
+            Gründen beenden.
+          </li>
+          <li>
+            Einen Sucherfolg schuldet GCN nicht. Aus dem Suchauftrag entsteht für den Kunden keine
+            Pflicht, ein angebotenes Fahrzeug zu kaufen.
+          </li>
+          <li>
+            Ein Kaufvertrag über ein angebotenes Fahrzeug kommt nur nach § 2 Abs. 3 zustande. Für
+            ihn gelten Teil A und B dieser AGB.
+          </li>
+        </Absaetze>
+      </Abschnitt>
+
+      {/* ── Teil E ─────────────────────────────────────────────────────── */}
+      <Teil buchstabe="E" titel="Exportgeschäfte" />
+
+      <Abschnitt ebene="h3" nummer="§ 15" titel="Verkauf zur Ausfuhr">
         <Absaetze>
           <li>
             Die Bestimmungen dieses Teils gelten ergänzend, wenn das Fahrzeug in einen anderen
@@ -370,7 +399,7 @@ export function Agb() {
         </Absaetze>
       </Abschnitt>
 
-      <Abschnitt ebene="h3" nummer="§ 15" titel="Umsatzsteuer und Nachweise">
+      <Abschnitt ebene="h3" nummer="§ 16" titel="Umsatzsteuer und Nachweise">
         <Absaetze>
           <li>
             Ein Verkauf ohne Umsatzsteuer als steuerfreie Ausfuhrlieferung oder
@@ -397,7 +426,7 @@ export function Agb() {
         </Absaetze>
       </Abschnitt>
 
-      <Abschnitt ebene="h3" nummer="§ 16" titel="Exportbeschränkungen">
+      <Abschnitt ebene="h3" nummer="§ 17" titel="Exportbeschränkungen">
         <Absaetze>
           <li>
             Der Käufer versichert, dass das Fahrzeug nicht entgegen geltender Embargos, Sanktionen
@@ -416,22 +445,26 @@ export function Agb() {
         </Absaetze>
       </Abschnitt>
 
-      {/* ── Teil E ─────────────────────────────────────────────────────── */}
-      <Teil buchstabe="E" titel="Schlussbestimmungen" />
+      {/* ── Teil F ─────────────────────────────────────────────────────── */}
+      <Teil buchstabe="F" titel="Schlussbestimmungen" />
 
-      <Abschnitt ebene="h3" nummer="§ 17" titel="Widerrufsrecht bei Fernabsatz">
+      <Abschnitt ebene="h3" nummer="§ 18" titel="Widerrufsrecht bei Fernabsatz">
         <Absaetze>
           <li>
-            Verbrauchern steht ein gesetzliches Widerrufsrecht nur zu, wenn der Vertrag
-            ausschließlich über Fernkommunikationsmittel (z. B. Telefon, E-Mail, Online-Plattform)
-            oder außerhalb der Geschäftsräume geschlossen wurde. Bei Vertragsschluss in den
-            Geschäftsräumen von GCN besteht kein Widerrufsrecht.
+            Verbrauchern steht ein gesetzliches Widerrufsrecht nur zu, wenn der Vertrag – ein
+            Kaufvertrag, ein Vermittlungsauftrag oder ein Suchauftrag – ausschließlich über
+            Fernkommunikationsmittel (z. B. Telefon, E-Mail, Online-Plattform) oder außerhalb der
+            Geschäftsräume geschlossen wurde. Bei Vertragsschluss in den Geschäftsräumen von GCN
+            besteht kein Widerrufsrecht.
           </li>
-          <li>In diesen Fällen gilt die nachstehende Widerrufsbelehrung.</li>
+          <li>
+            In diesen Fällen gilt für den Kauf eines Fahrzeugs Belehrung A, für Vermittlungs- und
+            Suchaufträge Belehrung B.
+          </li>
         </Absaetze>
 
         <div className="rounded-2xl border border-linea bg-crema p-5 space-y-4">
-          <Unterabschnitt titel="Widerrufsbelehrung – Widerrufsrecht">
+          <Unterabschnitt titel="A · Widerrufsbelehrung für den Kauf eines Fahrzeugs">
             <p>
               Sie haben das Recht, binnen vierzehn Tagen ohne Angabe von Gründen diesen Vertrag zu
               widerrufen. Die Widerrufsfrist beträgt vierzehn Tage ab dem Tag, an dem Sie oder ein
@@ -439,7 +472,7 @@ export function Agb() {
               genommen haben bzw. hat.
             </p>
             <p>
-              Um Ihr Widerrufsrecht auszuüben, müssen Sie uns (Anbieter gemäß § 20) mittels einer
+              Um Ihr Widerrufsrecht auszuüben, müssen Sie uns (Anbieter gemäß § 21) mittels einer
               eindeutigen Erklärung (z. B. ein mit der Post versandter Brief oder eine E-Mail) über
               Ihren Entschluss, diesen Vertrag zu widerrufen, informieren. Sie können dafür das
               beigefügte Muster-Widerrufsformular verwenden, das jedoch nicht vorgeschrieben ist.
@@ -447,7 +480,7 @@ export function Agb() {
               Ausübung des Widerrufsrechts vor Ablauf der Widerrufsfrist absenden.
             </p>
           </Unterabschnitt>
-          <Unterabschnitt titel="Folgen des Widerrufs">
+          <Unterabschnitt titel="Folgen des Widerrufs (Kauf)">
             <p>
               Wenn Sie diesen Vertrag widerrufen, haben wir Ihnen alle Zahlungen, die wir von Ihnen
               erhalten haben, einschließlich der Lieferkosten (mit Ausnahme der zusätzlichen
@@ -473,6 +506,21 @@ export function Agb() {
               mit ihm zurückzuführen ist.
             </p>
           </Unterabschnitt>
+          <Unterabschnitt titel="B · Widerrufsbelehrung für Vermittlungs- und Suchaufträge">
+            <p>
+              Sie haben das Recht, binnen vierzehn Tagen ohne Angabe von Gründen diesen Vertrag zu
+              widerrufen. Die Widerrufsfrist beträgt vierzehn Tage ab dem Tag des
+              Vertragsabschlusses. Für die Ausübung des Widerrufsrechts und die Rückzahlung gilt das
+              unter A Gesagte entsprechend.
+            </p>
+            <p>
+              Haben Sie verlangt, dass die Dienstleistungen während der Widerrufsfrist beginnen
+              sollen, so haben Sie uns einen angemessenen Betrag zu zahlen, der dem Anteil der bis
+              zu dem Zeitpunkt, zu dem Sie uns von der Ausübung des Widerrufsrechts hinsichtlich
+              dieses Vertrags unterrichten, bereits erbrachten Dienstleistungen im Vergleich zum
+              Gesamtumfang der im Vertrag vorgesehenen Dienstleistungen entspricht.
+            </p>
+          </Unterabschnitt>
           <Unterabschnitt titel="Muster-Widerrufsformular">
             <p>
               Wenn Sie den Vertrag widerrufen wollen, dann füllen Sie bitte dieses Formular aus und
@@ -485,9 +533,10 @@ export function Agb() {
               </p>
               <p>
                 Hiermit widerrufe(n) ich/wir (*) den von mir/uns (*) abgeschlossenen Vertrag über
-                den Kauf des folgenden Fahrzeugs:
+                den Kauf des folgenden Fahrzeugs (*) / die Erbringung der folgenden Dienstleistung
+                (Vermittlungs- oder Suchauftrag) (*):
               </p>
-              <Formularzeile label="Marke, Modell, Fahrzeug-Ident.-Nr." />
+              <Formularzeile label="Fahrzeug (Marke, Modell, Fahrzeug-Ident.-Nr.) bzw. Auftrag" />
               <Formularzeile label="Bestellt am (*) / erhalten am (*)" />
               <Formularzeile label="Name des/der Verbraucher(s)" />
               <Formularzeile label="Anschrift des/der Verbraucher(s)" />
@@ -506,7 +555,7 @@ export function Agb() {
         </div>
       </Abschnitt>
 
-      <Abschnitt ebene="h3" nummer="§ 18" titel="Datenschutz und Streitbeilegung">
+      <Abschnitt ebene="h3" nummer="§ 19" titel="Datenschutz und Streitbeilegung">
         <Absaetze>
           <li>
             GCN verarbeitet personenbezogene Daten der Kunden zur Vertragsabwicklung, zur Erfüllung
@@ -524,7 +573,7 @@ export function Agb() {
         </Absaetze>
       </Abschnitt>
 
-      <Abschnitt ebene="h3" nummer="§ 19" titel="Anwendbares Recht, Gerichtsstand, Salvatorische Klausel">
+      <Abschnitt ebene="h3" nummer="§ 20" titel="Anwendbares Recht, Gerichtsstand, Salvatorische Klausel">
         <Absaetze>
           <li>
             Es gilt das Recht der Bundesrepublik Deutschland unter Ausschluss des UN-Kaufrechts
@@ -546,7 +595,7 @@ export function Agb() {
         </Absaetze>
       </Abschnitt>
 
-      <Abschnitt ebene="h3" nummer="§ 20" titel="Anbieter">
+      <Abschnitt ebene="h3" nummer="§ 21" titel="Anbieter">
         <dl className="grid grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-[11rem_1fr]">
           <dt className="text-nero" style={{ fontWeight: 600 }}>Firma und Rechtsform</dt>
           <dd>GCN Fahrzeughandel GbR</dd>

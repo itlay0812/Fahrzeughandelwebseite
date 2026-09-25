@@ -216,14 +216,14 @@ app.get("/make-server-004f047d/health", (c) => {
 const DEFAULT_GOOGLE_PLACE_ID = "ChIJg8AcmL1VVicRSDl-gzJRod0";
 const BEWERTUNGEN_KEY = "google-bewertungen:letzter-stand";
 
-async function letzterStand(c: any, reason: string) {
+async function letzterStand(c: any, reason: string, detail?: string) {
   try {
     const gespeichert = await kv.get(BEWERTUNGEN_KEY);
-    if (gespeichert) return c.json({ ...gespeichert, ok: true, ausSpeicher: true });
+    if (gespeichert) return c.json({ ...gespeichert, ok: true, ausSpeicher: true, detail });
   } catch (error) {
     console.error("[bewertungen] letzter Stand nicht lesbar", error);
   }
-  return c.json({ ok: false, reason });
+  return c.json({ ok: false, reason, detail });
 }
 
 app.get("/make-server-004f047d/bewertungen", async (c) => {
@@ -245,7 +245,14 @@ app.get("/make-server-004f047d/bewertungen", async (c) => {
         signal: AbortSignal.timeout(5000),
       },
     );
-    if (!response.ok) throw new Error(`Places API antwortet mit ${response.status}`);
+    if (!response.ok) {
+      // Googles Fehlermeldung (z. B. API nicht aktiviert, Key eingeschränkt) –
+      // enthält den Schlüssel nicht und hilft bei der Fehlersuche.
+      const fehler = await response.json().catch(() => null);
+      throw new Error(
+        `Places API ${response.status}: ${fehler?.error?.status ?? ""} ${fehler?.error?.message ?? ""}`.trim(),
+      );
+    }
     const data = await response.json();
 
     // Profilfotos bewusst weglassen: Sie kämen direkt von Google-Servern.
@@ -280,7 +287,7 @@ app.get("/make-server-004f047d/bewertungen", async (c) => {
     return c.json({ ok: true, ...stand });
   } catch (error) {
     console.error("[bewertungen]", error);
-    return letzterStand(c, "upstream");
+    return letzterStand(c, "upstream", error instanceof Error ? error.message.slice(0, 300) : undefined);
   }
 });
 

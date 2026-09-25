@@ -79,7 +79,7 @@ export function Widerruf() {
         </Unterabschnitt>
       </Abschnitt>
 
-      <Abschnitt nummer="B" titel="Suchauftrag und Verkaufsauftrag">
+      <Abschnitt nummer="B" titel="Suchauftrag und Vermittlungsauftrag">
         <Unterabschnitt titel="Widerrufsrecht">
           <p>
             Sie haben das Recht, binnen vierzehn Tagen ohne Angabe von Gründen diesen Vertrag zu
@@ -112,7 +112,7 @@ export function Widerruf() {
           </p>
           <p>
             Hiermit widerrufe(n) ich/wir (*) den von mir/uns (*) abgeschlossenen Vertrag über den
-            Kauf der folgenden Waren (*) / die Erbringung der folgenden Dienstleistung (*):
+            Kauf der folgenden Waren (*) / die Erbringung der folgenden Dienstleistung (*) (Such- oder Vermittlungsauftrag):
           </p>
           <FormularZeile label="Fahrzeug bzw. Leistung" />
           <FormularZeile label="Bestellt am (*) / erhalten am (*)" />
