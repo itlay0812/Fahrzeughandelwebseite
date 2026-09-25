@@ -134,29 +134,22 @@ export function Privacy() {
         </p>
       </Abschnitt>
 
-      <Abschnitt nummer="05" titel="Google-Bewertungen">
+      <Abschnitt nummer="05" titel="Kundenstimmen">
         <p>
-          Auf der Startseite zeigen wir Bewertungen aus unserem Google-Unternehmensprofil an.
-          Unser Server ruft sie über die Google Places API bei der Google Ireland Limited, Gordon
-          House, Barrow Street, Dublin 4, Irland, ab und reicht sie an Ihren Browser weiter. Ihr
-          Browser baut dabei keine Verbindung zu Google auf. Ihre IP-Adresse wird also nicht an
-          Google übermittelt, und es werden keine Bilder von Google-Servern nachgeladen.
+          Auf der Startseite zeigen wir ausgewählte Bewertungen unserer Kundinnen und Kunden mit
+          ihrem Namen und einem Foto ihres Fahrzeugs. Diese Inhalte sind fest auf unserer Website
+          hinterlegt, es werden dafür keine Daten von Dritten geladen. Rechtsgrundlage ist die
+          Einwilligung der jeweiligen Person (Art. 6 Abs. 1 lit. a DSGVO). Sie kann jederzeit mit
+          Wirkung für die Zukunft widerrufen werden, wir entfernen die Stimme dann umgehend.
         </p>
         <p>
-          Damit die Bewertungen auch bei einer Störung angezeigt werden können, speichern wir den
-          zuletzt abgerufenen Stand (Name der Verfasserin oder des Verfassers, Link zum
-          Google-Profil, Sterne, Text und Datum) in unserer Datenbank bei Supabase und als Datei
-          auf dem Webserver. Jeder neue Abruf überschreibt diesen Stand. Wird eine Bewertung bei
-          Google gelöscht, verschwindet sie damit spätestens nach einem Tag auch hier.
-        </p>
-        <p>
-          Erst wenn Sie auf den Namen einer Rezensentin oder eines Rezensenten oder auf den Link zu
-          unserem Google-Profil klicken, öffnet sich eine Seite von Google. Dort gilt die{" "}
+          Wenn Sie auf „Bewertung schreiben“ oder „Alle Bewertungen auf Google“ klicken, öffnet
+          sich eine Seite der Google Ireland Limited, Gordon House, Barrow Street, Dublin 4,
+          Irland. Dort gilt die{" "}
           <Extern href="https://policies.google.com/privacy?hl=de">
             Datenschutzerklärung von Google
           </Extern>
-          . Rechtsgrundlage für die Anzeige ist unser berechtigtes Interesse, echte
-          Kundenmeinungen zu zeigen (Art. 6 Abs. 1 lit. f DSGVO).
+          .
         </p>
       </Abschnitt>
 
