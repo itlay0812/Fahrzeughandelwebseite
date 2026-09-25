@@ -409,7 +409,7 @@ export function Home() {
       <section className="bg-crema" aria-labelledby="warum">
         <div className="mx-auto max-w-[1440px] px-4 py-16 sm:px-6 sm:py-24 lg:px-12">
           <h2 id="warum" className="max-w-2xl border-b border-linea pb-9">
-            Vertrauen entsteht durch persönliche Betreuung.
+            Unser Versprechen an Sie.
           </h2>
 
           <dl className="grid grid-cols-1 gap-x-12 sm:grid-cols-2">

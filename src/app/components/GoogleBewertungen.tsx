@@ -90,7 +90,7 @@ function Kachel({ stimme }: { stimme: Kundenstimme }) {
 }
 
 /**
- * Kundenstimmen unter „Vertrauen entsteht durch persönliche Betreuung“ –
+ * Kundenstimmen unter „Unser Versprechen an Sie“ –
  * fest hinterlegt in kundenstimmen.ts, jeweils mit Foto des Autos. Darunter
  * der Aufruf, selbst eine Bewertung auf Google zu schreiben.
  */
